@@ -21,7 +21,8 @@ const Messages = {
         permission: 'Permissão',
         addMember: 'Membro criado com sucesso!',
         registerMembers: 'Cadastro de Membros',
-        addMembers: '+ Adicionar Membros'
+        addMembers: '+ Adicionar Membros',
+        emptyList: 'Não há dados disponíveis'
     },
     buttons: {},
     labels: {},

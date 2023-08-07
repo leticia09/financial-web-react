@@ -25,7 +25,7 @@ export const SidebarData = [
           },
           {
             title: 'Dados Bancários',
-            path: '/grupos/bancos',
+            path: '/grupos/dados-bancarios',
             icon: <FcIcons.FcLibrary size={16} />
           },
 

@@ -47,29 +47,6 @@ export const MemberForm: FunctionComponent = ({i, hasDelete}: IMemberForm) => {
                 getValue={(value) => formStore.setFormListValue(i, 'name', value)}
             />
 
-            <InputCPF
-                label={Messages.titles.cpf}
-                disabled={false}
-                width="200px"
-                getValue={(value) => formStore.setFormListValue(i, 'cpf', value)}
-            />
-
-            <Input
-                label={Messages.titles.email}
-                disabled={false}
-                width="200px"
-                getValue={(value) => formStore.setFormListValue(i, 'email', value)}
-            />
-
-            <DropdownSingleSelect
-                label={Messages.titles.permission}
-                data={data}
-                disabled={false}
-                width="200px"
-                getValue={(value) => {formStore.setFormListValue(i, 'permission', value);
-                    formStore.setFormListValue(i, 'index', i) }}
-            />
-
             { hasDelete && (
                 <ButtonComponent
                     disabled={false}
@@ -81,9 +58,9 @@ export const MemberForm: FunctionComponent = ({i, hasDelete}: IMemberForm) => {
                     background="transparent"
                     border="none"
                     padding="2px"
-                    marginBottom="20px"
+                    marginBottom="1px"
                     fontWeight="400"
-                    icon={<BsTrash size={10}/>}
+                    icon={<BsTrash size={12}/>}
                     action={() => handleDeleteMember(i)}/>
             )}
         </div>

@@ -21,6 +21,8 @@ import {MemberForm} from "./form/index.tsx";
 import useFormStore from "./form/useFormStore.ts";
 // @ts-ignore
 import {Messages} from "../../../internationalization/message/index.ts";
+// @ts-ignore
+import {Creation} from "../../../components/creation/index.tsx";
 
 
 export const RegisterMember: FunctionComponent = () => {
@@ -35,7 +37,7 @@ export const RegisterMember: FunctionComponent = () => {
 
     useEffect(() => {
         formStore.resetFormStore();
-    }, [])
+    }, []);
 
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -49,9 +51,6 @@ export const RegisterMember: FunctionComponent = () => {
         updateList.push(
             {
                 name: '',
-                email: '',
-                cpf: '',
-                permission: 0,
                 index: updateList.length,
                 userAuthId: loginStore.userId
             }
@@ -66,83 +65,49 @@ export const RegisterMember: FunctionComponent = () => {
             form.userAuthId = loginStore.userId;
         })
 
-        if (event) {
-            try {
-                const response = await registerMembersService.createMember(formStore.formList);
-                if (response.data.message === "Sucesso") {
-                    setSeverity("sucess");
-                    setToastMessage(Messages.titles.addMember);
-                    navigate("/grupos/membros");
-                    setIsLoading(false);
-                } else {
-                    setOpen(false);
-                    setSeverity("error");
-                    setToastMessage(Messages.titles.errorMessage);
-                }
-
-            } catch (e) {
+        try {
+            const response = await registerMembersService.createMember(formStore.formList);
+            if (response.data.message === "Sucesso") {
+                setOpen(true);
+                setSeverity("sucess");
+                setToastMessage(Messages.titles.addMember);
+                navigate("/grupos/membros");
                 setIsLoading(false);
+            } else {
+                setOpen(false);
                 setSeverity("error");
                 setToastMessage(Messages.titles.errorMessage);
-                setOpen(true);
             }
+
+        } catch (e) {
+            setIsLoading(false);
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpen(true);
         }
     }
 
     return (
-        <>
-            <div className="content-member">
-
-                <div className="labels-member">
-                    <h3>{Messages.titles.registerMembers}</h3>
-                </div>
-
-                {formStore.formList.map((member, i) => {
-                    return (<MemberForm
+        <Creation
+            titles={Messages.titles.registerMembers}
+            Form={
+                formStore.formList.map((member, i) => (
+                    <MemberForm
                         key={member.index}
                         i={i}
                         hasDelete={i > 0}
-                    />);
-                })}
-
-                <div className="add-button-member">
-                    <ButtonComponent
-                        label={Messages.titles.addMembers}
-                        disabled={false}
-                        width="140px"
-                        height="30px"
-                        cursor="pointer"
-                        borderRadius="4px"
-                        color="white"
-                        background="#46ba52"
-                        border="2px solid #46ba52"
-                        padding="2px"
-                        marginBottom="20px"
-                        fontWeight="400"
-                        action={handleAddMember}/>
-                </div>
-
-                <FooterRegister
-                    path="/grupos/membros"
-                    disabled={false}
-                    widthButton="100px"
-                    getValue={saveMember}
-                    iconBack={<BsBackspace size={20}/>}
-                    iconCheck={<GiCheckMark size={20}/>}
-                />
-
-                <Toast
-                    severity={severity}
-                    width="100%"
-                    duration={2000}
-                    message={toastMessage}
-                    open={open}
-                    onClose={handleClose}
-                />
-                {isLoading && (
-                    <LoadingComponent/>
-                )}
-            </div>
-        </>
+                    />
+                ))
+            }
+            titlesButton={Messages.titles.addMembers}
+            handleAddMember={handleAddMember}
+            save={saveMember}
+            pathBack="/grupos/membros"
+            toastMessage={toastMessage}
+            severityType={severity}
+            isLoading={isLoading}
+            open={open}
+            handleClose={handleClose}
+        />
     );
 }

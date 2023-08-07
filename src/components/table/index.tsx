@@ -40,6 +40,7 @@ export const TableComponent: FunctionComponent = ({columns, rows}: ITableCompone
                                         minWidth: column.minWidth,
                                         width: column.width,
                                         textAlign: "start",
+                                        fontWeight:"bold",
                                     }}
                                 >
                                     {column.label}

@@ -21,6 +21,19 @@
     margin-top: 8px;
 }
 
+.content-not-grid {
+    font-size: 1rem;
+    border-radius: 4px;
+    color: #333;
+    margin-top: 8px;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    border: 2px solid white;
+    width: 100%;
+}
+
 .button-create {
     max-height: 40px;
 }

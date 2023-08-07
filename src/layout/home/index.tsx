@@ -9,6 +9,10 @@ import {Dashboard} from "../../pages/dashboard/index.tsx";
 import {Members} from "../../pages/members/managment/index.tsx";
 // @ts-ignore
 import {RegisterMember} from "../../pages/members/creation/index.tsx"
+// @ts-ignore
+import {BankData} from "../../pages/bank-data/management/index.tsx";
+// @ts-ignore
+import {RegisterBankData} from "../../pages/bank-data/creation/index.tsx";
 
 export const Home: FunctionComponent = (loginInformation) => {
     return (
@@ -28,6 +32,12 @@ export const Home: FunctionComponent = (loginInformation) => {
                       element={<Members/>}/>
                 <Route path="/grupos/membros/cadastro"
                        element={<RegisterMember loginInformation={loginInformation}/>}/>
+                <Route path="/grupos/dados-bancarios"
+                       element={<BankData loginInformation={loginInformation}/>}/>
+                <Route
+                    path="/grupos/dados-bancarios/cadastro"
+                    element={<RegisterBankData loginInformation={loginInformation}/>}
+                />
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"
@@ -38,11 +48,8 @@ export const Home: FunctionComponent = (loginInformation) => {
                <Route                   path="/grupos/cartoes/cadastro"
                    element={<CadastroCartao loginInformation={props.loginInformation}/>}
                />
-               <Route path="/grupos/bancos" element={<Bancos loginInformation={props.loginInformation}/>}/>
-               <Route
-                   path="/grupos/bancos/cadastro"
-                   element={<CadastroBanco loginInformation={props.loginInformation}/>}
-               />
+
+
                <Route
                    path="/grupos/conta-bancaria"
                    element={<ContaBancaria loginInformation={props.loginInformation}/>}

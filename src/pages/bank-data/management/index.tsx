@@ -1,11 +1,11 @@
 import {FunctionComponent, useEffect, useState} from "react";
-import * as AiIcons from "react-icons/ai";
 // @ts-ignore
-import {MembersManagmentService} from "./service/index.tsx";
+import {Management} from "../../../components/management/index.tsx";
+import * as AiIcons from "react-icons/ai";
 // @ts-ignore
 import useLoginStore from "../../login/store/useLoginStore.ts";
 // @ts-ignore
-import {Management} from "../../../components/management/index.tsx";
+import {BankDataManagementService} from "../service/index.tsx";
 
 const columns = [
     {
@@ -33,13 +33,13 @@ const columns = [
 ];
 
 function createData(user, actions: React.ReactNode[]) {
-    const {id, name} = user;
-    return {id, name,status: "Ativo", actions};
+    const { id, name, status} = user;
+    return { id, name, status, actions };
 }
 
-export const Members: FunctionComponent = () => {
+export const BankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
-    const membersManagementService = MembersManagmentService()
+    const bankDataManagementService = BankDataManagementService();
     const [rows, setRows] = useState([]);
 
     const actions = [
@@ -51,7 +51,7 @@ export const Members: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await membersManagementService.getMembers(loginStore.userId);
+                const response = await bankDataManagementService.getMembers(loginStore.userId);
                 const transformedRows = response.data.data.map((user) => createData(user, actions));
                 setRows(transformedRows);
             } catch (error) {
@@ -64,11 +64,10 @@ export const Members: FunctionComponent = () => {
     return (
         <>
             <Management
-                title="Membros"
-                arrayActions={actions}
+                title="Dados Bancários"
                 rows={rows}
                 arrayHeader={columns}
-                pathBack="/grupos/membros/cadastro"
+                pathBack="/grupos/dados-bancarios/cadastro"
             />
         </>
     );

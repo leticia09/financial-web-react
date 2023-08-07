@@ -16,9 +16,6 @@ const initialState: State = {
     formList: [
         {
             name: '',
-            email: '',
-            cpf: '',
-            permission: 0,
             index: 0,
             userAuthId: 0
         }
@@ -39,9 +36,6 @@ const useFormStore = create<State & Actions>((set) => ({
                 updatedFormList[index] = {
                     index: 0,
                     name: "",
-                    email: "",
-                    cpf: "",
-                    permission: 0,
                     userAuthId: authId
                 };
             }
