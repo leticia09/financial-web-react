@@ -1,0 +1,69 @@
+.proloader {
+    height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(to right, #037170, #060644);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.proloader .texts-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 230px;
+    width: 400px;
+    color: white;
+    overflow: hidden;
+
+}
+
+.grap-small {
+    height: 80px;
+    width: 100px;
+    border: 20px solid transparent;
+    background: linear-gradient(to right, #060644, #037170) padding-box, linear-gradient(to right, #13f78c, #060644) border-box;
+    border-radius: 6px;
+    border-bottom: none;
+}
+
+.grap-medium {
+    height: 160px;
+    width: 100px;
+    border: 20px solid transparent;
+    background: linear-gradient(to right, #060644, #037170) padding-box, linear-gradient(to right, #13f78c, #060644) border-box;
+    border-bottom: none;
+    border-radius: 6px;
+}
+
+.grap-large {
+    width: 100px;
+    height: 230px;
+    border: 20px solid transparent;
+    background: linear-gradient(to right, #060644, #037170) padding-box, linear-gradient(to right, #13f78c, #060644) border-box;
+    border-radius: 6px;
+    border-bottom: none;
+}
+
+.text {
+    display: grid;
+}
+
+.title-financial {
+    text-align: center;
+    font-size: 100px;
+    font-weight: 600;
+}
+
+.subtitle {
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;
+    font-style: normal;
+    color: rgb(0, 252, 168);
+    text-decoration: none;
+    letter-spacing: 0.3em;
+}
+

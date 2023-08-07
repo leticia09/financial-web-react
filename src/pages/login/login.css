@@ -1,0 +1,32 @@
+.login {
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(to right, #037170, #060644);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.content-login {
+    display: grid;
+    text-align: center;
+    background: white;
+    width: 350px;
+    border-radius: 6px;
+}
+
+.title{
+    font-size: large;
+    padding: 4px;
+    margin-left: 6px;
+}
+
+.link {
+    color: #05465f;
+    margin-right: 24px;
+    margin-bottom: 14px;
+    font-weight: 600;
+    font-size: small;
+    text-align: end;
+}

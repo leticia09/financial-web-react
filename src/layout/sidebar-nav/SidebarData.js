@@ -1,0 +1,112 @@
+import React from 'react';
+import * as AiIcons from 'react-icons/ai';
+import * as RiIcons from 'react-icons/ri';
+import * as GiIcons from "react-icons/gi";
+import * as FcIcons from "react-icons/fc";
+
+export const SidebarData = [
+    {
+        title: 'Dashboard',
+        path: '/dashboard',
+        icon: <FcIcons.FcMindMap size={20} />
+    },
+    { 
+        title: 'Gerenciamento',
+        path: '/dashboard',
+        icon: <FcIcons.FcList size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill />,
+        iconOpened: <RiIcons.RiArrowUpSFill />,
+    
+        subNav: [
+          {
+            title: 'Membros',
+            path: '/grupos/membros',
+            icon: <FcIcons.FcCollaboration size={16}/>
+          },
+          {
+            title: 'Dados Bancários',
+            path: '/grupos/bancos',
+            icon: <FcIcons.FcLibrary size={16} />
+          },
+
+          {
+            title: 'Programas de Pontos',
+            path: '/grupos/pontos',
+            icon: <GiIcons.GiAirplaneDeparture size={16}/>
+          },
+          {
+            title: 'Cartões',
+            path: '/grupos/cartoes',
+            icon: <FcIcons.FcDiploma1 size={16} />
+          },
+          {
+            title: 'Salário',
+            path: '/grupos/salario',
+            icon: <FcIcons.FcCurrencyExchange size={16} />
+          },
+     
+          {
+            title: 'Grupo Macro',
+            path: '/grupos/grupo-macro',
+            icon: <FcIcons.FcGlobe size={16} />
+          }
+        ]
+    },
+    {
+        title: 'Previsões',
+        path: '/previsoes',
+        icon: <FcIcons.FcRatings size={20}/>
+    },
+    {
+      title: 'Receitas',
+      path: '/receitas/graficos',
+      icon: <FcIcons.FcBullish size={20} />,
+      iconClosed: <RiIcons.RiArrowDownSFill />,
+      iconOpened: <RiIcons.RiArrowUpSFill />,
+    },
+    {
+      title: 'Mov. Bancária',
+      path: '/movimentacao-bancaria/graficos',
+      icon: <FcIcons.FcMoneyTransfer size={20} />,
+      iconClosed: <RiIcons.RiArrowDownSFill />,
+      iconOpened: <RiIcons.RiArrowUpSFill />,
+    },
+    {
+      title: 'Despesas',
+      path: '/despesas/graficos',
+      icon: <FcIcons.FcBearish size={20}/>,
+      iconClosed: <RiIcons.RiArrowDownSFill />,
+      iconOpened: <RiIcons.RiArrowUpSFill />,
+    },
+    {
+      title: 'Metas',
+      path: '/metas',
+      icon: <FcIcons.FcTodoList size={20}/>
+  },
+    {
+      title: 'Milhas',
+      path: '/milhas',
+      icon: <GiIcons.GiAirplaneDeparture size={22} />
+    },
+    {
+      title: 'Análises',
+      path: '/analises',
+      icon: <FcIcons.FcBarChart size={20}/>
+    },
+    {
+        title: 'Eventos',
+        path: '/Eventos',
+        icon: <FcIcons.FcBarChart size={20}/>
+    },
+    {
+        title: 'Simulador',
+        path: '/simulador',
+        icon: <AiIcons.AiFillExperiment size={20}/>
+    },
+    {
+      title: 'Support',
+      path: '/support',
+      icon: <FcIcons.FcSettings size={20}/>
+    }
+  ];
+  

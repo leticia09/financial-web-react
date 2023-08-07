@@ -1,0 +1,179 @@
+import {FunctionComponent, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+// @ts-ignore
+import {Messages} from "../../internationalization/message/index.ts";
+import '../login/login.css'
+// @ts-ignore
+import {Input} from "../../components/input/index.tsx";
+// @ts-ignore
+import {InputPassword} from "../../components/password/index.tsx";
+// @ts-ignore
+import {ButtonComponent} from "../../components/button/index.tsx";
+// @ts-ignore
+import {DropdownSingleSelect} from "../../components/dropdown/index.tsx";
+// @ts-ignore
+import {InputCPF} from "../../components/input-cpf-validation/index.tsx";
+// @ts-ignore
+import {validateEmail} from "../../utils/validateEmail.tsx";
+// @ts-ignore
+import {RegisterAccountService} from "./service/index.tsx";
+// @ts-ignore
+import {Toast} from "../../components/toast/index.tsx";
+// @ts-ignore
+import {delay} from "../../utils/delay.tsx";
+
+export const dataSex = [
+    {
+        id: 1,
+        description: "Feminino"
+    },
+    {
+        id: 2,
+        description: "Masculino"
+    }
+];
+export const RegisterAccount: FunctionComponent = () => {
+    const navigate = useNavigate();
+    const registerAccountService = RegisterAccountService();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [cpf, setCpf] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setconfirmPassword] = useState("");
+    const [sex, setSex] = useState("");
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [severity, setSeverity] = useState('');
+    const [toastMessage, setToastMessage] = useState('')
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const saveRegisterAccount = async (event) => {
+        if (event) {
+            const payload = {
+                name: name,
+                login: email,
+                password: password,
+                cpf: cpf,
+                sex: sex,
+            };
+
+            try {
+                const response = await registerAccountService.auth(payload);
+                if (response.data.message === "Sucesso") {
+                    setSeverity('sucess')
+                    setToastMessage(Messages.titles.userRegisterSucess)
+                    setOpen(true);
+
+                } else {
+                    setSeverity('error')
+                    setToastMessage(Messages.titles.errorMessage)
+                    setOpen(true);
+                }
+
+            } catch (e) {
+                console.log('error:', e);
+                setSeverity('error')
+                setToastMessage(Messages.titles.errorMessage)
+                setOpen(true);
+            }
+        }
+    }
+    return (
+        <div className="login">
+            <div className="content-login">
+                <div className="title">
+                    <h3>{Messages.titles.register}</h3>
+                </div>
+
+                <Input
+                    label={Messages.titles.name}
+                    disabled={false}
+                    width="300px"
+                    getValue={(value) => setName(value)}
+                />
+
+                <InputCPF
+                    label={Messages.titles.cpf}
+                    disabled={false}
+                    width="300px"
+                    getValue={(value) => setCpf(value)}
+                />
+
+                <Input
+                    label={Messages.titles.email}
+                    disabled={false}
+                    width="300px"
+                    getValue={(value) => {
+                        setEmail(value);
+                        setIsValidEmail(validateEmail(value))
+                    }}
+                />
+
+                <DropdownSingleSelect
+                    label={Messages.titles.sex}
+                    data={dataSex}
+                    disabled={false}
+                    width={"300px"}
+                    getValue={(value) => setSex(value)}
+                />
+
+                <InputPassword
+                    label={Messages.titles.password}
+                    disabled={false}
+                    width="300px"
+                    getValue={(value) => setPassword(value)}
+                />
+
+                <InputPassword
+                    label={Messages.titles.comfirmPassword}
+                    disabled={false}
+                    width="300px"
+                    getValue={(value) => setconfirmPassword(value)}
+                />
+                <div>
+                    <ButtonComponent
+                        label={Messages.titles.register}
+                        disabled={
+                            name.length === 0 ||
+                            !isValidEmail ||
+                            password.length === 0 ||
+                            sex.length === 0 ||
+                            cpf.length === 0 ||
+                            password !== confirmPassword
+                        }
+                        width="300px"
+                        height="40px"
+                        cursor="pointer"
+                        borderRadius="6px"
+                        color="white"
+                        background="#05465f"
+                        padding="2px"
+                        marginBottom="20px"
+                        fontWeight="600"
+                        action={saveRegisterAccount}
+                    />
+                </div>
+
+                <Link className="link" to="/login">
+                    <span>{Messages.titles.back}</span>
+                </Link>
+
+                <Toast
+                    severity={severity}
+                    width="100%"
+                    duration={2000}
+                    message={toastMessage}
+                    open={open}
+                    onClose={handleClose}
+                />
+
+            </div>
+        </div>
+    );
+}

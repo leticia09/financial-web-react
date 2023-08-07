@@ -1,0 +1,63 @@
+.page{
+    font-size: 0.85rem;
+    border-radius: 8px;
+    color: #333;
+
+}
+
+.painel {
+    margin-top: 65px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+    background: white;
+    border: 2px solid white;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.labels_dash {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.label_dash {
+    margin-left: 10px;
+    padding: 9px;
+    border-bottom: 2px solid #ffb64d;
+    background: white;
+    color: #333;
+    height: 60px;
+    width: 150px;
+    font-weight: 800;
+}
+
+.label_despesas {
+    margin-bottom: 4px;
+}
+
+.dashboard {
+    width:100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.grafico{
+    margin-bottom: 8px;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    display: flex;
+}
+.grafico_item_dash{
+    width:100%;
+    padding: 10px;
+}

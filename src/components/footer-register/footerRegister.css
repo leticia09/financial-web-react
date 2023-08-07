@@ -1,0 +1,21 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 18px;
+}
+.footer-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #05465f;
+    color: white;
+    height: 40px;
+    width: 100px;
+    border-radius: 6px;
+}
+
+.footer-button {
+    width: 100px;
+}

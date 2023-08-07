@@ -1,0 +1,22 @@
+.content-member{
+    font-size: 0.85rem;
+    border-radius: 4px;
+    color: #333;
+    margin-top: 65px;
+    background: white;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    border: 2px solid white;
+    width: 100%;
+}
+
+.labels-member {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 18px 8px 18px;
+    align-items: center;
+}
+
+.add-button-member {
+    padding: 8px 18px;
+}

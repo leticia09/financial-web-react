@@ -1,0 +1,21 @@
+.scrollbar::-webkit-scrollbar-track {
+    background-color: #F4F4F4;
+}
+.scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background: #a4acac;
+
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 12px;
+    background: #a4acac;
+}
+
+.icon_space {
+    margin-right: 4px;
+}
+
+.icon_delete, .icon_space {
+    cursor: pointer;
+}
