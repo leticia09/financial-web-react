@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent} from "react";
 // @ts-ignore
 import {DropdownSingleSelect} from "../../../../components/dropdown/index.tsx";
 // @ts-ignore
@@ -9,7 +9,7 @@ import {InputCPF} from "../../../../components/input-cpf-validation/index.tsx";
 import {Input} from "../../../../components/input/index.tsx";
 import './memberForm.css'
 // @ts-ignore
-import useFormStore from "./useFormStore.ts";
+import useFormStore from "../store/useFormStore.ts";
 // @ts-ignore
 import {ButtonComponent} from "../../../../components/button/index.tsx";
 import {BsTrash} from "react-icons/bs";

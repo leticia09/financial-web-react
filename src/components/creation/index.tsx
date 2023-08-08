@@ -1,5 +1,5 @@
 import './creation.css'
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent} from "react";
 // @ts-ignore
 import {ButtonComponent} from "../button/index.tsx";
 // @ts-ignore
@@ -59,6 +59,7 @@ export const Creation: FunctionComponent = ({
                 <div className="labels-member">
                     <h3>{titles}</h3>
                 </div>
+                <div className="line"/>
 
                 {Form}
 

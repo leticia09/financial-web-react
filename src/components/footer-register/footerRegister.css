@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 18px;
+    padding: 8px 18px;
 }
 .footer-link {
     display: flex;

@@ -1,0 +1,14 @@
+.title-bank{
+    align-items: center;
+    margin-left: 20px;
+    font-weight: 400;
+    height: 15px;
+}
+
+.register-bank{
+    margin-left: 8px;
+    margin-right: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

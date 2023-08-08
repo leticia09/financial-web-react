@@ -1,8 +1,6 @@
 import {FunctionComponent, useEffect, useState} from "react";
 import './creationMember.css'
 import {useNavigate} from "react-router-dom";
-import {GiCheckMark} from "react-icons/gi";
-import {BsBackspace} from "react-icons/bs";
 // @ts-ignore
 import {FooterRegister} from "../../../components/footer-register/index.tsx";
 // @ts-ignore
@@ -18,11 +16,12 @@ import {ButtonComponent} from "../../../components/button/index.tsx";
 // @ts-ignore
 import {MemberForm} from "./form/index.tsx";
 // @ts-ignore
-import useFormStore from "./form/useFormStore.ts";
+import useFormStore from "./store/useFormStore.ts";
 // @ts-ignore
 import {Messages} from "../../../internationalization/message/index.ts";
 // @ts-ignore
 import {Creation} from "../../../components/creation/index.tsx";
+
 
 
 export const RegisterMember: FunctionComponent = () => {
