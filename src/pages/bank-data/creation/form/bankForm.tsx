@@ -46,7 +46,7 @@ export const BankDataForm: FunctionComponent = () => {
         formStore.setRows([]);
         resetFields();
         resetCardFields();
-        if(formStore.formType === "VIEW") {
+        if(id) {
             const fetchData = async () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
@@ -56,6 +56,8 @@ export const BankDataForm: FunctionComponent = () => {
                 }
             }
             fetchData().then();
+        } else {
+            formStore.setFormType("CREATE");
         }
     }, []);
 
@@ -180,7 +182,6 @@ export const BankDataForm: FunctionComponent = () => {
                     getValue={(value) => formStore.setBankNameFormList(value)}
                     inputValue={bankName}
                 />
-                <BulletComponent color="#459b4e" label="Ativo" showLabel={true}/>
             </div>
             <h3 className="title-bank">{Messages.titles.account}
                 {showComment && <span className="title-bank-comment"> {Messages.messages.notAllowedMoreThan}</span>}

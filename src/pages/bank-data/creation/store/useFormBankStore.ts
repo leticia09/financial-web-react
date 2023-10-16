@@ -40,6 +40,9 @@ const useFormBankStore = create<State & Actions>((set) => ({
     addAccount: (newAccount) => {
         set((state) => {
             newAccount.label = "Conta: " + newAccount.accountNumber + "/" + newAccount.owner;
+            if(!newAccount.cards) {
+                newAccount.cards = [];
+            }
             const isAccountAlreadyAdded = state.formList.accounts.some(
                 (account) => account.accountNumber === newAccount.accountNumber
             );
