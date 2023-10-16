@@ -1,0 +1,9 @@
+.icons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon_space, .icon_delete{
+    cursor: pointer;
+}

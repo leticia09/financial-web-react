@@ -12,3 +12,13 @@
     flex-direction: row;
     align-items: center;
 }
+
+.register-bank-add-button {
+    padding: 8px 0px 0px 8px;
+}
+
+.title-bank-comment {
+    color: red;
+    font-size: 10px;
+    margin-left: 10px;
+}

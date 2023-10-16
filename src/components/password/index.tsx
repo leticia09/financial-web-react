@@ -32,7 +32,10 @@ export const InputPassword: FunctionComponent = ({label, disabled, width, getVal
                 sx={{ m: 1, width: width }}
                 variant="outlined"
             >
-                <InputLabel size="small" htmlFor="outlined-adornment-password">
+                <InputLabel
+                    required
+                    size="small"
+                    htmlFor="outlined-adornment-password">
                     {label}
                 </InputLabel>
                 <OutlinedInput

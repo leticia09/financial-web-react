@@ -37,6 +37,7 @@ export const Management: FunctionComponent = ({title, rows, arrayHeader, pathBac
                             marginBottom="20px"
                             fontWeight="600"
                             maxHeight="40px"
+                            border="none"
                             action={() => {
                                 navigate(pathBack)
                             }}
@@ -50,6 +51,8 @@ export const Management: FunctionComponent = ({title, rows, arrayHeader, pathBac
                         <TableComponent
                             columns={arrayHeader}
                             rows={rows}
+                            pagination={true}
+                            width="100%"
                         />
                     </div>
                 ) : (

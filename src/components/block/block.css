@@ -1,0 +1,49 @@
+.block-component {
+    width: 100%;
+    border-radius: 2px;
+    background: #f2f7fb;
+}
+
+.block-component-title {
+    border-radius: 2px;
+    background: #060644;
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    font-size: 16px;
+}
+
+.block-component-content {
+    height: 160px;
+    padding: 8px;
+}
+
+.block-component-content-line {
+    padding: 0px 0px 8px 8px;
+}
+
+.block-component-footer {
+ min-height: 28px;
+}
+
+
+.block-component-content-item {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.block-component-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px;
+}
+
+.block-component-footer-icon {
+    cursor: pointer;
+}
+
+.block-component-footer-text {
+    color: #007bff;
+}

@@ -54,6 +54,7 @@ export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: 
                 autoComplete="off"
             >
                 <TextField
+                    required
                     disabled={disabled}
                     onChange={handleChange}
                     name={label}

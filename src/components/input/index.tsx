@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
@@ -7,10 +7,48 @@ interface IInput {
     disabled: boolean;
     width: string;
     getValue: (value: string) => void;
+    inputValue: string;
+    maskNumeric?: boolean;
+    numericLimit?: number;
 }
-export const Input: FunctionComponent = ({label, disabled, width, getValue}: IInput) => {
-    const handleChange = (event) => {
-        getValue(event.target.value)
+
+export const Input: FunctionComponent<IInput> = ({
+                                                     label,
+                                                     disabled,
+                                                     width,
+                                                     getValue,
+                                                     inputValue,
+                                                     maskNumeric = false,
+                                                     numericLimit
+                                                 }) => {
+    const [labelValue, setLabelValue] = useState(label)
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    };
+
+    useEffect(() => {
+        if (inputValue) {
+            const timer = setTimeout(() => {
+                setLabelValue(null);
+            }, 10);
+            return () => clearTimeout(timer);
+        }
+    }, [inputValue, label]);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let newValue = event.target.value;
+
+        if (maskNumeric) {
+            newValue = newValue.replace(/[^0-9]/g, "");
+        }
+
+        if (numericLimit && newValue.length > numericLimit) {
+            newValue = newValue.slice(0, numericLimit);
+        }
+
+        getValue(newValue);
     };
 
     return (
@@ -25,8 +63,10 @@ export const Input: FunctionComponent = ({label, disabled, width, getValue}: IIn
             >
                 <TextField
                     required
+                    value={inputValue}
                     onChange={handleChange}
-                    label={label}
+                    onKeyDown={handleKeyPress}
+                    label={labelValue}
                     id="outlined-size-small"
                     size="small"
                     disabled={disabled}
@@ -34,4 +74,4 @@ export const Input: FunctionComponent = ({label, disabled, width, getValue}: IIn
             </Box>
         </div>
     );
-}
+};

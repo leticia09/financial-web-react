@@ -10,7 +10,10 @@ interface IDropdownSingleSelect {
     data: [{ id: number, description: string }];
     disabled: boolean;
     width: string;
+    idProperty: string,
+    descriptionProperty: string,
     getValue: (value: string) => void;
+    value: {};
 }
 
 export const DropdownSingleSelect: FunctionComponent = ({
@@ -18,13 +21,16 @@ export const DropdownSingleSelect: FunctionComponent = ({
                                                             data,
                                                             disabled,
                                                             width,
-                                                            getValue
+                                                            getValue,
+                                                            idProperty,
+                                                            descriptionProperty,
+                                                            value
                                                         }: IDropdownSingleSelect) => {
-    const [value, setValue] = useState('');
+
 
     function handleChange(event) {
         getValue(event.target.value);
-        setValue(event.target.value);
+        value = event.target.value;
     }
 
     return (
@@ -37,7 +43,7 @@ export const DropdownSingleSelect: FunctionComponent = ({
                     {label}
                 </InputLabel>
                 <Select
-                    sx={{ textAlign: "start" }}
+                    sx={{textAlign: "start"}}
                     size="small"
                     labelId="demo-multiple-name-label"
                     id="demo-multiple-name"
@@ -47,11 +53,12 @@ export const DropdownSingleSelect: FunctionComponent = ({
                 >
                     {data.map((item) => (
                         <MenuItem
-                            value={item.id}
-                            key={item.description}
+                            value={item[idProperty]}
+                            key={item[idProperty]}
                         >
-                            {item.description}
-                        </MenuItem>))}
+                            {item[descriptionProperty]}
+                        </MenuItem>
+                    ))}
                 </Select>
             </FormControl>
         </div>

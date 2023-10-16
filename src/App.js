@@ -14,7 +14,6 @@ const Private = ({ loginInformation }) => {
     }
 }
 function App() {
-
     const loginStore = useLoginStore();
 
     return (

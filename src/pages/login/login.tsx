@@ -16,6 +16,12 @@ import {LoginService} from "./service/index.tsx";
 import useLoginStore from "./store/useLoginStore.ts";
 // @ts-ignore
 import {Toast} from "../../components/toast/index.tsx";
+// @ts-ignore
+import useGlobalStore from "../global-informtions/store/useGlobalStore.ts";
+// @ts-ignore
+import {BankDataManagementService} from "../bank-data/service/index.tsx";
+// @ts-ignore
+import {GlobalService} from "../global-informtions/service/index.tsx";
 
 export const Login: FunctionComponent = () => {
     const navigate = useNavigate();
@@ -24,6 +30,9 @@ export const Login: FunctionComponent = () => {
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
     const {setAuth, setUser, setUserId, setSex} = useLoginStore();
+    const globalStore = useGlobalStore();
+    const bankDataManagementService = BankDataManagementService();
+    const globalService = GlobalService();
 
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -47,6 +56,13 @@ export const Login: FunctionComponent = () => {
                     setUserId(response.data.data.id);
                     setSex(response.data.data.sex);
                     navigate("/dashboard");
+
+                    const memberResponse = await bankDataManagementService.getMembers(response.data.data.id);
+                    globalStore.setMember(memberResponse.data.data);
+
+                    const modalityResponse = await globalService.getModality();
+                    globalStore.setModality(modalityResponse.data);
+
                 } else {
                     setOpen(true);
                 }
@@ -57,49 +73,61 @@ export const Login: FunctionComponent = () => {
             }
         }
     }
-
     return (
         <div className="login">
+            <div className="content-info">
+                <div className="info-title">
+                    {Messages.titles.infoTitleLogin}
+                </div>
+                <div className="info-text">
+                    {Messages.titles.infoTextLogin}
+                </div>
+            </div>
             <div className="content-login">
-                <div className="title">
-                    <h3>{Messages.titles.login}</h3>
-                </div>
-                <Input
-                    label={Messages.titles.login}
-                    disabled={false}
-                    width="300px"
-                    getValue={(value) => setEmail(value)}
-                />
-
-                <InputPassword
-                    label={Messages.titles.password}
-                    disabled={false}
-                    width="300px"
-                    getValue={(value) => setPassword(value)}
-                />
-
-                <div className="link">
-                    <Link to="/register-account">
-                        <span>{Messages.titles.createAccount}</span>
-                    </Link>
+                <div className="login-img">
+                    <div>{Messages.titles.financial}</div>
                 </div>
 
-                <div>
-                    <ButtonComponent
-                        label={Messages.titles.loginEnter}
-                        disabled={email.length === 0 || password.length === 0}
-                        width="300px"
-                        height="40px"
-                        cursor="pointer"
-                        borderRadius="6px"
-                        color="white"
-                        background="#05465f"
-                        padding="2px"
-                        marginBottom="20px"
-                        fontWeight="600"
-                        action={handleSingIn}
+                <div className='login-fields'>
+                    <Input
+                        label={Messages.titles.login}
+                        disabled={false}
+                        width="350px"
+                        getValue={(value) => setEmail(value)}
                     />
+
+                    <InputPassword
+                        label={Messages.titles.password}
+                        disabled={false}
+                        width="350px"
+                        getValue={(value) => setPassword(value)}
+                    />
+
+                    <div className="link">
+                        <Link to="/register-account">
+                            <span>{Messages.titles.createAccount}</span>
+                        </Link>
+                    </div>
+
+                    <div>
+                        <ButtonComponent
+                            label={Messages.titles.loginEnter}
+                            disabled={email.length === 0 || password.length === 0}
+                            width="300px"
+                            height="40px"
+                            cursor="pointer"
+                            borderRadius="6px"
+                            color="white"
+                            background="#05465f"
+                            padding="2px"
+                            border="none"
+                            marginBottom="20px"
+                            fontWeight="600"
+                            action={handleSingIn}
+                        />
+                    </div>
                 </div>
+
                 <Toast
                     severity={"error"}
                     width="100%"

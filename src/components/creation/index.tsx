@@ -10,12 +10,12 @@ import {GiCheckMark} from "react-icons/gi";
 import {Toast} from "../toast/index.tsx";
 // @ts-ignore
 import {LoadingComponent} from "../loading/index.tsx";
+// @ts-ignore
+import {BlockComponent} from "../block/index.tsx";
 
 interface ICreation {
     titles: string;
     Form: JSX.Element[];
-    titlesButton: string;
-    handleAddMember: () => void;
     save: () => void;
     pathBack: string;
     toastMessage: string;
@@ -23,29 +23,34 @@ interface ICreation {
     isLoading: boolean;
     open: boolean;
     handleClose: () => void;
+    hasBlock: boolean;
+    columns: [];
+    rows: [];
+    blocksNumber: [];
+    disabledSaveButton: boolean;
 }
+
 //todo: Verificar a parte do toast - não está aparecendo
 //todo: backend está deixando criar membros com o mesmo nome
 export const Creation: FunctionComponent = ({
                                                 titles,
                                                 Form,
-                                                titlesButton,
-                                                handleAddMember,
                                                 save,
                                                 pathBack,
                                                 toastMessage,
                                                 severityType,
                                                 isLoading,
                                                 open,
-                                                handleClose
+                                                handleClose,
+                                                hasBlock,
+                                                blocksNumber,
+                                                columns,
+                                                rows,
+                                                disabledSaveButton
                                             }: ICreation) => {
 
     const handleSave = () => {
         save();
-    };
-
-    const handleAdd = () => {
-        handleAddMember();
     };
 
     const close = () => {
@@ -63,26 +68,24 @@ export const Creation: FunctionComponent = ({
 
                 {Form}
 
-                <div className="add-button-member">
-                    <ButtonComponent
-                        label={titlesButton}
-                        disabled={false}
-                        width="140px"
-                        height="30px"
-                        cursor="pointer"
-                        borderRadius="4px"
-                        color="white"
-                        background="#46ba52"
-                        border="2px solid #46ba52"
-                        padding="2px"
-                        marginBottom="20px"
-                        fontWeight="400"
-                        action={handleAdd}/>
-                </div>
+                {hasBlock && blocksNumber && (
+                    <div className="blocks-container">
+                        {blocksNumber.map((block: any, index) => (
+                            <div className="block" key={index}>
+                                <BlockComponent
+                                    title={block.label}
+                                    columns={columns}
+                                    rows={rows[index]}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+
 
                 <FooterRegister
+                    disabled={disabledSaveButton}
                     path={pathBack}
-                    disabled={false}
                     widthButton="100px"
                     getValue={handleSave}
                     iconBack={<BsBackspace size={20}/>}

@@ -10,8 +10,11 @@ import TableRow from "@mui/material/TableRow";
 
 interface ITableComponent {
     columns: any[];
+    rows: any[];
+    pagination: boolean;
+    width: string;
 }
-export const TableComponent: FunctionComponent = ({columns, rows}: ITableComponent) => {
+export const TableComponent: FunctionComponent = ({columns, rows, pagination, width}: ITableComponent) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleChangePage = (event, newPage) => {
@@ -24,7 +27,7 @@ export const TableComponent: FunctionComponent = ({columns, rows}: ITableCompone
     };
 
     return (
-        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        <Paper sx={{ width: width, overflow: "hidden" }}>
             <TableContainer
                 sx={{ maxHeight: 440, maxWidth: "100%" }}
                 className="scrollbar"
@@ -78,7 +81,8 @@ export const TableComponent: FunctionComponent = ({columns, rows}: ITableCompone
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
+            {pagination &&
+                <TablePagination
                 sx={{ height: "45px", overflow:"hidden"}}
                 rowsPerPageOptions={[5,10, 25, 100]}
                 component="div"
@@ -87,7 +91,8 @@ export const TableComponent: FunctionComponent = ({columns, rows}: ITableCompone
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            />}
+
         </Paper>
     );
 }

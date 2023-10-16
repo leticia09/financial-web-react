@@ -6,6 +6,7 @@ import {MembersManagmentService} from "./service/index.tsx";
 import useLoginStore from "../../login/store/useLoginStore.ts";
 // @ts-ignore
 import {Management} from "../../../components/management/index.tsx";
+import "../../bank-data/management/bankData.css"
 
 const columns = [
     {
@@ -26,7 +27,7 @@ const columns = [
         id: "actions",
         label: "Ações",
         minWidth: 70,
-        width: 90,
+        width: 100,
         align: "right",
         format: (value) => value.toFixed(2),
     },
@@ -43,9 +44,11 @@ export const Members: FunctionComponent = () => {
     const [rows, setRows] = useState([]);
 
     const actions = [
-        <AiIcons.AiOutlineEye className="icon_space" size={16}/>,
-        <AiIcons.AiOutlineEdit className="icon_space" size={16}/>,
-        <AiIcons.AiOutlineDelete className="icon_delete" size={16}/>,
+        <div className="icons">
+            <AiIcons.AiOutlineEye className="icon_space" size={18}/>
+            <AiIcons.AiOutlineEdit className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18}/>
+        </div>
     ];
 
     useEffect(() => {

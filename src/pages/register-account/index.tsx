@@ -20,7 +20,6 @@ import {RegisterAccountService} from "./service/index.tsx";
 // @ts-ignore
 import {Toast} from "../../components/toast/index.tsx";
 // @ts-ignore
-import {delay} from "../../utils/delay.tsx";
 
 export const dataSex = [
     {
@@ -66,9 +65,10 @@ export const RegisterAccount: FunctionComponent = () => {
             try {
                 const response = await registerAccountService.auth(payload);
                 if (response.data.message === "Sucesso") {
-                    setSeverity('sucess')
+                    setSeverity('success')
                     setToastMessage(Messages.titles.userRegisterSucess)
                     setOpen(true);
+                    navigate("/login");
 
                 } else {
                     setSeverity('error')
@@ -86,9 +86,17 @@ export const RegisterAccount: FunctionComponent = () => {
     }
     return (
         <div className="login">
+            <div className="content-info">
+                <div className="info-title">
+                    {Messages.titles.infoTitleLogin}
+                </div>
+                <div className="info-text">
+                    {Messages.titles.infoTextLogin}
+                </div>
+            </div>
             <div className="content-login">
-                <div className="title">
-                    <h3>{Messages.titles.register}</h3>
+                <div className="login-img">
+                    <div>{Messages.titles.financial}</div>
                 </div>
 
                 <Input
@@ -155,6 +163,7 @@ export const RegisterAccount: FunctionComponent = () => {
                         background="#05465f"
                         padding="2px"
                         marginBottom="20px"
+                        border='none'
                         fontWeight="600"
                         action={saveRegisterAccount}
                     />

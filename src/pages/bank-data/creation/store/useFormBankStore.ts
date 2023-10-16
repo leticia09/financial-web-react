@@ -1,66 +1,85 @@
-import {create} from "zustand";
-import {IBankData} from "../../../../interfaces/bankData";
-
+import create from 'zustand';
+import {IAccount, IBankData, ICard} from '../../../../interfaces/bankData';
 
 type State = {
-    formList: IBankData[];
+    formList: IBankData;
+    columns: any[];
+    rows: any[];
+    formType: string;
 };
 
 type Actions = {
-    setFormList: (formList: IBankData[]) => void,
-    setFormListValue: (index: number, field: keyof IBankData, value: string, authId: number) => void;
-    deleteItemFormList: (index: number) => void;
-    resetFormStore: () => void;
+    setFormList: (data: IBankData) => void;
+    setColumns: (columns: any[]) => void;
+    setRows: (rows: any[]) => void;
+    addAccount: (account: IAccount) => void;
+    resetAccounts: () => void;
+    setBankNameFormList: (bankName: string) => void;
+    addCard: (card: ICard, index: number) => void;
+    setFormType: (type: string) => void;
 };
 
 const initialState: State = {
-    formList: [
-        {
-            name: '',
-            accounts: [],
-            index: 0,
-            userAuthId: 0
-        }
-    ],
+    formList: {} as IBankData,
+    columns: [
+        {label: "Cartão"},
+        {label: "Responsável"},
+        {label: "Final"},
+        {label: "Modalidade"},
+        {label: "Vencimento"},
+        {label: "Fatura"}],
+    rows: [],
+    formType: "CREATE"
 };
 
 const useFormBankStore = create<State & Actions>((set) => ({
     ...initialState,
-    setFormList: (formList: IBankData[]) => {
-        set({formList: formList})
-    },
-
-    setFormListValue: (index: number, field: keyof IBankData, value: string, authId: number) => {
+    setFormList: (data) => set({formList: data}),
+    setColumns: (columns) => set({columns}),
+    setRows: (rows) => set({rows}),
+    addAccount: (newAccount) => {
         set((state) => {
-            const updatedFormList = [...state.formList];
-
-            if (!updatedFormList[index]) {
-                updatedFormList[index] = {
-                    name: "",
-                    accounts: [],
-                    index: 0,
-                    userAuthId: authId
-                };
+            newAccount.label = "Conta: " + newAccount.accountNumber + "/" + newAccount.owner;
+            const isAccountAlreadyAdded = state.formList.accounts.some(
+                (account) => account.accountNumber === newAccount.accountNumber
+            );
+            if (!isAccountAlreadyAdded) {
+                const newAccounts = [...state.formList.accounts, newAccount];
+                const updatedFormList = {...state.formList, accounts: newAccounts};
+                return {formList: updatedFormList};
             }
-
-            // @ts-ignore
-            updatedFormList[index][field] = value;
-
+            return state;
+        });
+    },
+    resetAccounts: () => {
+        set((state) => {
+            const updatedFormList = {...state.formList, accounts: []};
             return {formList: updatedFormList};
         });
     },
-    deleteItemFormList: (index: number) => {
+    setBankNameFormList: (bankName) => {
+        set((state) => ({
+            formList: {
+                ...state.formList,
+                name: bankName,
+            },
+        }));
+    },
+    addCard: (newCard, index) => {
         set((state) => {
-            const updatedFormList = [...state.formList];
-            if (index >= 0 && index < updatedFormList.length) {
-                updatedFormList.splice(index, 1);
+            const updatedAccounts: IAccount[] = state.formList.accounts.slice();
+            if (updatedAccounts[index] && updatedAccounts[index].cards) {
+                updatedAccounts[index].cards = [...updatedAccounts[index].cards, newCard];
+            } else {
+                updatedAccounts[index].cards = [newCard];
             }
+            const updatedFormList = {...state.formList, accounts: updatedAccounts};
             return {formList: updatedFormList};
         });
     },
-    resetFormStore: () => {
-        set(initialState);
-    },
+    setFormType: (type) => set({formType: type}),
+
 }));
+
 
 export default useFormBankStore;

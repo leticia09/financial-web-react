@@ -14,7 +14,7 @@ const SplashScreen: React.FC = () => {
 
         const redirectTimeout = setTimeout(() => {
             navigate('/login');
-        }, 4500);
+        }, 5000);
         return () => clearTimeout(redirectTimeout);
     }, [navigate]);
 

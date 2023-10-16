@@ -9,6 +9,11 @@ import useLoginStore from "../../login/store/useLoginStore.ts";
 import useFormBankStore from "./store/useFormBankStore.ts";
 // @ts-ignore
 import {BankDataForm} from "./form/bankForm.tsx";
+// @ts-ignore
+import {ValidateForm} from "./validade-factory/validadeFactory.ts";
+// @ts-ignore
+import {BankDataManagementService} from "../service/index.tsx";
+import {useNavigate} from "react-router-dom";
 
 export const RegisterBankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -17,6 +22,8 @@ export const RegisterBankData: FunctionComponent = () => {
     const [severity, setSeverity] = useState('');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const registerBankService = BankDataManagementService();
+    const navigate = useNavigate();
 
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -25,30 +32,53 @@ export const RegisterBankData: FunctionComponent = () => {
         setOpen(false);
     };
 
-    const handleAddMember = () => {
+    const save = async () => {
+        formStore.formList.userAuthId = loginStore.userId;
 
+        setIsLoading(true);
+
+        try {
+            const response = await registerBankService.saveRegisterBank(formStore.formList);
+            if (response.data.message === "success") {
+                setOpen(true);
+                setSeverity("sucess");
+                setToastMessage(Messages.messages.operationSuccess);
+                navigate("/grupos/dados-bancarios");
+                setIsLoading(false);
+            } else {
+                setOpen(false);
+                setSeverity("error");
+                setToastMessage(Messages.titles.errorMessage);
+            }
+
+        } catch (e) {
+            setIsLoading(false);
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpen(true);
+        }
     }
 
-    const saveMember = async (event) => {
-
-    }
     return (
         <Creation
             titles={Messages.titles.registerBankData}
             Form={
-                <BankDataForm
-                    accountForm={formStore.formList}
-                />
+                <BankDataForm/>
             }
-            titlesButton={Messages.titles.addAccount}
-            handleAddMember={handleAddMember}
-            save={saveMember}
-            pathBack="/grupos/membros"
+            titlesButton={Messages.titles.addCard}
+            save={save}
+            disabledSaveButton={ValidateForm(formStore.formList)}
+            pathBack="/grupos/dados-bancarios"
             toastMessage={toastMessage}
             severityType={severity}
             isLoading={isLoading}
             open={open}
             handleClose={handleClose}
+            hasBlock={true}
+            columns={formStore.columns}
+            rows={formStore.rows}
+            loginStore={loginStore}
+            blocksNumber={formStore.formList.accounts}
         />
     );
 }

@@ -1,0 +1,6 @@
+.bullet-content {
+    display: flex;
+    width: 65px;
+    justify-content: space-between;
+    align-items: center;
+}

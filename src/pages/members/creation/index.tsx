@@ -27,7 +27,7 @@ import {Creation} from "../../../components/creation/index.tsx";
 export const RegisterMember: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormStore();
-    const registerMembersService = RegisterMembersService()
+    const registerMembersService = RegisterMembersService();
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState('');

@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import {FunctionComponent, useEffect} from "react";
 // @ts-ignore
 import {Layout} from "../index.tsx";
 import Box from "@mui/material/Box";
@@ -15,6 +15,8 @@ import {BankData} from "../../pages/bank-data/management/index.tsx";
 import {RegisterBankData} from "../../pages/bank-data/creation/index.tsx";
 
 export const Home: FunctionComponent = (loginInformation) => {
+
+
     return (
         <Box
             component="main"
@@ -28,8 +30,8 @@ export const Home: FunctionComponent = (loginInformation) => {
         >
             <Routes>
                 <Route path="/dashboard" element={<Dashboard loginInformation={loginInformation}/>}/>
-                  <Route path="/grupos/membros"
-                      element={<Members/>}/>
+                <Route path="/grupos/membros"
+                       element={<Members/>}/>
                 <Route path="/grupos/membros/cadastro"
                        element={<RegisterMember loginInformation={loginInformation}/>}/>
                 <Route path="/grupos/dados-bancarios"
@@ -38,6 +40,8 @@ export const Home: FunctionComponent = (loginInformation) => {
                     path="/grupos/dados-bancarios/cadastro"
                     element={<RegisterBankData loginInformation={loginInformation}/>}
                 />
+                <Route path="/grupos/dados-bancarios/:id"
+                       element={<RegisterBankData loginInformation={loginInformation}/>}/>
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"
