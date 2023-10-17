@@ -1,5 +1,5 @@
 import './creation.css'
-import {FunctionComponent} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 // @ts-ignore
 import {ButtonComponent} from "../button/index.tsx";
 // @ts-ignore
@@ -12,6 +12,7 @@ import {Toast} from "../toast/index.tsx";
 import {LoadingComponent} from "../loading/index.tsx";
 // @ts-ignore
 import {BlockComponent} from "../block/index.tsx";
+import {Messages} from "../../internationalization/message";
 
 interface ICreation {
     titles: string;
@@ -28,9 +29,11 @@ interface ICreation {
     rows: [];
     blocksNumber: [];
     disabledSaveButton: boolean;
+    handleAddMember: () => void;
+    titlesButton: string;
+    hasButton: boolean;
 }
 
-//todo: Verificar a parte do toast - não está aparecendo
 //todo: backend está deixando criar membros com o mesmo nome
 export const Creation: FunctionComponent = ({
                                                 titles,
@@ -42,20 +45,28 @@ export const Creation: FunctionComponent = ({
                                                 isLoading,
                                                 open,
                                                 handleClose,
+                                                hasButton,
                                                 hasBlock,
                                                 blocksNumber,
                                                 columns,
                                                 rows,
-                                                disabledSaveButton
+                                                disabledSaveButton,
+                                                handleAddMember,
+                                                titlesButton,
                                             }: ICreation) => {
+
 
     const handleSave = () => {
         save();
     };
 
-    const close = () => {
+    const handleCloseToast = () => {
         handleClose();
     };
+
+    const handleButton = () => {
+        handleAddMember();
+    }
 
     return (
         <>
@@ -81,6 +92,24 @@ export const Creation: FunctionComponent = ({
                         ))}
                     </div>
                 )}
+                {hasButton &&
+                    <div className="add-button-member">
+                        <ButtonComponent
+                            label={titlesButton}
+                            disabled={false}
+                            width="140px"
+                            height="30px"
+                            cursor="pointer"
+                            borderRadius="4px"
+                            color="white"
+                            background="#46ba52"
+                            border="none"
+                            padding="2px"
+                            marginBottom="20px"
+                            fontWeight="400"
+                            action={handleButton}/>
+                    </div>
+                }
 
 
                 <FooterRegister
@@ -98,8 +127,9 @@ export const Creation: FunctionComponent = ({
                     duration={2000}
                     message={toastMessage}
                     open={open}
-                    onClose={close}
+                    onClose={handleCloseToast}
                 />
+
                 {isLoading && (
                     <LoadingComponent/>
                 )}

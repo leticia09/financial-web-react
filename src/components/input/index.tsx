@@ -10,6 +10,9 @@ interface IInput {
     inputValue: string;
     maskNumeric?: boolean;
     numericLimit?: number;
+    viewMode?: boolean;
+    invalidField?: boolean;
+    invalidMessage?: string;
 }
 
 export const Input: FunctionComponent<IInput> = ({
@@ -19,7 +22,10 @@ export const Input: FunctionComponent<IInput> = ({
                                                      getValue,
                                                      inputValue,
                                                      maskNumeric = false,
-                                                     numericLimit
+                                                     numericLimit,
+                                                     viewMode = false,
+                                                     invalidField = false,
+                                                     invalidMessage
                                                  }) => {
     const [labelValue, setLabelValue] = useState(label)
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -29,7 +35,7 @@ export const Input: FunctionComponent<IInput> = ({
     };
 
     useEffect(() => {
-        if (inputValue) {
+        if (inputValue && viewMode) {
             const timer = setTimeout(() => {
                 setLabelValue(null);
             }, 10);
@@ -53,6 +59,11 @@ export const Input: FunctionComponent<IInput> = ({
 
     return (
         <div>
+            {invalidField &&
+                <div className="title-input-content" style={{width: width}}>
+                    <span>{invalidMessage}</span>
+                </div>
+            }
             <Box
                 component="form"
                 sx={{

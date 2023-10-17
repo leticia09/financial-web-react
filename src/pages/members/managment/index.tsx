@@ -34,8 +34,8 @@ const columns = [
 ];
 
 function createData(user, actions: React.ReactNode[]) {
-    const {id, name} = user;
-    return {id, name,status: "Ativo", actions};
+    const {id, name, status} = user;
+    return {id, name, status, actions};
 }
 
 export const Members: FunctionComponent = () => {

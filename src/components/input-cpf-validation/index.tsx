@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import {IMaskInput} from "react-imask";
 // @ts-ignore
 import PropTypes from "prop-types";
+import "./input-cpf.css"
 
 interface IInputCPF {
     label: string;
@@ -12,7 +13,7 @@ interface IInputCPF {
     getValue: (value: string) => void;
 }
 
-const textMaskCpf = forwardRef(function TextMaskCustom(props, ref) {
+const textMaskCpf = forwardRef(function TextMaskCustom(props: any, ref) {
     const {onChange, ...other} = props;
     return (
         <IMaskInput
@@ -35,6 +36,13 @@ textMaskCpf.propTypes = {
 export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: IInputCPF) => {
 
     const [cpf, setCpf] = useState("");
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    };
+
     const handleChange = (event) => {
         setCpf(event.target.value);
         getValue(event.target.value)
@@ -42,6 +50,11 @@ export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: 
 
     return (
         <div>
+            {cpf.length > 1 && cpf.length < 14 &&
+                <div className="title-input-content" style={{width: width}}>
+                    <span>*CPF Incorreto*</span>
+                </div>
+            }
             <Box
                 component="form"
                 sx={{
@@ -59,6 +72,7 @@ export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: 
                     onChange={handleChange}
                     name={label}
                     label={label}
+                    onKeyDown={handleKeyPress}
                     id="outlined-size-small"
                     size="small"
                     value={cpf.textmask}

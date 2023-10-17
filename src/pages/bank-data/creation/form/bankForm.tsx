@@ -181,6 +181,7 @@ export const BankDataForm: FunctionComponent = () => {
                     width="200px"
                     getValue={(value) => formStore.setBankNameFormList(value)}
                     inputValue={bankName}
+                    viewMode={formStore.formType === "VIEW"}
                 />
             </div>
             <h3 className="title-bank">{Messages.titles.account}

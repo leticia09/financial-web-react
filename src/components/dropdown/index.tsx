@@ -16,6 +16,16 @@ interface IDropdownSingleSelect {
     value: {};
 }
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        },
+    },
+};
+
 export const DropdownSingleSelect: FunctionComponent = ({
                                                             label,
                                                             data,
@@ -49,7 +59,9 @@ export const DropdownSingleSelect: FunctionComponent = ({
                     id="demo-multiple-name"
                     value={value}
                     onChange={handleChange}
-                    input={<OutlinedInput label={label}/>}
+                    MenuProps={MenuProps}
+                    input={<OutlinedInput label={label}
+                    />}
                 >
                     {data.map((item) => (
                         <MenuItem

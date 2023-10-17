@@ -41,10 +41,15 @@ export const RegisterBankData: FunctionComponent = () => {
             const response = await registerBankService.saveRegisterBank(formStore.formList);
             if (response.data.message === "success") {
                 setOpen(true);
-                setSeverity("sucess");
+                setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                navigate("/grupos/dados-bancarios");
                 setIsLoading(false);
+
+                setTimeout(() => {
+                    setOpen(false);
+                    navigate("/grupos/dados-bancarios");
+                }, 2000);
+
             } else {
                 setOpen(false);
                 setSeverity("error");

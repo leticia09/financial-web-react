@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import React, {FunctionComponent, useState} from "react";
 import {Link} from "react-router-dom";
 import './login.css'
 // @ts-ignore
@@ -40,6 +40,13 @@ export const Login: FunctionComponent = () => {
         }
         setOpen(false);
     };
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            handleSingIn(true);
+        }
+    };
+
 
     const handleSingIn = async (event) => {
         if (event) {
@@ -101,6 +108,7 @@ export const Login: FunctionComponent = () => {
                         disabled={false}
                         width="350px"
                         getValue={(value) => setPassword(value)}
+                        handleKeyPress={handleKeyPress}
                     />
 
                     <div className="link">

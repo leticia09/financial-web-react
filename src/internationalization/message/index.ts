@@ -3,7 +3,7 @@ const Messages = {
     titles: {
         financial: 'Financeiro',
         family: 'Família Leron',
-        login: 'Login',
+        login: 'E-mail',
         loginEnter: 'Entrar',
         createAccount: 'Registre-se',
         userOrPasswordWrong:'Usuário ou Senha incorreta!',
@@ -17,6 +17,7 @@ const Messages = {
         cpf: 'CPF',
         userRegisterSucess: 'Conta criada com sucesso!',
         errorMessage: 'Algo deu errado!',
+        nameExists: 'Membro já existe!',
         add: 'Adicionar',
         permission: 'Permissão',
         addMember: 'Membro criado com sucesso!',
@@ -45,7 +46,8 @@ const Messages = {
     labels: {},
     messages: {
         notAllowedMoreThan: '*Não é permitido adicionar mais de 3 contas*',
-        operationSuccess: 'Operação realizada com sucesso!'
+        operationSuccess: 'Operação realizada com sucesso!',
+        emailNotOk: '*E-mail incorreto*'
     },
     modals: {},
     toasts: {}

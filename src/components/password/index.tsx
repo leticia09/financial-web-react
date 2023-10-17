@@ -12,8 +12,9 @@ interface IInputPassword {
     disabled: boolean;
     width: string;
     getValue: (value: string) => void;
+    handleKeyPress: () => void;
 }
-export const InputPassword: FunctionComponent = ({label, disabled, width, getValue}: IInputPassword) => {
+export const InputPassword: FunctionComponent = ({label, disabled, width, getValue, handleKeyPress}: IInputPassword) => {
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -42,6 +43,7 @@ export const InputPassword: FunctionComponent = ({label, disabled, width, getVal
                     size="small"
                     id="outlined-adornment-password"
                     onChange={handleChange}
+                    onKeyDown={handleKeyPress}
                     type={showPassword ? "text" : "password"}
                     endAdornment={
                         <InputAdornment position="end">

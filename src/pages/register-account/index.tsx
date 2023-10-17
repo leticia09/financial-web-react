@@ -68,7 +68,11 @@ export const RegisterAccount: FunctionComponent = () => {
                     setSeverity('success')
                     setToastMessage(Messages.titles.userRegisterSucess)
                     setOpen(true);
-                    navigate("/login");
+
+                    setTimeout(() => {
+                        setOpen(false);
+                        navigate("/login");
+                    }, 2000);
 
                 } else {
                     setSeverity('error')
@@ -121,11 +125,15 @@ export const RegisterAccount: FunctionComponent = () => {
                         setEmail(value);
                         setIsValidEmail(validateEmail(value))
                     }}
+                    invalidField={!isValidEmail && email.length > 1}
+                    invalidMessage={Messages.messages.emailNotOk}
                 />
 
                 <DropdownSingleSelect
                     label={Messages.titles.sex}
                     data={dataSex}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
                     disabled={false}
                     width={"300px"}
                     getValue={(value) => setSex(value)}
