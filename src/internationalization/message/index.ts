@@ -47,7 +47,11 @@ const Messages = {
     messages: {
         notAllowedMoreThan: '*Não é permitido adicionar mais de 3 contas*',
         operationSuccess: 'Operação realizada com sucesso!',
-        emailNotOk: '*E-mail incorreto*'
+        emailNotOk: '*E-mail incorreto*',
+        requiredFields: 'Campos obrigatórios não preenchidos.',
+        bankNameAlreadyExists: 'O nome do banco já existe.',
+        duplicateAccountNumber: 'Número da conta já existe.',
+        duplicateCardNumber: 'Número do cartão já existe.',
     },
     modals: {},
     toasts: {}

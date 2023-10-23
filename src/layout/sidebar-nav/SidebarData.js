@@ -30,32 +30,23 @@ export const SidebarData = [
           },
 
           {
-            title: 'Programas de Pontos',
-            path: '/grupos/pontos',
-            icon: <GiIcons.GiAirplaneDeparture size={16}/>
-          },
-          {
-            title: 'Cartões',
-            path: '/grupos/cartoes',
-            icon: <FcIcons.FcDiploma1 size={16} />
-          },
-          {
             title: 'Salário',
             path: '/grupos/salario',
             icon: <FcIcons.FcCurrencyExchange size={16} />
           },
+
+            {
+                title: 'Programas de Pontos',
+                path: '/grupos/pontos',
+                icon: <GiIcons.GiAirplaneDeparture size={16}/>
+            },
      
           {
-            title: 'Grupo Macro',
-            path: '/grupos/grupo-macro',
+            title: 'Grupos',
+            path: '/grupos/grupos',
             icon: <FcIcons.FcGlobe size={16} />
           }
         ]
-    },
-    {
-        title: 'Previsões',
-        path: '/previsoes',
-        icon: <FcIcons.FcRatings size={20}/>
     },
     {
       title: 'Receitas',
@@ -64,13 +55,13 @@ export const SidebarData = [
       iconClosed: <RiIcons.RiArrowDownSFill />,
       iconOpened: <RiIcons.RiArrowUpSFill />,
     },
-    {
-      title: 'Mov. Bancária',
-      path: '/movimentacao-bancaria/graficos',
-      icon: <FcIcons.FcMoneyTransfer size={20} />,
-      iconClosed: <RiIcons.RiArrowDownSFill />,
-      iconOpened: <RiIcons.RiArrowUpSFill />,
-    },
+    // {
+    //   title: 'Mov. Bancária',
+    //   path: '/movimentacao-bancaria/graficos',
+    //   icon: <FcIcons.FcMoneyTransfer size={20} />,
+    //   iconClosed: <RiIcons.RiArrowDownSFill />,
+    //   iconOpened: <RiIcons.RiArrowUpSFill />,
+    // },
     {
       title: 'Despesas',
       path: '/despesas/graficos',
@@ -79,30 +70,35 @@ export const SidebarData = [
       iconOpened: <RiIcons.RiArrowUpSFill />,
     },
     {
+        title: 'Previsões',
+        path: '/previsoes',
+        icon: <FcIcons.FcRatings size={20}/>
+    },
+    {
       title: 'Metas',
       path: '/metas',
       icon: <FcIcons.FcTodoList size={20}/>
   },
-    {
-      title: 'Milhas',
-      path: '/milhas',
-      icon: <GiIcons.GiAirplaneDeparture size={22} />
-    },
-    {
-      title: 'Análises',
-      path: '/analises',
-      icon: <FcIcons.FcBarChart size={20}/>
-    },
-    {
-        title: 'Eventos',
-        path: '/Eventos',
-        icon: <FcIcons.FcBarChart size={20}/>
-    },
-    {
-        title: 'Simulador',
-        path: '/simulador',
-        icon: <AiIcons.AiFillExperiment size={20}/>
-    },
+    // {
+    //   title: 'Milhas',
+    //   path: '/milhas',
+    //   icon: <GiIcons.GiAirplaneDeparture size={22} />
+    // },
+    // {
+    //   title: 'Análises',
+    //   path: '/analises',
+    //   icon: <FcIcons.FcBarChart size={20}/>
+    // },
+    // {
+    //     title: 'Eventos',
+    //     path: '/Eventos',
+    //     icon: <FcIcons.FcBarChart size={20}/>
+    // },
+    // {
+    //     title: 'Simulador',
+    //     path: '/simulador',
+    //     icon: <AiIcons.AiFillExperiment size={20}/>
+    // },
     {
       title: 'Support',
       path: '/support',

@@ -23,11 +23,11 @@ interface ICreation {
     severityType: 'success' | 'info' | 'warning' | 'error';
     isLoading: boolean;
     open: boolean;
-    handleClose: () => void;
+    handleClose: (reason: string) => void;
     hasBlock?: boolean;
-    columns?: [];
-    rows?: [];
-    blocksNumber?: [];
+    columns?: any[];
+    rows?: any[];
+    blocksNumber?: any[];
     disabledSaveButton: boolean;
     handleAddMember: () => void;
     titlesButton: string;
