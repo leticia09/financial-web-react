@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent} from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -7,7 +7,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 interface IDropdownSingleSelect {
     label: string;
-    data: { id: number; description: string }[];
+    data: any[];
     disabled: boolean;
     width: string;
     idProperty: string,

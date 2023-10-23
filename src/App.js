@@ -2,13 +2,13 @@ import './App.css';
 import SplashScreen from "./pages/splash-screen/splashScreen.tsx";
 import {Login} from "./pages/login/login.tsx";
 import {BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
-import {RegisterAccount} from "./pages/register-account/index.tsx";
+import {RegisterAccount} from "./pages/register-account";
 import useLoginStore from "./pages/login/store/useLoginStore.ts";
-import {Layout} from "./layout/index.tsx";
+import {Layout} from "./layout";
 import {ToastProvider} from "./components/toast/ToastContext";
 
 const Private = ({loginInformation}) => {
-    if (loginInformation.auth == true) {
+    if (loginInformation.auth === true) {
         return <Layout loginInformation={loginInformation}/>;
     } else {
         return <Navigate to="/login"/>;

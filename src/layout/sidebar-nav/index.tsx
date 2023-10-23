@@ -1,5 +1,4 @@
-import {FunctionComponent} from "react";
-import { useState } from "react";
+import React, {FunctionComponent} from "react";
 import styled from "styled-components";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
@@ -15,11 +14,10 @@ const SidebarWrap = styled.div`
 `;
 
 export const SidebarNavigation: FunctionComponent = () => {
-const [sidebar] = useState(true);
     return (
         <div>
             <IconContext.Provider value={{ color: "#fff" }}>
-                <SidebarNav sidebar={sidebar}>
+                <SidebarNav>
                     <SidebarWrap>
                         {SidebarData.map((item, index) => {
                             return <SubMenu item={item} key={index} />;

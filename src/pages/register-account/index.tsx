@@ -1,25 +1,15 @@
 import {FunctionComponent, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-// @ts-ignore
-import {Messages} from "../../internationalization/message/index.ts";
+import {Messages} from "../../internationalization/message";
 import '../login/login.css'
-// @ts-ignore
-import {Input} from "../../components/input/index.tsx";
-// @ts-ignore
-import {InputPassword} from "../../components/password/index.tsx";
-// @ts-ignore
-import {ButtonComponent} from "../../components/button/index.tsx";
-// @ts-ignore
-import {DropdownSingleSelect} from "../../components/dropdown/index.tsx";
-// @ts-ignore
-import {InputCPF} from "../../components/input-cpf-validation/index.tsx";
-// @ts-ignore
-import {validateEmail} from "../../utils/validateEmail.tsx";
-// @ts-ignore
-import {RegisterAccountService} from "./service/index.tsx";
-// @ts-ignore
-import {Toast} from "../../components/toast/index.tsx";
-// @ts-ignore
+import {Input} from "../../components/input";
+import {InputPassword} from "../../components/password";
+import {ButtonComponent} from "../../components/button";
+import {DropdownSingleSelect} from "../../components/dropdown";
+import {InputCPF} from "../../components/input-cpf-validation";
+import {validateEmail} from "../../utils/validateEmail";
+import {RegisterAccountService} from "./service";
+import {Toast} from "../../components/toast";
 
 export const dataSex = [
     {
@@ -42,7 +32,7 @@ export const RegisterAccount: FunctionComponent = () => {
     const [sex, setSex] = useState("");
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState('success');
+    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('')
 
     const handleClose = (reason: string) => {

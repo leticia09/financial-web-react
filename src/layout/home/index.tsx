@@ -1,18 +1,11 @@
-import {FunctionComponent, useEffect, useState} from "react";
-// @ts-ignore
-import {Layout} from "../index.tsx";
+import {FunctionComponent} from "react";
 import Box from "@mui/material/Box";
 import {Route, Routes} from "react-router-dom";
-// @ts-ignore
-import {Dashboard} from "../../pages/dashboard/index.tsx";
-// @ts-ignore
-import {Members} from "../../pages/members/managment/index.tsx";
-// @ts-ignore
-import {RegisterMember} from "../../pages/members/creation/index.tsx"
-// @ts-ignore
-import {BankData} from "../../pages/bank-data/management/index.tsx";
-// @ts-ignore
-import {RegisterBankData} from "../../pages/bank-data/creation/index.tsx";
+import {Dashboard} from "../../pages/dashboard";
+import {Members} from "../../pages/members/managment";
+import {RegisterMember} from "../../pages/members/creation"
+import {BankData} from "../../pages/bank-data/management";
+import {RegisterBankData} from "../../pages/bank-data/creation";
 
 export const Home: FunctionComponent = () => {
 

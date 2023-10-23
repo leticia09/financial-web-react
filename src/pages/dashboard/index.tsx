@@ -29,7 +29,7 @@ export const options1 = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top",
+            position: "top" as const,
         },
         title: {
             display: true,
@@ -42,7 +42,7 @@ export const options2 = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top",
+            position: "top" as const,
         },
         title: {
             display: true,
@@ -55,7 +55,7 @@ export const options3 = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top",
+            position: "top" as const,
         },
         title: {
             display: true,
@@ -68,7 +68,7 @@ export const options4 = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top",
+            position: "top" as const,
         },
         title: {
             display: true,
@@ -81,7 +81,7 @@ export const options5 = {
     responsive: true,
     plugins: {
         legend: {
-            position: "top",
+            position: "top" as const,
         },
         title: {
             display: true,

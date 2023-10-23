@@ -1,31 +1,14 @@
 import {FunctionComponent, useEffect, useState} from "react";
 import './creationMember.css'
 import {useNavigate} from "react-router-dom";
-// @ts-ignore
-import {FooterRegister} from "../../../components/footer-register/index.tsx";
-// @ts-ignore
-import {Toast} from "../../../components/toast/index.tsx";
-// @ts-ignore
-import {RegisterMembersService} from "./service/index.tsx";
-// @ts-ignore
-import {LoadingComponent} from "../../../components/loading/index.tsx";
-// @ts-ignore
-import useLoginStore from "../../login/store/useLoginStore.ts";
-// @ts-ignore
-import {ButtonComponent} from "../../../components/button/index.tsx";
-// @ts-ignore
-import {MemberForm} from "./form/index.tsx";
-// @ts-ignore
-import useFormStore from "./store/useFormStore.ts";
-// @ts-ignore
-import {Messages} from "../../../internationalization/message/index.ts";
-// @ts-ignore
-import {Creation} from "../../../components/creation/index.tsx";
-// @ts-ignore
-import {BankDataManagementService} from "../../bank-data/service/index.tsx";
-// @ts-ignore
-import useGlobalStore from "../../global-informtions/store/useGlobalStore.ts";
-
+import {RegisterMembersService} from "./service";
+import useLoginStore from "../../login/store/useLoginStore";
+import {MemberForm} from "./form/";
+import useFormStore from "./store/useFormStore";
+import {Messages} from "../../../internationalization/message";
+import {Creation} from "../../../components/creation";
+import {BankDataManagementService} from "../../bank-data/service";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 
 
 export const RegisterMember: FunctionComponent = () => {
@@ -36,13 +19,13 @@ export const RegisterMember: FunctionComponent = () => {
     const registerMembersService = RegisterMembersService();
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState('success');
+    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         formStore.resetFormStore();
-    }, []);
+    });
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {

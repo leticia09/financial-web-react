@@ -1,24 +1,17 @@
-import {FunctionComponent, useEffect, useState} from "react";
-// @ts-ignore
-import useFormBankStore from "../store/useFormBankStore.ts";
-// @ts-ignore
-import {Input} from "../../../../components/input/index.tsx";
-// @ts-ignore
-import {Messages} from "../../../../internationalization/message/index.ts";
-// @ts-ignore
-import {ButtonComponent} from "../../../../components/button/index.tsx";
+import React, {FunctionComponent, useEffect, useState} from "react";
+import useFormBankStore from "../store/useFormBankStore";
+import {Input} from "../../../../components/input";
+import {Messages} from "../../../../internationalization/message";
+import {ButtonComponent} from "../../../../components/button";
 import '../../../members/creation/form/memberForm.css'
-// @ts-ignore
-import {DropdownSingleSelect} from "../../../../components/dropdown/index.tsx";
+import {DropdownSingleSelect} from "../../../../components/dropdown";
 import "./formBank.css"
-// @ts-ignore
-import useGlobalStore from "../../../global-informtions/store/useGlobalStore.ts";
-// @ts-ignore
-import {ValidateCard} from "../validade-factory/validadeFactory.ts";
-import {BankDataManagementService} from "../../service/index.tsx";
-import useLoginStore from "../../../login/store/useLoginStore.ts";
+import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
+import {ValidateCard} from "../validade-factory/validadeFactory";
+import {BankDataManagementService} from "../../service";
+import useLoginStore from "../../../login/store/useLoginStore";
 import { useParams } from 'react-router-dom';
-import {BulletComponent} from "../../../../components/bullet/index.tsx";
+import { IAccount } from "interfaces/bankData";
 
 
 export const BankDataForm: FunctionComponent = () => {
@@ -35,9 +28,9 @@ export const BankDataForm: FunctionComponent = () => {
     const [cardModality, setCardModality] = useState(null);
     const [dueDate, setDueDate] = useState(null);
     const [closingDate, setClosingDate] = useState(null);
-    const { id } = useParams();
+    const {id} = useParams();
     const bankDataManagementService = BankDataManagementService();
-    const [ bankName , setBankName] = useState(null);
+    const [bankName, setBankName] = useState(null);
 
     const days = [];
 
@@ -46,7 +39,7 @@ export const BankDataForm: FunctionComponent = () => {
         formStore.setRows([]);
         resetFields();
         resetCardFields();
-        if(id) {
+        if (id) {
             const fetchData = async () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
@@ -59,7 +52,7 @@ export const BankDataForm: FunctionComponent = () => {
         } else {
             formStore.setFormType("CREATE");
         }
-    }, []);
+    });
 
     for (let i = 1; i <= 31; i++) {
         days.push({id: i, name: i});
@@ -67,7 +60,7 @@ export const BankDataForm: FunctionComponent = () => {
 
     const fillForm = (form) => {
         setBankName(form.name);
-        form.accounts.forEach(account => {
+        form.accounts.forEach((account: IAccount) => {
             formStore.addAccount(account);
         })
 

@@ -6,10 +6,10 @@ export interface IRow {
 }
 
 export interface IColumns {
-    id: string;
-    label: string;
-    minWidth: number;
+    id?: string;
+    label?: string;
+    minWidth?: number;
     width?: number;
     align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
-    format: (value: any) => any;
+    format?: (value: any) => any;
 }

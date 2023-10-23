@@ -1,5 +1,5 @@
 import './creation.css'
-import {FunctionComponent, useEffect, useState} from "react";
+import {FunctionComponent} from "react";
 // @ts-ignore
 import {ButtonComponent} from "../button/index.tsx";
 // @ts-ignore
@@ -12,7 +12,6 @@ import {Toast} from "../toast/index.tsx";
 import {LoadingComponent} from "../loading/index.tsx";
 // @ts-ignore
 import {BlockComponent} from "../block/index.tsx";
-import {Messages} from "../../internationalization/message";
 
 interface ICreation {
     titles: string;
@@ -29,9 +28,9 @@ interface ICreation {
     rows?: any[];
     blocksNumber?: any[];
     disabledSaveButton: boolean;
-    handleAddMember: () => void;
+    handleAddMember?: () => void;
     titlesButton: string;
-    hasButton: boolean;
+    hasButton?: boolean;
 }
 
 export const Creation: FunctionComponent <ICreation> = ({
@@ -60,7 +59,7 @@ export const Creation: FunctionComponent <ICreation> = ({
     };
 
     const handleCloseToast = () => {
-        handleClose();
+        handleClose("");
     };
 
     const handleButton = () => {

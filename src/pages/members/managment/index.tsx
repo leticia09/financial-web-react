@@ -1,14 +1,12 @@
 import {FunctionComponent, useEffect, useState} from "react";
 import * as AiIcons from "react-icons/ai";
-// @ts-ignore
-import {MembersManagmentService} from "./service/index.tsx";
-// @ts-ignore
-import useLoginStore from "../../login/store/useLoginStore.ts";
-// @ts-ignore
-import {Management} from "../../../components/management/index.tsx";
+import {MembersManagmentService} from "./service";
+import useLoginStore from "../../login/store/useLoginStore";
+import {Management} from "../../../components/management";
 import "../../bank-data/management/bankData.css"
+import {IColumns} from "../../../interfaces/table";
 
-const columns = [
+const columns: IColumns[]= [
     {
         id: "name",
         label: "Nome",
@@ -68,7 +66,7 @@ export const Members: FunctionComponent = () => {
             }
         }
         fetchData().then();
-    }, []);
+    });
 
     return (
         <>

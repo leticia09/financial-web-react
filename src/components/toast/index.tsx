@@ -19,7 +19,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) 
             ref={ref}
             variant="filled"
             {...props}
-            direction="right"
         />
     );
 });

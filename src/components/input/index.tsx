@@ -37,11 +37,11 @@ export const Input: FunctionComponent <IInput> = ({
     useEffect(() => {
         if (inputValue && viewMode) {
             const timer = setTimeout(() => {
-                setLabelValue(null);
+                setLabelValue("");
             }, 10);
             return () => clearTimeout(timer);
         }
-    }, [inputValue, label]);
+    });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let newValue = event.target.value;

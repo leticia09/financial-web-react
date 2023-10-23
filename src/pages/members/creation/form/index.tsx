@@ -1,19 +1,10 @@
 import {FunctionComponent} from "react";
-// @ts-ignore
-import {DropdownSingleSelect} from "../../../../components/dropdown/index.tsx";
-// @ts-ignore
-import {Messages} from "../../../../internationalization/message/index.ts";
-// @ts-ignore
-import {InputCPF} from "../../../../components/input-cpf-validation/index.tsx";
-// @ts-ignore
-import {Input} from "../../../../components/input/index.tsx";
+import {Messages} from "../../../../internationalization/message";
+import {Input} from "../../../../components/input";
 import './memberForm.css'
-// @ts-ignore
-import useFormStore from "../store/useFormStore.ts";
-// @ts-ignore
-import {ButtonComponent} from "../../../../components/button/index.tsx";
+import useFormStore from "../store/useFormStore";
+import {ButtonComponent} from "../../../../components/button";
 import {BsTrash} from "react-icons/bs";
-
 
 interface IMemberForm {
     i: number;

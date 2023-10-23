@@ -7,7 +7,7 @@ type State = {
 
 type Actions = {
     setFormList: (formList: IMember[]) => void,
-    setFormListValue: (index: number, field: keyof IMember, value: string, authId: number) => void;
+    setFormListValue: (index: number, field: keyof IMember, value: string, authId?: number) => void;
     deleteItemFormList: (index: number) => void;
     resetFormStore: () => void;
 };
@@ -29,7 +29,7 @@ const useFormStore = create<State & Actions>((set) => ({
         set({formList: formList})
     },
 
-    setFormListValue: (index: number, field: keyof IMember, value: string, authId: number) => {
+    setFormListValue: (index: number, field: keyof IMember, value: string, authId?: number) => {
         set((state) => {
             const updatedFormList = [...state.formList];
 

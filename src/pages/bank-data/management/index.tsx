@@ -1,18 +1,14 @@
 import {FunctionComponent, useEffect, useState} from "react";
-// @ts-ignore
-import {Management} from "../../../components/management/index.tsx";
+import {Management} from "../../../components/management";
 import * as AiIcons from "react-icons/ai";
-// @ts-ignore
-import useLoginStore from "../../login/store/useLoginStore.ts";
-// @ts-ignore
-import {BankDataManagementService} from "../service/index.tsx";
+import useLoginStore from "../../login/store/useLoginStore";
+import {BankDataManagementService} from "../service";
 import "./bankData.css"
 import {useNavigate} from "react-router-dom";
-// @ts-ignore
-import useFormBankStore from "../creation/store/useFormBankStore.ts";
+import useFormBankStore from "../creation/store/useFormBankStore";
+import {IColumns} from "../../../interfaces/table";
 
-
-const columns = [
+const columns :IColumns[] = [
     {
         id: "name",
         label: "Nome",
@@ -83,7 +79,7 @@ export const BankData: FunctionComponent = () => {
             }
         }
         fetchData().then();
-    }, []);
+    });
 
     const handleOpenView = (id) => {
         useBankStore.setFormType("VIEW");
