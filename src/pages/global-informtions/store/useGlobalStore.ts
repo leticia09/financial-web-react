@@ -8,7 +8,7 @@ type State = {
 
 type Actions = {
     setModality: (modality: string[]) => void;
-    setMember: (member: IMember | null) => void;
+    setMember: (member: IMember[] | null) => void;
 };
 
 const initialState: State = {
@@ -19,7 +19,7 @@ const initialState: State = {
 const useGlobalStore = create<State & Actions>((set) => ({
     ...initialState,
     setModality: (modality) => set({ modality }),
-    setMember: (member) => set({ members: [member] }),
+    setMember: (member) => set({ members: member }),
 }));
 
 export default useGlobalStore;

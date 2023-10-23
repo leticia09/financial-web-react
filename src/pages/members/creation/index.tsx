@@ -25,7 +25,7 @@ export const RegisterMember: FunctionComponent = () => {
 
     useEffect(() => {
         formStore.resetFormStore();
-    });
+    }, []);
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {

@@ -37,7 +37,6 @@ export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = (
                                                             value
                                                         }: IDropdownSingleSelect) => {
 
-
     function handleChange(event) {
         getValue(event.target.value);
         value = event.target.value;

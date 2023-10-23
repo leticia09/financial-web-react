@@ -70,6 +70,8 @@ export const Login: FunctionComponent = () => {
                     const modalityResponse = await globalService.getModality();
                     globalStore.setModality(modalityResponse.data);
 
+                    console.log(globalStore)
+
                 } else {
                     setOpen(true);
                 }

@@ -41,7 +41,7 @@ export const Input: FunctionComponent <IInput> = ({
             }, 10);
             return () => clearTimeout(timer);
         }
-    });
+    }, []);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let newValue = event.target.value;

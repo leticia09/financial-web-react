@@ -52,7 +52,7 @@ export const BankDataForm: FunctionComponent = () => {
         } else {
             formStore.setFormType("CREATE");
         }
-    });
+    }, []);
 
     for (let i = 1; i <= 31; i++) {
         days.push({id: i, name: i});
@@ -121,7 +121,6 @@ export const BankDataForm: FunctionComponent = () => {
     }
 
     const transformDataToRows = (formList) => {
-        console.log('form', formList)
         const rows = formList.accounts.map((account) => {
             return account.cards.map((card) => ([
                 {label: card.name},

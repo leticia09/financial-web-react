@@ -79,7 +79,7 @@ export const BankData: FunctionComponent = () => {
             }
         }
         fetchData().then();
-    });
+    }, []);
 
     const handleOpenView = (id) => {
         useBankStore.setFormType("VIEW");
