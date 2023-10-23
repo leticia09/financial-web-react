@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from "react";
+import {FunctionComponent, useState} from "react";
 import {Link} from "react-router-dom";
 import './login.css'
 // @ts-ignore
@@ -34,7 +34,7 @@ export const Login: FunctionComponent = () => {
     const bankDataManagementService = BankDataManagementService();
     const globalService = GlobalService();
 
-    const handleClose = (event, reason) => {
+    const handleClose = (reason: string) => {
         if (reason === "clickaway") {
             return;
         }

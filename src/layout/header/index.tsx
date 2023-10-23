@@ -9,11 +9,10 @@ import {ILoginInformation} from "../../interfaces/loginInformation";
 interface IInput {
     prop: any;
     showSidebar: boolean;
-    name: string;
     getValue: (value: boolean) => void;
 }
 
-export const Header: FunctionComponent = ({showSidebar, prop, getValue}: IInput) => {
+export const Header: FunctionComponent <IInput> = ({showSidebar, prop, getValue}: IInput) => {
 
     const navigate = useNavigate();
 

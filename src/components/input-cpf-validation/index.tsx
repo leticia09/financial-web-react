@@ -33,7 +33,7 @@ textMaskCpf.propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
 };
-export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: IInputCPF) => {
+export const InputCPF: FunctionComponent <IInputCPF> = ({label, disabled, width, getValue}: IInputCPF) => {
 
     const [cpf, setCpf] = useState("");
 
@@ -75,7 +75,6 @@ export const InputCPF: FunctionComponent = ({label, disabled, width, getValue}: 
                     onKeyDown={handleKeyPress}
                     id="outlined-size-small"
                     size="small"
-                    value={cpf.textmask}
                     InputProps={{
                         inputComponent: textMaskCpf,
                     }}

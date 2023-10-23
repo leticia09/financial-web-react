@@ -2,14 +2,13 @@ import {FunctionComponent} from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 // @ts-ignore
-import {SidebarNavegation} from "../sidebar-nav/index.tsx";
+import {SidebarNavigation} from "../sidebar-nav/index.tsx";
 
 interface ISidebar {
-
     showSidebar: boolean;
     width: string;
 }
-export const Sidebar: FunctionComponent = ({showSidebar, width}: ISidebar) => {
+export const Sidebar: FunctionComponent <ISidebar> = ({showSidebar, width}: ISidebar) => {
     return (
         <Box>
             {showSidebar && (
@@ -29,7 +28,7 @@ export const Sidebar: FunctionComponent = ({showSidebar, width}: ISidebar) => {
                         },
                     }}
                 >
-                    <SidebarNavegation />
+                    <SidebarNavigation />
                 </Drawer>
             )}
         </Box>

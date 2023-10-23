@@ -14,8 +14,8 @@ const SidebarWrap = styled.div`
   height: 100vh;
 `;
 
-export const SidebarNavegation: FunctionComponent = () => {
-    const [sidebar] = useState(true);
+export const SidebarNavigation: FunctionComponent = () => {
+const [sidebar] = useState(true);
     return (
         <div>
             <IconContext.Provider value={{ color: "#fff" }}>

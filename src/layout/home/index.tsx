@@ -1,4 +1,4 @@
-import {FunctionComponent, useEffect} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 // @ts-ignore
 import {Layout} from "../index.tsx";
 import Box from "@mui/material/Box";
@@ -14,8 +14,7 @@ import {BankData} from "../../pages/bank-data/management/index.tsx";
 // @ts-ignore
 import {RegisterBankData} from "../../pages/bank-data/creation/index.tsx";
 
-export const Home: FunctionComponent = (loginInformation) => {
-
+export const Home: FunctionComponent = () => {
 
     return (
         <Box
@@ -29,19 +28,19 @@ export const Home: FunctionComponent = (loginInformation) => {
             }}
         >
             <Routes>
-                <Route path="/dashboard" element={<Dashboard loginInformation={loginInformation}/>}/>
+                <Route path="/dashboard" element={<Dashboard />}/>
                 <Route path="/grupos/membros"
                        element={<Members/>}/>
                 <Route path="/grupos/membros/cadastro"
-                       element={<RegisterMember loginInformation={loginInformation}/>}/>
+                       element={<RegisterMember />}/>
                 <Route path="/grupos/dados-bancarios"
-                       element={<BankData loginInformation={loginInformation}/>}/>
+                       element={<BankData />}/>
                 <Route
                     path="/grupos/dados-bancarios/cadastro"
-                    element={<RegisterBankData loginInformation={loginInformation}/>}
+                    element={<RegisterBankData />}
                 />
                 <Route path="/grupos/dados-bancarios/:id"
-                       element={<RegisterBankData loginInformation={loginInformation}/>}/>
+                       element={<RegisterBankData />}/>
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"

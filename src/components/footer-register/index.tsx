@@ -13,7 +13,7 @@ interface IFooterRegister {
     iconCheck: React.ReactNode;
 }
 
-export const FooterRegister: FunctionComponent = ({
+export const FooterRegister: FunctionComponent <IFooterRegister> = ({
                                                       path,
                                                       disabled,
                                                       widthButton,

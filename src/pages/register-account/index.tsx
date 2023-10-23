@@ -42,10 +42,10 @@ export const RegisterAccount: FunctionComponent = () => {
     const [sex, setSex] = useState("");
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [open, setOpen] = useState(false);
-    const [severity, setSeverity] = useState('');
+    const [severity, setSeverity] = useState('success');
     const [toastMessage, setToastMessage] = useState('')
 
-    const handleClose = (event, reason) => {
+    const handleClose = (reason: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -130,13 +130,13 @@ export const RegisterAccount: FunctionComponent = () => {
                 />
 
                 <DropdownSingleSelect
-                    label={Messages.titles.sex}
-                    data={dataSex}
-                    idProperty={"id"}
-                    descriptionProperty={"description"}
-                    disabled={false}
-                    width={"300px"}
-                    getValue={(value) => setSex(value)}
+                label={Messages.titles.sex}
+                data={dataSex}
+                idProperty={"id"}
+                descriptionProperty={"description"}
+                disabled={false}
+                width={"300px"}
+                getValue={(value) => setSex(value)}
                 />
 
                 <InputPassword

@@ -30,7 +30,7 @@ export const data = [
         description: "Visualização"
     }
 ];
-export const MemberForm: FunctionComponent = ({i, hasDelete}: IMemberForm) => {
+export const MemberForm: FunctionComponent <IMemberForm> = ({i, hasDelete}: IMemberForm) => {
     const formStore =  useFormStore();
 
     const handleDeleteMember = (i) =>{

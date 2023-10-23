@@ -17,25 +17,24 @@ import {Messages} from "../../internationalization/message";
 interface ICreation {
     titles: string;
     Form: JSX.Element[];
-    save: () => void;
+    save: () => Promise<void>
     pathBack: string;
     toastMessage: string;
-    severityType: string;
+    severityType: 'success' | 'info' | 'warning' | 'error';
     isLoading: boolean;
     open: boolean;
     handleClose: () => void;
-    hasBlock: boolean;
-    columns: [];
-    rows: [];
-    blocksNumber: [];
+    hasBlock?: boolean;
+    columns?: [];
+    rows?: [];
+    blocksNumber?: [];
     disabledSaveButton: boolean;
     handleAddMember: () => void;
     titlesButton: string;
     hasButton: boolean;
 }
 
-//todo: backend está deixando criar membros com o mesmo nome
-export const Creation: FunctionComponent = ({
+export const Creation: FunctionComponent <ICreation> = ({
                                                 titles,
                                                 Form,
                                                 save,

@@ -19,7 +19,7 @@ interface ILoginButton {
 
 }
 
-export const ButtonComponent: FunctionComponent = ({
+export const ButtonComponent: FunctionComponent <ILoginButton> = ({
                                                        label,
                                                        disabled,
                                                        action,
@@ -43,13 +43,16 @@ export const ButtonComponent: FunctionComponent = ({
         cursor: cursor,
         borderRadius: borderRadius,
         color: color,
-        background: background,
         padding: padding,
         marginBottom: marginBottom,
         border: border,
         fontWeight: fontWeight,
         backgroundImage: backgroundImage
     };
+
+    if (background) {
+        buttonStyle.background = background;
+    }
 
     const disabledStyle: CSSProperties = {
         width: width,

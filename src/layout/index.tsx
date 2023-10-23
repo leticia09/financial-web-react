@@ -31,7 +31,7 @@ export const Layout: FunctionComponent = (loginInformation: ILoginInformation) =
                 width="240px"
             />
 
-            <Home loginInformation={loginInformation}/>
+            <Home/>
         </Box>
     );
 }

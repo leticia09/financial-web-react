@@ -11,7 +11,7 @@ interface IBullet {
 }
 
 
-export const BulletComponent: FunctionComponent = ({
+export const BulletComponent: FunctionComponent <IBullet> = ({
                                                        color,
                                                        label,
                                                        showLabel,

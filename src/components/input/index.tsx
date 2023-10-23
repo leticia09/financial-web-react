@@ -7,7 +7,7 @@ interface IInput {
     disabled: boolean;
     width: string;
     getValue: (value: string) => void;
-    inputValue: string;
+    inputValue?: string;
     maskNumeric?: boolean;
     numericLimit?: number;
     viewMode?: boolean;
@@ -15,7 +15,7 @@ interface IInput {
     invalidMessage?: string;
 }
 
-export const Input: FunctionComponent<IInput> = ({
+export const Input: FunctionComponent <IInput> = ({
                                                      label,
                                                      disabled,
                                                      width,
@@ -26,7 +26,7 @@ export const Input: FunctionComponent<IInput> = ({
                                                      viewMode = false,
                                                      invalidField = false,
                                                      invalidMessage
-                                                 }) => {
+                                                 }: IInput) => {
     const [labelValue, setLabelValue] = useState(label)
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {

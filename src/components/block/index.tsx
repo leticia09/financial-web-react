@@ -9,7 +9,7 @@ interface IBlockComponent {
     columns: any[]
 }
 
-export const BlockComponent: FunctionComponent = ({title, columns, rows}: IBlockComponent) => {
+export const BlockComponent: FunctionComponent <IBlockComponent> = ({title, columns, rows}: IBlockComponent) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     function previous() {

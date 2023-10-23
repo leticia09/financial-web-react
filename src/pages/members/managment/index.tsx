@@ -33,16 +33,22 @@ const columns = [
     },
 ];
 
-function createData(user, actions: React.ReactNode[]) {
+function createData(user, actions: React.ReactNode[], index) {
     const {id, name, status} = user;
-    return {id, name, status, actions};
+    return {id, name, status, actions, key: index};
 }
+type RowType = {
+    id: number;
+    name: string;
+    status: string;
+    actions: React.ReactNode[];
+};
+
 
 export const Members: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const membersManagementService = MembersManagmentService()
-    const [rows, setRows] = useState([]);
-
+    const [rows, setRows] = useState<RowType[]>([]);
     const actions = [
         <div className="icons">
             <AiIcons.AiOutlineEye className="icon_space" size={18}/>
@@ -55,7 +61,7 @@ export const Members: FunctionComponent = () => {
         const fetchData = async () => {
             try {
                 const response = await membersManagementService.getMembers(loginStore.userId);
-                const transformedRows = response.data.data.map((user) => createData(user, actions));
+                const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions, index));
                 setRows(transformedRows);
             } catch (error) {
                 console.log('Error', error);
@@ -68,7 +74,6 @@ export const Members: FunctionComponent = () => {
         <>
             <Management
                 title="Membros"
-                arrayActions={actions}
                 rows={rows}
                 arrayHeader={columns}
                 pathBack="/grupos/membros/cadastro"

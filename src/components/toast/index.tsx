@@ -1,19 +1,18 @@
-import {forwardRef, FunctionComponent} from "react";
+import { forwardRef, FunctionComponent } from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 interface IToast {
-    severity: string;
+    severity: 'success' | 'info' | 'warning' | 'error';
     duration: number;
     width: string;
     message?: string;
     open: boolean;
-    onClose: (value: boolean) => void;
+    onClose: (reason: string) => void;
 }
 
-const Alert = forwardRef(function Alert(props, ref)  {
+const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
     return (
         <MuiAlert
             elevation={6}
@@ -24,12 +23,19 @@ const Alert = forwardRef(function Alert(props, ref)  {
         />
     );
 });
-export const Toast: FunctionComponent = ({severity, width, duration, message, open, onClose}: IToast) => {
+
+export const Toast: FunctionComponent<IToast> = ({
+                                                     severity,
+                                                     width,
+                                                     duration,
+                                                     message,
+                                                     open,
+                                                     onClose,
+                                                 }: IToast) => {
     const closeAlertError = () => {
-        onClose(false);
+        onClose("timeout");
     };
 
-    // @ts-ignore
     return (
         <Stack spacing={2} sx={{ width: width }}>
             <Snackbar
@@ -48,4 +54,4 @@ export const Toast: FunctionComponent = ({severity, width, duration, message, op
             </Snackbar>
         </Stack>
     );
-}
+};

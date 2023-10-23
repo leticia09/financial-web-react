@@ -7,13 +7,13 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 interface IDropdownSingleSelect {
     label: string;
-    data: [{ id: number, description: string }];
+    data: { id: number; description: string }[];
     disabled: boolean;
     width: string;
     idProperty: string,
     descriptionProperty: string,
     getValue: (value: string) => void;
-    value: {};
+    value?: {};
 }
 
 const ITEM_HEIGHT = 48;
@@ -26,7 +26,7 @@ const MenuProps = {
     },
 };
 
-export const DropdownSingleSelect: FunctionComponent = ({
+export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = ({
                                                             label,
                                                             data,
                                                             disabled,

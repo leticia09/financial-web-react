@@ -12,9 +12,9 @@ interface IInputPassword {
     disabled: boolean;
     width: string;
     getValue: (value: string) => void;
-    handleKeyPress: () => void;
+    handleKeyPress?: (event: any) => void;
 }
-export const InputPassword: FunctionComponent = ({label, disabled, width, getValue, handleKeyPress}: IInputPassword) => {
+export const InputPassword: FunctionComponent <IInputPassword> = ({label, disabled, width, getValue, handleKeyPress}: IInputPassword) => {
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);

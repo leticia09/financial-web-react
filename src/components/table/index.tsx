@@ -7,14 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import {IColumns, IRow} from "../../interfaces/table";
 
 interface ITableComponent {
-    columns: any[];
-    rows: any[];
+    columns: IColumns[];
+    rows: IRow[];
     pagination: boolean;
     width: string;
 }
-export const TableComponent: FunctionComponent = ({columns, rows, pagination, width}: ITableComponent) => {
+export const TableComponent: FunctionComponent <ITableComponent> = ({columns, rows, pagination, width}: ITableComponent) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleChangePage = (event, newPage) => {
@@ -58,7 +59,7 @@ export const TableComponent: FunctionComponent = ({columns, rows, pagination, wi
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
-                                        key={row.code}
+                                        key={row.id}
                                         sx={{ height: "10px", border: "1px solid red", lineHeight: "1" }}
                                     >
                                         {columns.map((column) => {

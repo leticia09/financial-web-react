@@ -44,7 +44,7 @@ export const RegisterMember: FunctionComponent = () => {
         formStore.resetFormStore();
     }, []);
 
-    const handleClose = (event, reason) => {
+    const handleClose = (reason: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -55,6 +55,7 @@ export const RegisterMember: FunctionComponent = () => {
         const updateList = [...formStore.formList];
         updateList.push(
             {
+                id: null,
                 name: '',
                 index: updateList.length,
                 userAuthId: loginStore.userId
@@ -63,7 +64,7 @@ export const RegisterMember: FunctionComponent = () => {
         formStore.setFormList(updateList);
     }
 
-    const saveMember = async (event) => {
+    const saveMember = async () => {
         setIsLoading(true);
 
         formStore.formList.forEach(form => {

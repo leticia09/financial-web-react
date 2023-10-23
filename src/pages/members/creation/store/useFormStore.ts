@@ -15,6 +15,7 @@ type Actions = {
 const initialState: State = {
     formList: [
         {
+            id: 0,
             name: '',
             index: 0,
             userAuthId: 0
@@ -34,6 +35,7 @@ const useFormStore = create<State & Actions>((set) => ({
 
             if (!updatedFormList[index]) {
                 updatedFormList[index] = {
+                    id: null,
                     index: 0,
                     name: "",
                     userAuthId: authId

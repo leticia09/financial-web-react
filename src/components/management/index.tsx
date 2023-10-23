@@ -7,15 +7,15 @@ import {Messages} from "../../internationalization/message/index.ts";
 import {TableComponent} from "../table/index.tsx";
 import {useNavigate} from "react-router-dom";
 import "./management.css"
+import {IColumns, IRow} from "../../interfaces/table";
 
 interface IManagement {
     title: string;
-    rows: [];
-    arrayHeader: [];
+    rows: IRow[];
+    arrayHeader: IColumns[];
     pathBack: string;
-    getValue: (value: string) => void;
 }
-export const Management: FunctionComponent = ({title, rows, arrayHeader, pathBack}: IManagement) => {
+export const Management: FunctionComponent <IManagement> = ({title, rows, arrayHeader, pathBack}: IManagement) => {
     const navigate = useNavigate();
     return (
         <>
@@ -36,7 +36,6 @@ export const Management: FunctionComponent = ({title, rows, arrayHeader, pathBac
                             padding="2px"
                             marginBottom="20px"
                             fontWeight="600"
-                            maxHeight="40px"
                             border="none"
                             action={() => {
                                 navigate(pathBack)
