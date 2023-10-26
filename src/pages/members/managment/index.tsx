@@ -1,10 +1,11 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import * as AiIcons from "react-icons/ai";
 import {MembersManagmentService} from "./service";
 import useLoginStore from "../../login/store/useLoginStore";
 import {Management} from "../../../components/management";
 import "../../bank-data/management/bankData.css"
 import {IColumns} from "../../../interfaces/table";
+import {BulletComponent} from "../../../components/bullet";
 
 const columns: IColumns[]= [
     {
@@ -33,7 +34,12 @@ const columns: IColumns[]= [
 
 function createData(user, actions: React.ReactNode[], index) {
     const {id, name, status} = user;
-    return {id, name, status, actions, key: index};
+    const statusBullet = status === 'ACTIVE' ? (
+        <BulletComponent color="green" showLabel={false} />
+    ) : status === 'INACTIVE' ? (
+        <BulletComponent color="red" showLabel={false} />
+    ) : null;
+    return {id, name, status: statusBullet, actions, key: index};
 }
 type RowType = {
     id: number;
@@ -66,7 +72,7 @@ export const Members: FunctionComponent = () => {
             }
         }
         fetchData().then();
-    });
+    },[]);
 
     return (
         <>
@@ -74,7 +80,7 @@ export const Members: FunctionComponent = () => {
                 title="Membros"
                 rows={rows}
                 arrayHeader={columns}
-                pathBack="/grupos/membros/cadastro"
+                path="/grupos/membros/cadastro"
             />
         </>
     );

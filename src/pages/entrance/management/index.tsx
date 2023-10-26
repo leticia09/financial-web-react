@@ -9,7 +9,7 @@ export const EntranceData: FunctionComponent = () => {
                 title="Dados Bancários"
                 rows={null}
                 arrayHeader={null}
-                pathBack="/grupos/dados-bancarios/cadastro"
+                path="/grupos/dados-bancarios/cadastro"
             />
         </>
     );

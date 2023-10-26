@@ -6,6 +6,9 @@ import {Members} from "../../pages/members/managment";
 import {RegisterMember} from "../../pages/members/creation"
 import {BankData} from "../../pages/bank-data/management";
 import {RegisterBankData} from "../../pages/bank-data/creation";
+import {EntranceData} from "../../pages/entrance/management";
+import {PointProgramData} from "../../pages/points-programs/management";
+import {CreateProgramPoint} from "../../pages/points-programs/creation";
 
 export const Home: FunctionComponent = () => {
 
@@ -34,6 +37,14 @@ export const Home: FunctionComponent = () => {
                 />
                 <Route path="/grupos/dados-bancarios/:id"
                        element={<RegisterBankData />}/>
+                <Route path="/entrada"
+                       element={<EntranceData />}/>
+                <Route path="/grupos/programa-pontos"
+                       element={<PointProgramData />}/>
+                <Route path="/grupos/programa-pontos/cartao/cadastro"
+                       element={<CreateProgramPoint />}/>
+                <Route path="/grupos/programa-pontos/programa/cadastro"
+                       element={<CreateProgramPoint />}/>
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"

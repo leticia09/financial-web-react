@@ -1,12 +1,14 @@
-import { FunctionComponent } from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import "./management.css";
 import { IColumns, IRow } from "../../interfaces/table";
 import {ButtonComponent} from "../button";
 import {Messages} from "../../internationalization/message";
 import {TableComponent} from "../table";
+import {Bar} from "react-chartjs-2";
+import "./dashboard-component.css"
+import {data, option} from "../../pages/points-programs/management";
 
-interface IManagement {
+interface IDashboard {
     title: string;
     rows: IRow[];
     arrayHeader: IColumns[];
@@ -17,8 +19,20 @@ interface IManagement {
     moreTableArrayHeader?: IColumns[];
     moreTableRows?: IRow[];
 }
-export const Management: FunctionComponent <IManagement> = ({ title, rows, arrayHeader, path, haveMenu, menuOptions, hasMoreTable = false, moreTableArrayHeader, moreTableRows }: IManagement) => {
+export const DashboardComponent: FunctionComponent <IDashboard> = ({ title, rows, arrayHeader, path, haveMenu, menuOptions,
+                                                                       hasMoreTable = false, moreTableArrayHeader, moreTableRows }: IDashboard) => {
     const navigate = useNavigate();
+    const [chartWidth, setChartWidth] = useState(0);
+    useEffect(() => {
+        const handleResize = () => {
+            setChartWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        setChartWidth(window.innerWidth);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     return (
         <>
@@ -50,6 +64,11 @@ export const Management: FunctionComponent <IManagement> = ({ title, rows, array
                     </div>
                 </div>
             </div>
+            <div className="dash_content">
+                <div className="dash_item_content">
+                    <Bar data={data} options={option} width={chartWidth} height={300} />
+                </div>
+            </div>
             {rows && arrayHeader && rows.length > 0 ? (
                 <div className={`content-grid ${hasMoreTable ? "two-columns" : ""}`}>
                     <TableComponent
@@ -71,7 +90,7 @@ export const Management: FunctionComponent <IManagement> = ({ title, rows, array
                 <div className="content-not-grid">
                     {Messages.titles.emptyList}
                 </div>
-                )
+            )
             }
         </>
     );

@@ -92,7 +92,7 @@ export const BankData: FunctionComponent = () => {
                 title="Dados Bancários"
                 rows={rows}
                 arrayHeader={columns}
-                pathBack="/grupos/dados-bancarios/cadastro"
+                path="/grupos/dados-bancarios/cadastro"
             />
         </>
     );

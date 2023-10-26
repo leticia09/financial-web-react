@@ -27,6 +27,7 @@ ChartJS.register(
 
 export const options1 = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         legend: {
             position: "top" as const,
@@ -111,8 +112,8 @@ export const data1 = {
         {
             label: "Fixas",
             data: [5, 12, 10, 20, 18, 24, 5, 12, 10, 20, 18, 24],
-            borderColor: "#00ff00",
-            backgroundColor: "#adff2f",
+            borderColor: "#335c92",
+            backgroundColor: "#335c92",
         },
     ],
 };

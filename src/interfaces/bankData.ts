@@ -19,5 +19,7 @@ export interface ICard {
     modality: string,
     closingDate: number,
     dueDate: number,
-    index: number
+    index: number,
+    point?: number;
+    currencyPoint?: string;
 }

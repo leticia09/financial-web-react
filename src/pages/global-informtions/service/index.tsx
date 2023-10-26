@@ -7,7 +7,12 @@ export const GlobalService = (axiosInstance: any = instance) => {
         return axiosInstance.get(endPoint);
     }
 
+    const getBank = (authId) => {
+        const endPoint = '/register-bank/' + authId;
+        return axiosInstance.get(endPoint);
+    }
+
     return {
-        getModality
+        getModality, getBank
     }
 }

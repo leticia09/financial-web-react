@@ -17,7 +17,7 @@ export const RegisterMember: FunctionComponent = () => {
     const globalStore = useGlobalStore();
     const bankDataManagementService = BankDataManagementService();
     const registerMembersService = RegisterMembersService();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
@@ -73,7 +73,6 @@ export const RegisterMember: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                console.log(response)
                 if(response.data.message === "NOME_ALREADY_EXISTS") {
                     setToastMessage(Messages.titles.nameExists);
                 } else if(response.data.message === "NOME_IS_EMPTY") {
@@ -82,10 +81,7 @@ export const RegisterMember: FunctionComponent = () => {
                     setToastMessage(Messages.titles.errorMessage);
                 }
                 setIsLoading(false);
-
             }
-
-
 
         } catch (e) {
             setIsLoading(false);

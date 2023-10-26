@@ -29,17 +29,11 @@ export const SidebarData = [
             icon: <FcIcons.FcLibrary size={16} />
           },
 
-          {
-            title: 'Salário',
-            path: '/grupos/salario',
-            icon: <FcIcons.FcCurrencyExchange size={16} />
-          },
-
-            {
-                title: 'Programas de Pontos',
-                path: '/grupos/pontos',
-                icon: <GiIcons.GiAirplaneDeparture size={16}/>
-            },
+          // {
+          //   title: 'Salário',
+          //   path: '/grupos/salario',
+          //   icon: <FcIcons.FcCurrencyExchange size={16} />
+          // },
      
           {
             title: 'Grupos',
@@ -49,8 +43,15 @@ export const SidebarData = [
         ]
     },
     {
+        title: 'Programas de Pontos',
+        path: '/grupos/programa-pontos',
+        icon: <GiIcons.GiAirplaneDeparture size={16}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill />,
+        iconOpened: <RiIcons.RiArrowUpSFill />
+    },
+    {
       title: 'Receitas',
-      path: '/receitas/graficos',
+      path: '/entrada',
       icon: <FcIcons.FcBullish size={20} />,
       iconClosed: <RiIcons.RiArrowDownSFill />,
       iconOpened: <RiIcons.RiArrowUpSFill />,
