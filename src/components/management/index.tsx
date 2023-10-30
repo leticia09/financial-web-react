@@ -1,7 +1,7 @@
-import { FunctionComponent } from "react";
-import { useNavigate } from "react-router-dom";
+import {FunctionComponent} from "react";
+import {useNavigate} from "react-router-dom";
 import "./management.css";
-import { IColumns, IRow } from "../../interfaces/table";
+import {IColumns, IRow} from "../../interfaces/table";
 import {ButtonComponent} from "../button";
 import {Messages} from "../../internationalization/message";
 import {TableComponent} from "../table";
@@ -11,13 +11,26 @@ interface IManagement {
     rows: IRow[];
     arrayHeader: IColumns[];
     path: string;
+    hasAuxButton?: boolean;
     haveMenu?: boolean;
     menuOptions?: any[];
     hasMoreTable?: boolean;
     moreTableArrayHeader?: IColumns[];
     moreTableRows?: IRow[];
 }
-export const Management: FunctionComponent <IManagement> = ({ title, rows, arrayHeader, path, haveMenu, menuOptions, hasMoreTable = false, moreTableArrayHeader, moreTableRows }: IManagement) => {
+
+export const Management: FunctionComponent<IManagement> = ({
+                                                               title,
+                                                               rows,
+                                                               arrayHeader,
+                                                               path,
+                                                               hasAuxButton,
+                                                               haveMenu,
+                                                               menuOptions,
+                                                               hasMoreTable = false,
+                                                               moreTableArrayHeader,
+                                                               moreTableRows
+                                                           }: IManagement) => {
     const navigate = useNavigate();
 
     return (
@@ -26,7 +39,7 @@ export const Management: FunctionComponent <IManagement> = ({ title, rows, array
                 <div className="labels">
                     <h3>{title}</h3>
 
-                    <div className="button-create">
+                    <div className={`button-create ${hasAuxButton ? 'button-aux' : ''}`}>
                         <ButtonComponent
                             label={Messages.titles.add}
                             disabled={false}
@@ -47,7 +60,30 @@ export const Management: FunctionComponent <IManagement> = ({ title, rows, array
                             haveMenu={haveMenu}
                             menuOptions={menuOptions}
                         />
+                        {hasAuxButton &&
+                            <ButtonComponent
+                                label={Messages.titles.add}
+                                disabled={false}
+                                width="120px"
+                                height="40px"
+                                cursor="pointer"
+                                borderRadius="6px"
+                                color="white"
+                                background="#05465f"
+                                padding="2px"
+                                marginBottom="20px"
+                                fontWeight="600"
+                                border="none"
+                                action={(action, havePath) => {
+                                    if (action)
+                                        havePath ? navigate(havePath) : navigate(path);
+                                }}
+                                haveMenu={haveMenu}
+                                menuOptions={menuOptions}
+                            />
+                        }
                     </div>
+
                 </div>
             </div>
             {rows && arrayHeader && rows.length > 0 ? (
@@ -71,7 +107,7 @@ export const Management: FunctionComponent <IManagement> = ({ title, rows, array
                 <div className="content-not-grid">
                     {Messages.titles.emptyList}
                 </div>
-                )
+            )
             }
         </>
     );

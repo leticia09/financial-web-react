@@ -1,13 +1,14 @@
-import {FunctionComponent, useEffect, useState} from "react";
-import {Messages} from "../../../internationalization/message";
-import {Creation} from "../../../components/creation";
-import useLoginStore from "../../login/store/useLoginStore";
-import {useLocation, useNavigate} from "react-router-dom";
-import {ProgramPointForm} from "./form";
-import usePointFormStore from "./store/usePointFormStore";
-import {PointsService} from "../service";
+import {FunctionComponent, useState} from "react";
+import useLoginStore from "../../../login/store/useLoginStore";
+import usePointFormStore from "../store/usePointFormStore";
+import {useNavigate} from "react-router-dom";
+import {PointsService} from "../../service";
+import {Messages} from "../../../../internationalization/message";
+import {Creation} from "../../../../components/creation";
+import {TransferForm} from "../form/transferForm";
 
-export const CreateProgramPoint: FunctionComponent = () => {
+
+export const TransferProgram: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = usePointFormStore();
     const [open, setOpen] = useState(false);
@@ -29,12 +30,8 @@ export const CreateProgramPoint: FunctionComponent = () => {
     const save = async () => {
         setIsLoading(true);
 
-        formStore.formProgramList.forEach(form => {
-            form.userAuthId = loginStore.userId;
-        })
-
         try {
-            const response = await pointsService.create(formStore.formProgramList);
+            const response = await pointsService.transfer(formStore.formTransfer);
             if (response.data.message === "Sucesso") {
                 setOpen(true);
                 setSeverity("success");
@@ -49,8 +46,8 @@ export const CreateProgramPoint: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                if(response.data.message === "PROGRAM_ALREADY_EXISTS") {
-                    setToastMessage(Messages.messages.programExists);
+                if(response.data.message === "INVALID_TRANSACTION") {
+                    setToastMessage(Messages.messages.invalidTransaction);
                 } else {
                     setToastMessage(Messages.titles.errorMessage);
                 }
@@ -85,13 +82,13 @@ export const CreateProgramPoint: FunctionComponent = () => {
 
     return (
         <Creation
-            titles={Messages.titles.registerProgramPoint}
+            titles={Messages.titles.transfer_}
             Form={
                 [
-                    <ProgramPointForm />
+                    <TransferForm/>
                 ]
             }
-            titlesButton={Messages.titles.addProgram}
+            titlesButton={Messages.titles.addTransfer}
             save={save}
             disabledSaveButton={false}
             pathBack="/grupos/programa-pontos"
@@ -100,8 +97,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
             isLoading={isLoading}
             open={open}
             handleClose={handleClose}
-            hasButton={true}
-            handleAddMember={handleAdd}
+            hasButton={false}
         />
     );
 

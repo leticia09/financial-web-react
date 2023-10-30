@@ -9,6 +9,7 @@ import {RegisterBankData} from "../../pages/bank-data/creation";
 import {EntranceData} from "../../pages/entrance/management";
 import {PointProgramData} from "../../pages/points-programs/management";
 import {CreateProgramPoint} from "../../pages/points-programs/creation";
+import {TransferProgram} from "../../pages/points-programs/creation/transfer";
 
 export const Home: FunctionComponent = () => {
 
@@ -41,10 +42,11 @@ export const Home: FunctionComponent = () => {
                        element={<EntranceData />}/>
                 <Route path="/grupos/programa-pontos"
                        element={<PointProgramData />}/>
-                <Route path="/grupos/programa-pontos/cartao/cadastro"
-                       element={<CreateProgramPoint />}/>
                 <Route path="/grupos/programa-pontos/programa/cadastro"
                        element={<CreateProgramPoint />}/>
+                <Route path="/grupos/programa-pontos/programa/tranferencia"
+                       element={<TransferProgram />}/>
+
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"

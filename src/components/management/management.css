@@ -38,6 +38,13 @@
     max-height: 40px;
 }
 
+.button-aux {
+    max-height: 40px;
+    width: 260px;
+    display: flex;
+    justify-content: space-between;
+}
+
 .two-columns {
     display: flex;
     justify-content: space-between;

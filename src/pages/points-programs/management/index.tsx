@@ -10,15 +10,18 @@ import {DashboardComponent} from "../../../components/dashboard";
 import {format} from "date-fns";
 import usePointFormStore from "../creation/store/usePointFormStore";
 
-const menuOptions = [
-    {label: "Cartão",path: "/grupos/programa-pontos/cartao/cadastro" },
-    {label: "Programa",path: "/grupos/programa-pontos/programa/cadastro" }
-];
 
 const columns: IColumns[]= [
     {
         id: "program",
         label: "Programa",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "typeOfScore",
+        label: "Tipo",
         minWidth: 70,
         align: "right",
         format: (value) => value.toLocaleString("en-US"),
@@ -54,111 +57,20 @@ const columns: IColumns[]= [
     },
 ];
 
-const columns2: IColumns[]= [
-    {
-        id: "final",
-        label: "Final",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-        id: "account",
-        label: "Conta",
-        minWidth: 70,
-        align: "center",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "bank",
-        label: "Banco",
-        minWidth: 70,
-        align: "center",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "point",
-        label: "Pontuação",
-        minWidth: 70,
-        align: "center",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "currentPoint",
-        label: "Moeda",
-        minWidth: 70,
-        align: "center",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "status",
-        label: "Status",
-        minWidth: 70,
-        align: "center",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "actions",
-        label: "Ações",
-        minWidth: 70,
-        width: 100,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-];
-
-export const option = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Milhas",
-        },
-    },
-};
-
-const labels = [
-    "Livelo",
-    "Esfera",
-    "Smiles",
-    "Latam",
-    "C6",
-    "Aadvantage",
-    "Iberian",
-    "Tap",
-    "Aadvantage",
-    "Iberian",
-    "Tap"
-];
-
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: "Valor Previsto",
-            data: [41500, 120000, 50000, 30000, 18000, 60000, 340233, 540321, 60000, 340233, 540321],
-            borderColor: "#01b8aa",
-            backgroundColor: "#01b8aa",
-        },
-    ],
-};
 
 function createData(user, actions: React.ReactNode[], index) {
-    const { id, program, value, pointsExpirationDate, status } = user;
+    const { id, program, value,typeOfScore, pointsExpirationDate, status } = user;
     const statusBullet = status === 'ACTIVE' ? (
-        <BulletComponent color="green" showLabel={false} />
+        <BulletComponent color="green" showLabel={true} label={'Ativo'} />
     ) : status === 'INACTIVE' ? (
-        <BulletComponent color="red" showLabel={false} />
+        <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
     let date = pointsExpirationDate;
     if(pointsExpirationDate) {
         date = formatData(pointsExpirationDate);
     }
 
-    return { id, program, value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'), pointsExpirationDate: date, status: statusBullet, actions, key: index };
+    return { id, program, typeOfScore, value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'), pointsExpirationDate: date, status: statusBullet, actions, key: index };
 }
 type RowType = {
     id: number;
@@ -175,8 +87,10 @@ function formatData(inputDate: string): string {
 
 export const PointProgramData: FunctionComponent = () => {
     const loginStore = useLoginStore();
-    const pointsService = PointsService()
+    const pointsService = PointsService();
+    const store = usePointFormStore();
     const [rows, setRows] = useState<RowType[]>([]);
+
     const actions = [
         <div className="icons">
             <AiIcons.AiOutlineEye className="icon_space" size={18}/>
@@ -190,6 +104,11 @@ export const PointProgramData: FunctionComponent = () => {
             try {
                 const response = await pointsService.get(loginStore.userId);
                 const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions, index));
+
+                const programsData = await pointsService.getData(loginStore.userId);
+                console.log('programsData',programsData)
+                store.setGraphicData(programsData.data.data.labels, programsData.data.data.data)
+
                 setRows(transformedRows);
             } catch (error) {
                 console.log('Error', error);
@@ -204,12 +123,15 @@ export const PointProgramData: FunctionComponent = () => {
                 title={Messages.titles.pointsProgram}
                 rows={rows}
                 arrayHeader={columns}
-                path="/grupos/programa-pontos/cartao/cadastro"
-                haveMenu={true}
-                menuOptions={menuOptions}
-                hasMoreTable={true}
-                moreTableArrayHeader={columns2}
-                moreTableRows={rows}
+                path="/grupos/programa-pontos/programa/cadastro"
+                hasAuxButton={true}
+                auxPath="/grupos/programa-pontos/programa/tranferencia"
+                auxTitle={Messages.titles.transfer}
+                labelsData={store.graphicData.labels}
+                dataData={store.graphicData.data}
+                colorData="#01b8aa"
+                labelData="Valor Previsto"
+                optionText="Milhas"
             />
         </>
     );

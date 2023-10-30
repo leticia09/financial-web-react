@@ -73,6 +73,12 @@ export const Login: FunctionComponent = () => {
                     const bankResponse = await globalService.getBank(response.data.data.id);
                     globalStore.setBank(bankResponse.data.data);
 
+                    const typeOfScoreResponse = await globalService.getTypeOfScore();
+                    globalStore.setTypeOfScore(typeOfScoreResponse.data.data);
+
+                    const programResponse = await globalService.getProgram(response.data.data.id);
+                    globalStore.setProgram(programResponse.data.data);
+
                 } else {
                     setOpen(true);
                 }

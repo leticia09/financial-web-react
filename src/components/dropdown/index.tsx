@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import {FunctionComponent, useState} from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,7 +12,7 @@ interface IDropdownSingleSelect {
     width: string;
     idProperty: string,
     descriptionProperty: string,
-    getValue: (value: string) => void;
+    getValue: (value: any) => void;
     value?: {};
 }
 
@@ -36,10 +36,11 @@ export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = (
                                                             descriptionProperty,
                                                             value
                                                         }: IDropdownSingleSelect) => {
+    const [selectedValue, setSelectedValue] = useState(value);
 
     function handleChange(event) {
+        setSelectedValue(event.target.value);
         getValue(event.target.value);
-        value = event.target.value;
     }
 
     return (
@@ -56,7 +57,7 @@ export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = (
                     size="small"
                     labelId="demo-multiple-name-label"
                     id="demo-multiple-name"
-                    value={value}
+                    value={selectedValue}
                     onChange={handleChange}
                     MenuProps={MenuProps}
                     input={<OutlinedInput label={label}

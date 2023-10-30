@@ -6,8 +6,8 @@ interface IInput {
     label: string;
     disabled: boolean;
     width: string;
-    getValue: (value: string) => void;
-    inputValue?: string;
+    getValue: (value: any) => void;
+    inputValue?: any;
     maskNumeric?: boolean;
     numericLimit?: number;
     viewMode?: boolean;

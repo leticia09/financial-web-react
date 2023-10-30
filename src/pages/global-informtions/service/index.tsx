@@ -1,5 +1,4 @@
-// @ts-ignore
-import {instance} from "../../../services/Core/api/api.tsx";
+import {instance} from "../../../services/Core/api/api";
 
 export const GlobalService = (axiosInstance: any = instance) => {
     const getModality = () => {
@@ -12,7 +11,17 @@ export const GlobalService = (axiosInstance: any = instance) => {
         return axiosInstance.get(endPoint);
     }
 
+    const getTypeOfScore = () => {
+        const endPoint = 'points/type-of-score';
+        return axiosInstance.get(endPoint);
+    }
+
+    const getProgram = (authId) => {
+        const endPoint = 'points/programs/' + authId;
+        return axiosInstance.get(endPoint);
+    }
+
     return {
-        getModality, getBank
+        getModality, getBank, getTypeOfScore, getProgram
     }
 }

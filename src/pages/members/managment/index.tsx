@@ -35,9 +35,9 @@ const columns: IColumns[]= [
 function createData(user, actions: React.ReactNode[], index) {
     const {id, name, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
-        <BulletComponent color="green" showLabel={false} />
+        <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
-        <BulletComponent color="red" showLabel={false} />
+        <BulletComponent color="red" showLabel={true} label={'Inativo'} />
     ) : null;
     return {id, name, status: statusBullet, actions, key: index};
 }
