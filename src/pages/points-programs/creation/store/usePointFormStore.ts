@@ -30,7 +30,7 @@ const initialState: State = {
         {
             id: 0,
             program: '',
-            value: '',
+            value: 0,
             pointsExpirationDate: null,
             index: 0,
             userAuthId: 0,
@@ -41,7 +41,7 @@ const initialState: State = {
     formTransfer: {
         originProgramId: 0,
         destinyProgramId: 0,
-        quantity: 0,
+        quantity: null,
         pointsExpirationDate: null,
         originValue: 0,
         destinyValue: 0,
@@ -73,7 +73,7 @@ const usePointFormStore = create<State & Actions>((set) => ({
                     id: null,
                     index: 0,
                     program: "",
-                    value: '',
+                    value: 0,
                     pointsExpirationDate: null,
                     userAuthId: authId,
                     typeOfScore: '',

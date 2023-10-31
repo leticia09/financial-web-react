@@ -26,6 +26,9 @@ interface IDashboard {
     labelData?: string;
     optionText?: string;
     cards: ICard[];
+    hasAuxButton1?: boolean;
+    auxPath1?: string;
+    auxTitle1?: string;
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -46,7 +49,10 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       moreTableArrayHeader,
                                                                       moreTableRows,
                                                                       optionText,
-                                                                      cards
+                                                                      cards,
+                                                                      hasAuxButton1,
+                                                                      auxPath1,
+                                                                      auxTitle1
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -121,6 +127,28 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                 action={(action, havePath) => {
                                     if (action)
                                         havePath ? navigate(havePath) : navigate(auxPath);
+                                }}
+                                haveMenu={haveMenu}
+                                menuOptions={menuOptions}
+                            />
+                        }
+                        {hasAuxButton1 &&
+                            <ButtonComponent
+                                label={auxTitle1}
+                                disabled={false}
+                                width="120px"
+                                height="40px"
+                                cursor="pointer"
+                                borderRadius="6px"
+                                color="white"
+                                background="#05465f"
+                                padding="2px"
+                                marginBottom="20px"
+                                fontWeight="600"
+                                border="none"
+                                action={(action, havePath) => {
+                                    if (action)
+                                        havePath ? navigate(havePath) : navigate(auxPath1);
                                 }}
                                 haveMenu={haveMenu}
                                 menuOptions={menuOptions}

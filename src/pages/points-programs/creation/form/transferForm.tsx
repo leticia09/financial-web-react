@@ -15,8 +15,6 @@ export const TransferForm: FunctionComponent = () => {
     const [data, setDate] = useState();
     const [hasbonus, setBonus] = useState(false);
     const globalStore = useGlobalStore();
-    const [valueOrigin, setValueOrigin] = useState(1);
-    const [valueDestiny, setValueDestiny] = useState(1)
 
 
     useEffect(() => {
@@ -24,10 +22,10 @@ export const TransferForm: FunctionComponent = () => {
         formStore.setFormTransfer({
             originProgramId: 0,
             destinyProgramId: 0,
-            quantity: 0,
+            quantity: null,
             pointsExpirationDate: null,
-            originValue: valueOrigin,
-            destinyValue: valueDestiny,
+            originValue: 1,
+            destinyValue: 1,
             bonus: 0,
             userAuthId: loginStore.userId
         })
@@ -38,18 +36,12 @@ export const TransferForm: FunctionComponent = () => {
         formStore.setPointsExpirationDate(date);
     }
 
-    const handleValueOrigin = (value) => {
-        setValueOrigin(value);
-        formStore.setOriginValue(value);
-    }
-
-    const handleValueDestiny = (value) => {
-        setValueDestiny(value);
-        formStore.setDestinyValue(value);
-    }
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setBonus(event.target.checked);
+    };
+
+    const validateValue = (value) => {
+        return /^0+$/.test(value);
     };
 
     return (
@@ -77,13 +69,15 @@ export const TransferForm: FunctionComponent = () => {
                         descriptionProperty={"description"}
                         getValue={(value) => formStore.setDestinyProgramId(value)}
                     />
-
                     <Input
                         label={Messages.titles.quantity}
                         disabled={false}
                         width="200px"
                         maskNumeric={true}
-                        getValue={(value) => formStore.setQuantity(value)}
+                        invalidField={formStore.formTransfer.quantity? validateValue(formStore.formTransfer.quantity.toString()) : false}
+                        invalidMessage={Messages.messages.zero}
+                        inputValue={formStore.formTransfer.quantity}
+                        getValue={(value : number) => formStore.setQuantity(value)}
                         viewMode={false}
                     />
 
@@ -96,8 +90,10 @@ export const TransferForm: FunctionComponent = () => {
                         label={Messages.titles.origin}
                         disabled={false}
                         width="200px"
-                        getValue={(value) => handleValueOrigin(value)}
-                        inputValue={valueOrigin}
+                        invalidField={formStore.formTransfer.originValue? validateValue(formStore.formTransfer.originValue.toString()) : false}
+                        invalidMessage={Messages.messages.zero}
+                        getValue={(value) => formStore.setOriginValue(value)}
+                        inputValue={formStore.formTransfer.originValue}
                         viewMode={false}
                     />
                     <span>PARA</span>
@@ -105,8 +101,10 @@ export const TransferForm: FunctionComponent = () => {
                         label={Messages.titles.destiny}
                         disabled={false}
                         width="200px"
-                        getValue={(value) => handleValueDestiny(value)}
-                        inputValue={valueDestiny}
+                        invalidField={formStore.formTransfer.destinyValue? validateValue(formStore.formTransfer.destinyValue.toString()) : false}
+                        invalidMessage={Messages.messages.zero}
+                        getValue={(value) => formStore.setDestinyValue(value)}
+                        inputValue={formStore.formTransfer.destinyValue}
                         viewMode={false}
                     />
                     <InputDataComponent
@@ -116,29 +114,29 @@ export const TransferForm: FunctionComponent = () => {
                         getValue={(value) => handleData(value)}
                         viewMode={false}
                     />
-                    <FormControlLabel style={{marginLeft:"12px"}}
-                        control={
-                            <Switch checked={hasbonus} onChange={handleChange} name="gilad"/>
-                        }
-                        label={Messages.titles.bonus}
+                    <FormControlLabel style={{marginLeft: "12px"}}
+                                      control={
+                                          <Switch checked={hasbonus} onChange={handleChange} name="gilad"/>
+                                      }
+                                      label={Messages.titles.bonus}
                     />
                 </div>
             </div>
             {hasbonus &&
                 <div>
                     <h3 className="title-bank">{Messages.titles.bonus}</h3>
-                    {formStore.formProgramList.map((program, index) => (
-                        <div className="register-member">
-                            <Input
-                                label={Messages.titles.percentage}
-                                disabled={false}
-                                width="200px"
-                                getValue={(value) => formStore.setBonus(value)}
-                                inputValue={null}
-                                viewMode={false}
-                            />
-                        </div>
-                    ))}
+                    <div className="register-member">
+                        <Input
+                            label={Messages.titles.percentage}
+                            disabled={false}
+                            width="200px"
+                            invalidField={formStore.formTransfer.bonus? validateValue(formStore.formTransfer.bonus.toString()) : false}
+                            invalidMessage={Messages.messages.zero}
+                            getValue={(value) => formStore.setBonus(value)}
+                            inputValue={null}
+                            viewMode={false}
+                        />
+                    </div>
                 </div>
             }
 

@@ -1,7 +1,7 @@
 export interface IProgram {
     id: number;
     program: string;
-    value: string;
+    value: number;
     pointsExpirationDate: Date;
     index: number;
     userAuthId: number;
@@ -26,4 +26,10 @@ export interface IGraphic {
     totalPoints: number,
     totalProgramActive: number,
     totalProgramInactive: number,
+}
+
+export interface IUse {
+    programId: number;
+    value: number;
+    userAuthId: number;
 }

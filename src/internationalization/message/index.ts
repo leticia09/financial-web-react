@@ -66,10 +66,13 @@ const Messages = {
         one: '1',
         totalMiles: 'Total Milhas',
         totalPoints: 'Total Pontos',
-        totalActive: 'Quantidade de Programas Ativos',
-        totalInactive: 'Quantidade de Programas Inativos',
+        totalActive: 'Programas Ativos',
+        totalInactive: 'Programas Inativos',
         valuePrevius: 'Valor Previsto',
-        pointsAndMiles: 'Pontos e Milhas'
+        pointsAndMiles: 'Pontos e Milhas',
+        use: 'Utilizar',
+        status: 'Status',
+        usePoints: 'Utilizar Pontos/Milhas'
 
     },
     buttons: {},
@@ -88,7 +91,8 @@ const Messages = {
         valueIsNull: 'Valor está vazio!',
         insufficientOrigin: 'Saldo de origem insuficiente!',
         insufficientDestiny: 'Saldo de destino insuficiente!',
-        programIsEqual: "Programa de Origem não pode ser igual ao Pregrama de Destino!"
+        programIsEqual: "Programa de Origem não pode ser igual ao Pregrama de Destino!",
+        zero: 'O valor 0 não é permitido!'
     },
     modals: {},
     toasts: {}

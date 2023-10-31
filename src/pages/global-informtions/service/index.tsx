@@ -16,12 +16,17 @@ export const GlobalService = (axiosInstance: any = instance) => {
         return axiosInstance.get(endPoint);
     }
 
+    const getStatus = () => {
+        const endPoint = 'points/status';
+        return axiosInstance.get(endPoint);
+    }
+
     const getProgram = (authId) => {
         const endPoint = 'points/programs/' + authId;
         return axiosInstance.get(endPoint);
     }
 
     return {
-        getModality, getBank, getTypeOfScore, getProgram
+        getModality, getBank, getTypeOfScore, getProgram, getStatus
     }
 }

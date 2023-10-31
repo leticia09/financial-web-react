@@ -79,6 +79,9 @@ export const Login: FunctionComponent = () => {
                     const programResponse = await globalService.getProgram(response.data.data.id);
                     globalStore.setProgram(programResponse.data.data);
 
+                    const statusResponse = await globalService.getStatus();
+                    globalStore.setStatus(statusResponse.data.data);
+
                 } else {
                     setOpen(true);
                 }

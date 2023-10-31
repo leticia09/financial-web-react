@@ -36,7 +36,7 @@ export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = (
                                                             descriptionProperty,
                                                             value
                                                         }: IDropdownSingleSelect) => {
-    const [selectedValue, setSelectedValue] = useState(value);
+    const [selectedValue, setSelectedValue] = useState(value || '');
 
     function handleChange(event) {
         setSelectedValue(event.target.value);

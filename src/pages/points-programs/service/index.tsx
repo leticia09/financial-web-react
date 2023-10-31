@@ -20,10 +20,22 @@ export const PointsService = (axiosInstance: any = instance) => {
         return axiosInstance.get(url);
     }
 
+    const updateStatus = (payload) => {
+        const url = '/points/update-status'
+        return axiosInstance.post(url, payload);
+    }
+
+    const use = (payload) => {
+        const url = '/points/use'
+        return axiosInstance.post(url, payload);
+    }
+
     return {
         create,
         get,
         transfer,
-        getData
+        getData,
+        updateStatus,
+        use
     }
 }

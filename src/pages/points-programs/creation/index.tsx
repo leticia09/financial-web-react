@@ -2,12 +2,15 @@ import {FunctionComponent, useEffect, useState} from "react";
 import {Messages} from "../../../internationalization/message";
 import {Creation} from "../../../components/creation";
 import useLoginStore from "../../login/store/useLoginStore";
-import { useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {ProgramPointForm} from "./form";
 import {PointsService} from "../service";
 import {IProgram} from "../../../interfaces/points-program";
 
 import useScorePointStore from "./store/useScorePointStore";
+import {ValidateError} from "./validate-factory/validate-error";
+import {ValidateFormCreate} from "./validate-factory/validateForms";
+import {ValidateForm} from "../../bank-data/creation/validade-factory/validadeFactory";
 
 export const CreateProgramPoint: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -20,9 +23,17 @@ export const CreateProgramPoint: FunctionComponent = () => {
     const pointsService = PointsService();
 
 
-
     useEffect(() => {
         formStore.resetFormStore();
+        formStore.setFormList([{
+            id: 0,
+            program: '',
+            value: 0,
+            pointsExpirationDate: null,
+            index: 0,
+            userAuthId: 0,
+            typeOfScore: '',
+        }])
     }, []);
 
     const handleClose = (reason: string) => {
@@ -38,7 +49,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
         updatedList.push({
             id: null,
             program: '',
-            value: '',
+            value: 0,
             pointsExpirationDate: null,
             index: updatedList.length,
             userAuthId: loginStore.userId,
@@ -58,8 +69,8 @@ export const CreateProgramPoint: FunctionComponent = () => {
         try {
             const response = await pointsService.create(formStore.formList);
             if (response.data.message === "Sucesso") {
-                setOpen(true);
                 setSeverity("success");
+                setOpen(true);
                 setToastMessage(Messages.messages.operationSuccess);
                 setIsLoading(false);
 
@@ -71,15 +82,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                if (response.data.message === "PROGRAM_ALREADY_EXISTS") {
-                    setToastMessage(Messages.messages.programExists);
-                } else if(response.data.message === "INVALID_EXPIRATION_DATE") {
-                    setToastMessage(Messages.messages.invalidDate);
-                }else if(response.data.message === "VALUE_IS_NULL") {
-                    setToastMessage(Messages.messages.valueIsNull);
-                } else {
-                    setToastMessage(Messages.titles.errorMessage);
-                }
+                setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
 
             }
@@ -105,16 +108,15 @@ export const CreateProgramPoint: FunctionComponent = () => {
                     />
                 ))
             }
-
             titlesButton={Messages.titles.addProgram}
             handleAddMember={handleAdd}
+            disabledSaveButton={ValidateFormCreate(formStore.formList)}
             save={save}
             pathBack="/grupos/programa-pontos"
             toastMessage={toastMessage}
             severityType={severity}
             isLoading={isLoading}
             open={open}
-            disabledSaveButton={false}
             hasButton={true}
             handleClose={handleClose}
         />

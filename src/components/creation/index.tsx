@@ -1,17 +1,12 @@
 import './creation.css'
 import {FunctionComponent} from "react";
-// @ts-ignore
-import {ButtonComponent} from "../button/index.tsx";
-// @ts-ignore
-import {FooterRegister} from "../footer-register/index.tsx";
+import {ButtonComponent} from "../button";
+import {FooterRegister} from "../footer-register";
 import {BsBackspace} from "react-icons/bs";
 import {GiCheckMark} from "react-icons/gi";
-// @ts-ignore
-import {Toast} from "../toast/index.tsx";
-// @ts-ignore
-import {LoadingComponent} from "../loading/index.tsx";
-// @ts-ignore
-import {BlockComponent} from "../block/index.tsx";
+import {Toast} from "../toast";
+import {LoadingComponent} from "../loading";
+import {BlockComponent} from "../block";
 
 interface ICreation {
     titles: string;

@@ -8,6 +8,7 @@ type State = {
     bank: IBankData[] | null;
     typeOfScore: any[];
     program: any[];
+    status: any[];
 };
 
 type Actions = {
@@ -16,6 +17,7 @@ type Actions = {
     setBank: (bank: IBankData[] | null) => void;
     setTypeOfScore: (type: any[]) => void;
     setProgram: (program: any[]) => void;
+    setStatus: (program: any[]) => void;
 };
 
 const initialState: State = {
@@ -24,6 +26,7 @@ const initialState: State = {
     bank: null,
     typeOfScore: [],
     program: [],
+    status: [],
 };
 
 const useGlobalStore = create<State & Actions>((set) => ({
@@ -33,6 +36,7 @@ const useGlobalStore = create<State & Actions>((set) => ({
     setBank: (bank) => set({ bank: bank }),
     setTypeOfScore: (typeOfScore) => set({ typeOfScore }),
     setProgram: (program) => set({ program }),
+    setStatus: (status) => set({ status }),
 }));
 
 export default useGlobalStore;

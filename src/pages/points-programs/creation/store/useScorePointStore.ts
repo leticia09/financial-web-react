@@ -18,7 +18,7 @@ const initialState: State = {
         {
             id: 0,
             program: '',
-            value: '',
+            value: 0,
             pointsExpirationDate: null,
             index: 0,
             userAuthId: 0,
@@ -41,7 +41,7 @@ const useScorePointStore = create<State & Actions>((set) => ({
                 updatedFormList[index] = {
                     id: null,
                     program: '',
-                    value: '',
+                    value: 0,
                     pointsExpirationDate: null,
                     index: 0,
                     userAuthId: authId,

@@ -11,9 +11,16 @@ import {format} from "date-fns";
 import usePointFormStore from "../creation/store/usePointFormStore";
 import {GlobalService} from "../../global-informtions/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {ModalComponent} from "../../../components/modal";
+import {ProgramPointForm} from "../creation/form";
+import {TransferForm} from "../creation/form/transferForm";
+import {ModalForm} from "./modal-form/modal-form";
+import {ValidateError} from "../creation/validate-factory/validate-error";
+import {useNavigate} from "react-router-dom";
+import useUpdateFormStore from "../creation/store/useUpdateFormStore";
 
 
-const columns: IColumns[]= [
+const columns: IColumns[] = [
     {
         id: "program",
         label: "Programa",
@@ -60,20 +67,30 @@ const columns: IColumns[]= [
 ];
 
 
-function createData(user, actions: React.ReactNode[], index) {
-    const { id, program, value,typeOfScore, pointsExpirationDate, status } = user;
+function createData(user, actions, index) {
+    const {id, program, value, typeOfScore, pointsExpirationDate, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
-        <BulletComponent color="green" showLabel={true} label={'Ativo'} />
+        <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
     let date = pointsExpirationDate;
-    if(pointsExpirationDate) {
+    if (pointsExpirationDate) {
         date = formatData(pointsExpirationDate);
     }
 
-    return { id, program, typeOfScore, value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'), pointsExpirationDate: date, status: statusBullet, actions, key: index };
+    return {
+        id,
+        program,
+        typeOfScore,
+        value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        pointsExpirationDate: date,
+        status: statusBullet,
+        actions,
+        key: index
+    };
 }
+
 type RowType = {
     id: number;
     name: string;
@@ -89,74 +106,130 @@ function formatData(inputDate: string): string {
 
 export const PointProgramData: FunctionComponent = () => {
     const loginStore = useLoginStore();
+
+    const formStore = useUpdateFormStore();
     const pointsService = PointsService();
     const store = usePointFormStore();
     const [rows, setRows] = useState<RowType[]>([]);
     const globalService = GlobalService();
     const globalStore = useGlobalStore();
     const [cards, setCards] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [toastMessage, setToastMessage] = useState('');
+    const [openToast, setOpenToast] = useState(false);
+    const [responses, setResponses] = useState([]);
 
-    const actions = [
-        <div className="icons">
-            <AiIcons.AiOutlineEye className="icon_space" size={18}/>
-            <AiIcons.AiOutlineEdit className="icon_space" size={18}/>
+    const handleOpen = (index) => {
+        setCurrentIndex(index);
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const actions = (index) => (
+        <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18}/>
         </div>
-    ];
+    );
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await pointsService.get(loginStore.userId);
-                const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions, index));
+                await getData();
+                await getGraphic();
 
                 const programResponse = await globalService.getProgram(loginStore.userId);
                 globalStore.setProgram(programResponse.data.data);
 
-                const programsData = await pointsService.getData(loginStore.userId);
-                store.setGraphicData(
-                    programsData.data.data.labels,
-                    programsData.data.data.data,
-                    programsData.data.data.totalPoints,
-                    programsData.data.data.totalMiles,
-                    programsData.data.data.totalProgramActive,
-                    programsData.data.data.totalProgramInactive
-                );
-
-                let card = {
-                    label: Messages.titles.totalPoints,
-                    value:  programsData.data.data.totalPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-                }
-
-                let card1 = {
-                    label: Messages.titles.totalMiles,
-                    value:  programsData.data.data.totalMiles.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-                }
-
-                let card2 = {
-                    label: Messages.titles.totalActive,
-                    value:  programsData.data.data.totalProgramActive
-                }
-
-                let card3 = {
-                    label: Messages.titles.totalInactive,
-                    value:  programsData.data.data.totalProgramInactive
-                }
-
-                let cards = [];
-                cards.push(card);
-                cards.push(card1);
-                cards.push(card2);
-                cards.push(card3);
-
-                setCards(cards);
-                setRows(transformedRows);
             } catch (error) {
                 console.log('Error', error);
             }
         }
         fetchData().then();
-    },[]);
+    }, []);
+
+    const getData = async () => {
+        const response = await pointsService.get(loginStore.userId);
+        setResponses(response.data.data);
+        const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
+        setRows(transformedRows);
+    }
+
+    const getGraphic = async () => {
+        const programsData = await pointsService.getData(loginStore.userId);
+        store.setGraphicData(
+            programsData.data.data.labels,
+            programsData.data.data.data,
+            programsData.data.data.totalPoints,
+            programsData.data.data.totalMiles,
+            programsData.data.data.totalProgramActive,
+            programsData.data.data.totalProgramInactive
+        );
+
+        let card = {
+            label: Messages.titles.totalPoints,
+            value: programsData.data.data.totalPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        }
+
+        let card1 = {
+            label: Messages.titles.totalMiles,
+            value: programsData.data.data.totalMiles.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        }
+
+        let card2 = {
+            label: Messages.titles.totalActive,
+            value: programsData.data.data.totalProgramActive
+        }
+
+        let card3 = {
+            label: Messages.titles.totalInactive,
+            value: programsData.data.data.totalProgramInactive
+        }
+
+        let cards = [];
+        cards.push(card);
+        cards.push(card1);
+        cards.push(card2);
+        cards.push(card3);
+
+        setCards(cards);
+    }
+
+    const save = async () => {
+        try {
+            const response = await pointsService.updateStatus({
+                status: formStore.status,
+                programId: responses[currentIndex].id,
+                userAuthId: formStore.userAuthId
+            });
+            if (response.data.message === "Sucesso") {
+                setSeverity("success");
+                setOpenToast(true);
+                setToastMessage(Messages.messages.operationSuccess);
+                await getData();
+                await getGraphic();
+
+                setTimeout(() => {
+                    setOpen(false);
+                    setOpenToast(false);
+                }, 1000);
+
+            } else {
+                setOpenToast(true);
+                setSeverity("error");
+                setToastMessage(ValidateError(response.data.message));
+            }
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(true);
+        }
+    }
 
     return (
         <>
@@ -174,6 +247,23 @@ export const PointProgramData: FunctionComponent = () => {
                 labelData={Messages.titles.valuePrevius}
                 optionText={Messages.titles.pointsAndMiles}
                 cards={cards}
+                hasAuxButton1={true}
+                auxPath1="/grupos/programa-pontos/programa/utilizar"
+                auxTitle1={Messages.titles.use}
+            />
+            <ModalComponent
+                openModal={open}
+                setOpenModal={handleClose}
+                label={store.graphicData.labels[currentIndex]}
+                getValue={save}
+                Form={
+                    [
+                        <ModalForm/>
+                    ]
+                }
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
             />
         </>
     );

@@ -1,25 +1,27 @@
-import {FunctionComponent, useState} from "react";
-import useLoginStore from "../../../login/store/useLoginStore";
-import usePointFormStore from "../store/usePointFormStore";
-import {useNavigate} from "react-router-dom";
-import {PointsService} from "../../service";
-import {Messages} from "../../../../internationalization/message";
+import {FunctionComponent, useEffect, useState} from "react";
 import {Creation} from "../../../../components/creation";
-import {TransferForm} from "../form/transferForm";
-import {ValidateError} from "../validate-factory/validate-error";
-import {ValidateForm} from "../../../bank-data/creation/validade-factory/validadeFactory";
-import {ValidateFormTransfer} from "../validate-factory/validateForms";
+import {Messages} from "../../../../internationalization/message";
+import {UseForm} from "./useForm";
+import {ValidateFormUse} from "../validate-factory/validateForms";
+import useUpdateFormStore from "../store/useUpdateFormStore";
+import {PointsService} from "../../service";
+import {useNavigate} from "react-router-dom";
 
 
-export const TransferProgram: FunctionComponent = () => {
-    const loginStore = useLoginStore();
-    const formStore = usePointFormStore();
+export const UsePoint: FunctionComponent = () => {
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+    const formStore = useUpdateFormStore();
     const pointsService = PointsService();
+    const navigate =  useNavigate();
+
+
+
+    useEffect(() => {
+
+    }, []);
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -28,14 +30,16 @@ export const TransferProgram: FunctionComponent = () => {
         setOpen(false);
     };
 
+
+
     const save = async () => {
         setIsLoading(true);
 
         try {
-            const response = await pointsService.transfer(formStore.formTransfer);
+            const response = await pointsService.use(formStore.formUse);
             if (response.data.message === "Sucesso") {
-                setOpen(true);
                 setSeverity("success");
+                setOpen(true);
                 setToastMessage(Messages.messages.operationSuccess);
                 setIsLoading(false);
 
@@ -47,8 +51,9 @@ export const TransferProgram: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+                //setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
+
             }
 
         } catch (e) {
@@ -58,24 +63,26 @@ export const TransferProgram: FunctionComponent = () => {
             setOpen(true);
         }
     }
+
+
     return (
         <Creation
-            titles={Messages.titles.transfer_}
+            titles={Messages.titles.usePoints}
             Form={
                 [
-                    <TransferForm/>
+                    <UseForm/>
                 ]
             }
-            titlesButton={Messages.titles.addTransfer}
+            titlesButton={Messages.titles.addProgram}
+            disabledSaveButton={ValidateFormUse("")}
             save={save}
-            disabledSaveButton={ValidateFormTransfer(formStore.formTransfer)}
             pathBack="/grupos/programa-pontos"
             toastMessage={toastMessage}
             severityType={severity}
             isLoading={isLoading}
             open={open}
-            handleClose={handleClose}
             hasButton={false}
+            handleClose={handleClose}
         />
     );
 
