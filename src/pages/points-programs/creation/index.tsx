@@ -8,16 +8,21 @@ import {PointsService} from "../service";
 import {IProgram} from "../../../interfaces/points-program";
 
 import useScorePointStore from "./store/useScorePointStore";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {GlobalService} from "../../global-informtions/service";
 
 export const CreateProgramPoint: FunctionComponent = () => {
     const loginStore = useLoginStore();
+    const globalStore = useGlobalStore();
+    const formStore = useScorePointStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const pointsService = PointsService();
-    const formStore = useScorePointStore();
+    const globalService = GlobalService();
+
 
     useEffect(() => {
         formStore.resetFormStore();
@@ -56,6 +61,8 @@ export const CreateProgramPoint: FunctionComponent = () => {
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
                 setIsLoading(false);
+                const programResponse = await globalService.getProgram(response.data.data.id);
+                globalStore.setProgram(programResponse.data.data);
 
                 setTimeout(() => {
                     setOpen(false);
