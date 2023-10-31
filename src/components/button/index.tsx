@@ -54,7 +54,7 @@ export const ButtonComponent: FunctionComponent <ILoginButton> = ({
         marginBottom: marginBottom,
         border: border,
         fontWeight: fontWeight,
-        backgroundImage: backgroundImage
+        backgroundImage: backgroundImage,
     };
 
     if (background) {

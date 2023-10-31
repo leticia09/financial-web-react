@@ -50,7 +50,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
 
     const save = async () => {
         setIsLoading(true);
-        
+
         formStore.formList.forEach(form => {
             form.userAuthId = loginStore.userId;
         })
@@ -58,7 +58,6 @@ export const CreateProgramPoint: FunctionComponent = () => {
         try {
             const response = await pointsService.create(formStore.formList);
             if (response.data.message === "Sucesso") {
-                console.log('entrei aqui')
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);

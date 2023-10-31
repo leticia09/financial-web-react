@@ -84,7 +84,6 @@ const usePointFormStore = create<State & Actions>((set) => ({
     deleteItemFormList: (index: number) => {
         set((state) => {
             const updatedFormList = [...state.formProgramList];
-            console.log('updatedFormList', updatedFormList)
             if (index >= 0 && index < updatedFormList.length) {
                 updatedFormList.splice(index, 1);
             }

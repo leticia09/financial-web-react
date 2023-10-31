@@ -73,7 +73,7 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
             {hasDelete && (
                 <ButtonComponent
                     disabled={false}
-                    width="30px"
+                    width="70px"
                     height="30px"
                     cursor="pointer"
                     borderRadius="4px"
