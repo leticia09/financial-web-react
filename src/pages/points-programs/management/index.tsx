@@ -94,6 +94,7 @@ export const PointProgramData: FunctionComponent = () => {
     const [rows, setRows] = useState<RowType[]>([]);
     const globalService = GlobalService();
     const globalStore = useGlobalStore();
+    const [cards, setCards] = useState([]);
 
     const actions = [
         <div className="icons">
@@ -113,8 +114,42 @@ export const PointProgramData: FunctionComponent = () => {
                 globalStore.setProgram(programResponse.data.data);
 
                 const programsData = await pointsService.getData(loginStore.userId);
-                store.setGraphicData(programsData.data.data.labels, programsData.data.data.data);
+                store.setGraphicData(
+                    programsData.data.data.labels,
+                    programsData.data.data.data,
+                    programsData.data.data.totalPoints,
+                    programsData.data.data.totalMiles,
+                    programsData.data.data.totalProgramActive,
+                    programsData.data.data.totalProgramInactive
+                );
 
+                let card = {
+                    label: Messages.titles.totalPoints,
+                    value:  programsData.data.data.totalPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                }
+
+                let card1 = {
+                    label: Messages.titles.totalMiles,
+                    value:  programsData.data.data.totalMiles.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                }
+
+                let card2 = {
+                    label: Messages.titles.totalActive,
+                    value:  programsData.data.data.totalProgramActive
+                }
+
+                let card3 = {
+                    label: Messages.titles.totalInactive,
+                    value:  programsData.data.data.totalProgramInactive
+                }
+
+                let cards = [];
+                cards.push(card);
+                cards.push(card1);
+                cards.push(card2);
+                cards.push(card3);
+
+                setCards(cards);
                 setRows(transformedRows);
             } catch (error) {
                 console.log('Error', error);
@@ -136,8 +171,9 @@ export const PointProgramData: FunctionComponent = () => {
                 labelsData={store.graphicData.labels}
                 dataData={store.graphicData.data}
                 colorData="#01b8aa"
-                labelData="Valor Previsto"
-                optionText="Milhas"
+                labelData={Messages.titles.valuePrevius}
+                optionText={Messages.titles.pointsAndMiles}
+                cards={cards}
             />
         </>
     );

@@ -64,6 +64,13 @@ const Messages = {
         bonus: 'Bonificação',
         percentage: 'Porcentagem',
         one: '1',
+        totalMiles: 'Total Milhas',
+        totalPoints: 'Total Pontos',
+        totalActive: 'Quantidade de Programas Ativos',
+        totalInactive: 'Quantidade de Programas Inativos',
+        valuePrevius: 'Valor Previsto',
+        pointsAndMiles: 'Pontos e Milhas'
+
     },
     buttons: {},
     labels: {},
@@ -78,7 +85,10 @@ const Messages = {
         programExists: 'Programa já existe.',
         invalidTransaction: 'Transação Inválida!',
         invalidDate: 'Data Inválida!',
-        valueIsNull: 'Valor está vazio!'
+        valueIsNull: 'Valor está vazio!',
+        insufficientOrigin: 'Saldo de origem insuficiente!',
+        insufficientDestiny: 'Saldo de destino insuficiente!',
+        programIsEqual: "Programa de Origem não pode ser igual ao Pregrama de Destino!"
     },
     modals: {},
     toasts: {}

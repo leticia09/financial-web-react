@@ -1,6 +1,6 @@
 import {FunctionComponent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {IColumns, IRow} from "../../interfaces/table";
+import {ICard, IColumns, IRow} from "../../interfaces/table";
 import {ButtonComponent} from "../button";
 import {Messages} from "../../internationalization/message";
 import {TableComponent} from "../table";
@@ -25,7 +25,7 @@ interface IDashboard {
     colorData?: string;
     labelData?: string;
     optionText?: string;
-
+    cards: ICard[];
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -45,7 +45,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       hasMoreTable = false,
                                                                       moreTableArrayHeader,
                                                                       moreTableRows,
-                                                                      optionText
+                                                                      optionText,
+                                                                      cards
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -75,17 +76,6 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
         },
     };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setChartWidth(window.innerWidth);
-        };
-        window.addEventListener('resize', handleResize);
-        setChartWidth(window.innerWidth);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-
-    }, []);
 
     return (
         <>
@@ -139,6 +129,18 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                     </div>
                 </div>
             </div>
+
+            {cards && cards.length > 0 &&
+                <div className="card_content">
+                    {cards.map((card) => (
+                        <div className="card">{card.label}
+                            <div className="value">{card.value}</div>
+                        </div>
+
+                    ))}
+                </div>
+            }
+
             {dataData.length > 0 &&
                 <div className="dash_content">
                     <div className="dash_item_content">

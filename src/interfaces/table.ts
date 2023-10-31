@@ -13,3 +13,8 @@ export interface IColumns {
     align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
     format?: (value: any) => any;
 }
+
+export interface ICard {
+    label: string,
+    value: number
+}

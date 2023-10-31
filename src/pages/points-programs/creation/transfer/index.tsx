@@ -6,6 +6,7 @@ import {PointsService} from "../../service";
 import {Messages} from "../../../../internationalization/message";
 import {Creation} from "../../../../components/creation";
 import {TransferForm} from "../form/transferForm";
+import {ValidateError} from "../validate-factory/validate-error";
 
 
 export const TransferProgram: FunctionComponent = () => {
@@ -17,8 +18,6 @@ export const TransferProgram: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const pointsService = PointsService();
-
-
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -46,13 +45,8 @@ export const TransferProgram: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                if(response.data.message === "INVALID_TRANSACTION") {
-                    setToastMessage(Messages.messages.invalidTransaction);
-                } else {
-                    setToastMessage(Messages.titles.errorMessage);
-                }
+                setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
-
             }
 
         } catch (e) {

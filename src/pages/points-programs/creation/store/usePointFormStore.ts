@@ -21,7 +21,7 @@ type Actions = {
     setDestinyValue: (value: number) => void;
     setBonus: (value: number) => void;
     setAuthId: (value: number) => void;
-    setGraphicData: (value: any, value1: any) => void;
+    setGraphicData: (value: any, value1: any, value2: any, value3: any,value4: any, value5: any, ) => void;
 
 };
 
@@ -52,6 +52,10 @@ const initialState: State = {
     graphicData: {
         labels: [],
         data: [],
+        totalMiles: 0,
+        totalPoints: 0,
+        totalProgramActive: 0,
+        totalProgramInactive: 0,
     }
 };
 
@@ -137,11 +141,13 @@ const usePointFormStore = create<State & Actions>((set) => ({
         set({formTransfer: transfer});
     },
 
-    setGraphicData: (labels: [], data: []) => {
-        set((state) => ({
-            graphicData: { labels: labels, data: data },
-        }));
-    },
-}));
+    setGraphicData: (labels: [], data: [], totalMiles: number, totalPoints: number, totalProgramActive: number, totalProgramInactive: number)=> {
+    set((state) => ({
+        graphicData: {labels: labels, data: data, totalPoints: totalPoints, totalMiles: totalMiles, totalProgramActive: totalProgramActive, totalProgramInactive: totalProgramInactive},
+    }));
+}
+,
+}))
+;
 
 export default usePointFormStore;

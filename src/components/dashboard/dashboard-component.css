@@ -61,3 +61,24 @@
     padding: 10px;
     width: 100%;
 }
+
+.card_content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.card{
+    border-radius: 2px;
+    background: white;
+    height: 60px;
+    width: 23%;
+    font-weight: 800;
+    padding: 9px;
+    border-bottom: 2px solid #01b8aa;
+    color: black;
+}
+
+.value {
+    padding: 4px;
+}

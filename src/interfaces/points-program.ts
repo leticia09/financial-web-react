@@ -21,5 +21,9 @@ export interface ITransfer {
 
 export interface IGraphic {
     labels: [],
-    data: []
+    data: [],
+    totalMiles: number,
+    totalPoints: number,
+    totalProgramActive: number,
+    totalProgramInactive: number,
 }

@@ -116,7 +116,7 @@ export const TransferForm: FunctionComponent = () => {
                         getValue={(value) => handleData(value)}
                         viewMode={false}
                     />
-                    <FormControlLabel
+                    <FormControlLabel style={{marginLeft:"12px"}}
                         control={
                             <Switch checked={hasbonus} onChange={handleChange} name="gilad"/>
                         }
