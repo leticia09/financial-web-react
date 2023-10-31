@@ -9,6 +9,8 @@ import {BulletComponent} from "../../../components/bullet";
 import {DashboardComponent} from "../../../components/dashboard";
 import {format} from "date-fns";
 import usePointFormStore from "../creation/store/usePointFormStore";
+import {GlobalService} from "../../global-informtions/service";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 
 
 const columns: IColumns[]= [
@@ -90,6 +92,8 @@ export const PointProgramData: FunctionComponent = () => {
     const pointsService = PointsService();
     const store = usePointFormStore();
     const [rows, setRows] = useState<RowType[]>([]);
+    const globalService = GlobalService();
+    const globalStore = useGlobalStore();
 
     const actions = [
         <div className="icons">
@@ -105,9 +109,11 @@ export const PointProgramData: FunctionComponent = () => {
                 const response = await pointsService.get(loginStore.userId);
                 const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions, index));
 
+                const programResponse = await globalService.getProgram(loginStore.userId);
+                globalStore.setProgram(programResponse.data.data);
+
                 const programsData = await pointsService.getData(loginStore.userId);
-                console.log('programsData',programsData)
-                store.setGraphicData(programsData.data.data.labels, programsData.data.data.data)
+                store.setGraphicData(programsData.data.data.labels, programsData.data.data.data);
 
                 setRows(transformedRows);
             } catch (error) {

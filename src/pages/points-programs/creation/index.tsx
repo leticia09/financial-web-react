@@ -8,12 +8,9 @@ import {PointsService} from "../service";
 import {IProgram} from "../../../interfaces/points-program";
 
 import useScorePointStore from "./store/useScorePointStore";
-import useGlobalStore from "../../global-informtions/store/useGlobalStore";
-import {GlobalService} from "../../global-informtions/service";
 
 export const CreateProgramPoint: FunctionComponent = () => {
     const loginStore = useLoginStore();
-    const globalStore = useGlobalStore();
     const formStore = useScorePointStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
@@ -21,7 +18,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const pointsService = PointsService();
-    const globalService = GlobalService();
+
 
 
     useEffect(() => {
@@ -53,16 +50,19 @@ export const CreateProgramPoint: FunctionComponent = () => {
 
     const save = async () => {
         setIsLoading(true);
+        
+        formStore.formList.forEach(form => {
+            form.userAuthId = loginStore.userId;
+        })
 
         try {
             const response = await pointsService.create(formStore.formList);
             if (response.data.message === "Sucesso") {
+                console.log('entrei aqui')
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
                 setIsLoading(false);
-                const programResponse = await globalService.getProgram(response.data.data.id);
-                globalStore.setProgram(programResponse.data.data);
 
                 setTimeout(() => {
                     setOpen(false);
