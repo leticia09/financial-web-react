@@ -42,8 +42,7 @@ export const ButtonComponent: FunctionComponent <ILoginButton> = ({
                                                        menuOptions
                                                    }: ILoginButton) => {
 
-    const [openMenu, setOpenMenu] = useState(false)
-    const buttonRef = useRef(null);
+    const [openMenu, setOpenMenu] = useState(false);
 
     const buttonStyle: CSSProperties = {
         width: width,

@@ -15,7 +15,6 @@ export const TransferForm: FunctionComponent = () => {
     const [data, setDate] = useState();
     const [hasbonus, setBonus] = useState(false);
     const globalStore = useGlobalStore();
-    const [type, setType] = useState(null);
     const [valueOrigin, setValueOrigin] = useState(1);
     const [valueDestiny, setValueDestiny] = useState(1)
 
@@ -67,7 +66,6 @@ export const TransferForm: FunctionComponent = () => {
                         idProperty={"id"}
                         descriptionProperty={"description"}
                         getValue={(value) => formStore.setOriginProgramId(value)}
-                        value={type}
                     />
 
                     <DropdownSingleSelect
@@ -78,7 +76,6 @@ export const TransferForm: FunctionComponent = () => {
                         idProperty={"id"}
                         descriptionProperty={"description"}
                         getValue={(value) => formStore.setDestinyProgramId(value)}
-                        value={type}
                     />
 
                     <Input

@@ -76,7 +76,6 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
     };
 
     useEffect(() => {
-        console.log(labelsData, dataData);
         const handleResize = () => {
             setChartWidth(window.innerWidth);
         };
