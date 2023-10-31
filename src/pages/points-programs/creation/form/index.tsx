@@ -37,62 +37,58 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
     }
 
     return (
-        <div>
-            <h3 className="title-bank">{Messages.titles.program}</h3>
-            <div className="register-member">
-                <Input
-                    label={Messages.titles.name}
+        <div className="register-member">
+            <Input
+                label={Messages.titles.name}
+                disabled={false}
+                width="200px"
+                getValue={(value) => formStore.setFormListValue(i, 'program', value)}
+                viewMode={false}
+            />
+            <DropdownSingleSelect
+                label={Messages.titles.typeOfScore}
+                data={globalStore.typeOfScore}
+                disabled={false}
+                width={"200px"}
+                idProperty={"id"}
+                descriptionProperty={"description"}
+                getValue={(value) => handleType(value, i)}
+                value={type}
+            />
+            <Input
+                label={Messages.titles.value}
+                disabled={false}
+                width="200px"
+                maskNumeric={true}
+                getValue={(value) => formStore.setFormListValue(i, 'value', value)}
+                viewMode={false}
+            />
+            <InputDataComponent
+                label={Messages.titles.expirationDate}
+                disabled={false}
+                width="200px"
+                getValue={(value) => handleData(value, i)}
+                viewMode={false}
+            />
+            {hasDelete && (
+                <ButtonComponent
                     disabled={false}
-                    width="200px"
-                    getValue={(value) => formStore.setFormListValue(i, 'program', value)}
-                    viewMode={false}
+                    width="30px"
+                    height="30px"
+                    cursor="pointer"
+                    borderRadius="4px"
+                    color="red"
+                    background="transparent"
+                    border="none"
+                    padding="2px"
+                    marginBottom="1px"
+                    fontWeight="400"
+                    haveMenu={false}
+                    icon={<BsTrash size={12}/>}
+                    action={() => handleDeleteMember
+                    (i)}
                 />
-                <DropdownSingleSelect
-                    label={Messages.titles.typeOfScore}
-                    data={globalStore.typeOfScore}
-                    disabled={false}
-                    width={"200px"}
-                    idProperty={"id"}
-                    descriptionProperty={"description"}
-                    getValue={(value) => handleType(value, i)}
-                    value={type}
-                />
-                <Input
-                    label={Messages.titles.value}
-                    disabled={false}
-                    width="200px"
-                    maskNumeric={true}
-                    getValue={(value) => formStore.setFormListValue(i, 'value', value)}
-                    viewMode={false}
-                />
-                <InputDataComponent
-                    label={Messages.titles.expirationDate}
-                    disabled={false}
-                    width="200px"
-                    getValue={(value) => handleData(value, i)}
-                    viewMode={false}
-                />
-                {hasDelete && (
-                    <ButtonComponent
-                        disabled={false}
-                        width="30px"
-                        height="30px"
-                        cursor="pointer"
-                        borderRadius="4px"
-                        color="red"
-                        background="transparent"
-                        border="none"
-                        padding="2px"
-                        marginBottom="1px"
-                        fontWeight="400"
-                        haveMenu={false}
-                        icon={<BsTrash size={12}/>}
-                        action={() => handleDeleteMember
-                        (i)}
-                    />
-                )}
-            </div>
-
+            )}
         </div>
     );
 };
