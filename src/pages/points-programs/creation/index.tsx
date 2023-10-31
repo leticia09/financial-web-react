@@ -74,6 +74,10 @@ export const CreateProgramPoint: FunctionComponent = () => {
                 setSeverity("error");
                 if (response.data.message === "PROGRAM_ALREADY_EXISTS") {
                     setToastMessage(Messages.messages.programExists);
+                } else if(response.data.message === "INVALID_EXPIRATION_DATE") {
+                    setToastMessage(Messages.messages.invalidDate);
+                }else if(response.data.message === "VALUE_IS_NULL") {
+                    setToastMessage(Messages.messages.valueIsNull);
                 } else {
                     setToastMessage(Messages.titles.errorMessage);
                 }

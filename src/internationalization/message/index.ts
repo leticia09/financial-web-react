@@ -51,7 +51,7 @@ const Messages = {
         currency: 'Moeda',
         point: 'Ponto',
         spent: 'Gasto',
-        value: 'Valor',
+        value: 'Valor Inicial',
         expirationDate: 'Data de expiração',
         typeOfScore: 'Tipo de Acúmulo',
         transfer: 'Transferir',
@@ -76,7 +76,9 @@ const Messages = {
         duplicateAccountNumber: 'Número da conta já existe.',
         duplicateCardNumber: 'Número do cartão já existe.',
         programExists: 'Programa já existe.',
-        invalidTransaction: 'Transação Inválida!'
+        invalidTransaction: 'Transação Inválida!',
+        invalidDate: 'Data Inválida!',
+        valueIsNull: 'Valor está vazio!'
     },
     modals: {},
     toasts: {}

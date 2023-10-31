@@ -139,11 +139,14 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                     </div>
                 </div>
             </div>
-            <div className="dash_content">
-                <div className="dash_item_content">
-                    <Bar data={data} options={option} width={chartWidth} height={300}/>
+            {dataData.length > 0 &&
+                <div className="dash_content">
+                    <div className="dash_item_content">
+                        <Bar data={data} options={option} width={chartWidth} height={300}/>
+                    </div>
                 </div>
-            </div>
+            }
+
             {rows && arrayHeader && rows.length > 0 ? (
                 <div className={`content-grid ${hasMoreTable ? "two-columns" : ""}`}>
                     <TableComponent
