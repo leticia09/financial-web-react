@@ -11,6 +11,8 @@ import {PointProgramData} from "../../pages/points-programs/management";
 import {CreateProgramPoint} from "../../pages/points-programs/creation";
 import {TransferProgram} from "../../pages/points-programs/creation/transfer";
 import {UsePoint} from "../../pages/points-programs/creation/use";
+import {GroupsCreation} from "../../pages/groups/creation";
+import {Groups} from "../../pages/groups/management";
 
 export const Home: FunctionComponent = () => {
 
@@ -49,6 +51,10 @@ export const Home: FunctionComponent = () => {
                        element={<TransferProgram />}/>
                 <Route path="/grupos/programa-pontos/programa/utilizar"
                        element={<UsePoint />}/>
+                <Route path="/grupos/grupos"
+                       element={<Groups />}/>
+                <Route path="/grupos/grupos/cadastro"
+                       element={<GroupsCreation />}/>
 
 
                 {/*<Route path="/grupos/pontos"

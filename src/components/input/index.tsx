@@ -34,15 +34,6 @@ export const Input: FunctionComponent <IInput> = ({
         }
     };
 
-    useEffect(() => {
-        if (inputValue && viewMode) {
-            const timer = setTimeout(() => {
-                setLabelValue("");
-            }, 10);
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let newValue = event.target.value;
 
@@ -77,7 +68,7 @@ export const Input: FunctionComponent <IInput> = ({
                     value={inputValue}
                     onChange={handleChange}
                     onKeyDown={handleKeyPress}
-                    label={labelValue}
+                    label={inputValue && viewMode? inputValue : labelValue}
                     id="outlined-size-small"
                     size="small"
                     disabled={disabled}

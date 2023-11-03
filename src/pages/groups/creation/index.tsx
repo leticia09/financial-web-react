@@ -2,22 +2,23 @@ import {FunctionComponent, useState} from "react";
 import {Creation} from "../../../components/creation";
 import {Messages} from "../../../internationalization/message";
 import useLoginStore from "../../login/store/useLoginStore";
-import useFormBankStore from "./store/useFormBankStore";
-import {BankDataForm} from "./form/bankForm";
-import {ValidateForm} from "./validade-factory/validadeFactory";
-import {BankDataManagementService} from "../service";
 import {useNavigate} from "react-router-dom";
+import {GroupForm} from "./form";
+import {GroupsService} from "../service";
+import useGroupStore from "./store/useGroupStore";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {ValidateGroupForm} from "./validate-factory/validate";
+import {ISpecificGroup} from "../../../interfaces/group";
 
-export const RegisterBankData: FunctionComponent = () => {
+export const GroupsCreation: FunctionComponent = () => {
     const loginStore = useLoginStore();
-    const formStore = useFormBankStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const registerBankService = BankDataManagementService();
     const navigate = useNavigate();
+    const service = GroupsService();
+    const formStore = useGroupStore();
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -27,12 +28,18 @@ export const RegisterBankData: FunctionComponent = () => {
     };
 
     const save = async () => {
-        formStore.formList.userAuthId = loginStore.userId;
-
         setIsLoading(true);
-
+        formStore.formList.specificGroups.forEach(sp => {
+            sp.userAuthId = loginStore.userId;
+        })
+        const payload = {
+            name: formStore.formList.name,
+            userAuthId: loginStore.userId,
+            specificGroups: formStore.formList.specificGroups,
+        }
+        
         try {
-            const response = await registerBankService.saveRegisterBank(formStore.formList);
+            const response = await service.create(payload);
             if (response.data.message === "success") {
                 setOpen(true);
                 setSeverity("success");
@@ -41,7 +48,7 @@ export const RegisterBankData: FunctionComponent = () => {
 
                 setTimeout(() => {
                     setOpen(false);
-                    navigate("/grupos/dados-bancarios");
+                    navigate("/grupos/grupos");
                 }, 2000);
 
             } else {
@@ -61,23 +68,19 @@ export const RegisterBankData: FunctionComponent = () => {
 
     return (
         <Creation
-            titles={Messages.titles.registerBankData}
+            titles={Messages.titles.registerGroups}
             Form={[
-                <BankDataForm/>
+                <GroupForm/>
             ]}
             titlesButton={Messages.titles.addCard}
             save={save}
-            disabledSaveButton={ValidateForm(formStore.formList)}
-            pathBack="/grupos/dados-bancarios"
+            disabledSaveButton={ValidateGroupForm(formStore.formList)}
+            pathBack="/grupos/grupos"
             toastMessage={toastMessage}
             severityType={severity}
             isLoading={isLoading}
             open={open}
             handleClose={handleClose}
-            hasBlock={true}
-            columns={formStore.columns}
-            rows={formStore.rows}
-            blocksNumber={formStore.formList.accounts}
         />
     );
 }

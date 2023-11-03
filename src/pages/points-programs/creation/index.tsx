@@ -6,11 +6,9 @@ import {useNavigate} from "react-router-dom";
 import {ProgramPointForm} from "./form";
 import {PointsService} from "../service";
 import {IProgram} from "../../../interfaces/points-program";
-
 import useScorePointStore from "./store/useScorePointStore";
-import {ValidateError} from "./validate-factory/validate-error";
 import {ValidateFormCreate} from "./validate-factory/validateForms";
-import {ValidateForm} from "../../bank-data/creation/validade-factory/validadeFactory";
+import {ValidateError} from "../../../validate-error/validate-error";
 
 export const CreateProgramPoint: FunctionComponent = () => {
     const loginStore = useLoginStore();

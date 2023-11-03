@@ -106,6 +106,7 @@ const usePointFormStore = create<State & Actions>((set) => ({
     },
     setQuantity: (value: number) => {
         set((state) => ({
+
             formTransfer: {...state.formTransfer, quantity: value},
         }));
     },

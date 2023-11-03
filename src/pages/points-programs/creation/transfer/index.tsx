@@ -1,18 +1,15 @@
 import {FunctionComponent, useState} from "react";
-import useLoginStore from "../../../login/store/useLoginStore";
 import usePointFormStore from "../store/usePointFormStore";
 import {useNavigate} from "react-router-dom";
 import {PointsService} from "../../service";
 import {Messages} from "../../../../internationalization/message";
 import {Creation} from "../../../../components/creation";
 import {TransferForm} from "../form/transferForm";
-import {ValidateError} from "../validate-factory/validate-error";
-import {ValidateForm} from "../../../bank-data/creation/validade-factory/validadeFactory";
 import {ValidateFormTransfer} from "../validate-factory/validateForms";
+import {ValidateError} from "../../../../validate-error/validate-error";
 
 
 export const TransferProgram: FunctionComponent = () => {
-    const loginStore = useLoginStore();
     const formStore = usePointFormStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
@@ -38,6 +35,7 @@ export const TransferProgram: FunctionComponent = () => {
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
                 setIsLoading(false);
+                formStore.resetFormStore();
 
                 setTimeout(() => {
                     setOpen(false);

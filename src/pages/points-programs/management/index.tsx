@@ -12,12 +12,9 @@ import usePointFormStore from "../creation/store/usePointFormStore";
 import {GlobalService} from "../../global-informtions/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {ModalComponent} from "../../../components/modal";
-import {ProgramPointForm} from "../creation/form";
-import {TransferForm} from "../creation/form/transferForm";
 import {ModalForm} from "./modal-form/modal-form";
-import {ValidateError} from "../creation/validate-factory/validate-error";
-import {useNavigate} from "react-router-dom";
 import useUpdateFormStore from "../creation/store/useUpdateFormStore";
+import {ValidateError} from "../../../validate-error/validate-error";
 
 
 const columns: IColumns[] = [
@@ -202,11 +199,13 @@ export const PointProgramData: FunctionComponent = () => {
 
     const save = async () => {
         try {
-            const response = await pointsService.updateStatus({
+            const payload = {
                 status: formStore.status,
                 programId: responses[currentIndex].id,
-                userAuthId: formStore.userAuthId
-            });
+                userAuthId: loginStore.userId
+            }
+            console.log(payload)
+            const response = await pointsService.updateStatus(payload);
             if (response.data.message === "Sucesso") {
                 setSeverity("success");
                 setOpenToast(true);

@@ -9,6 +9,7 @@ import {Messages} from "../../../internationalization/message";
 import {Creation} from "../../../components/creation";
 import {BankDataManagementService} from "../../bank-data/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {ValidateError} from "../../../validate-error/validate-error";
 
 
 export const RegisterMember: FunctionComponent = () => {
@@ -73,13 +74,7 @@ export const RegisterMember: FunctionComponent = () => {
             } else {
                 setOpen(true);
                 setSeverity("error");
-                if(response.data.message === "NOME_ALREADY_EXISTS") {
-                    setToastMessage(Messages.titles.nameExists);
-                } else if(response.data.message === "NOME_IS_EMPTY") {
-
-                } else {
-                    setToastMessage(Messages.titles.errorMessage);
-                }
+                setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
             }
 

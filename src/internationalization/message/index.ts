@@ -17,7 +17,6 @@ const Messages = {
         cpf: 'CPF',
         userRegisterSucess: 'Conta criada com sucesso!',
         errorMessage: 'Algo deu errado!',
-        nameExists: 'Membro já existe!',
         add: 'Adicionar',
         permission: 'Permissão',
         addMember: 'Membro criado com sucesso!',
@@ -72,7 +71,12 @@ const Messages = {
         pointsAndMiles: 'Pontos e Milhas',
         use: 'Utilizar',
         status: 'Status',
-        usePoints: 'Utilizar Pontos/Milhas'
+        usePoints: 'Utilizar Pontos/Milhas',
+        groups: 'Grupos',
+        registerGroups: 'Cadastro de Grupos',
+        macroGroup: 'Grupo Macro',
+        specificGroup: 'Grupo Específico',
+        addGroup: 'Adicionar G.Específico'
 
     },
     buttons: {},
@@ -92,7 +96,10 @@ const Messages = {
         insufficientOrigin: 'Saldo de origem insuficiente!',
         insufficientDestiny: 'Saldo de destino insuficiente!',
         programIsEqual: "Programa de Origem não pode ser igual ao Pregrama de Destino!",
-        zero: 'O valor 0 não é permitido!'
+        zero: 'O valor 0 não é permitido!',
+        macroNameExists: 'Grupo macro já existe!',
+        specificNameExists: 'Grupo específico já existe!',
+        nameExists: 'Membro já existe!',
     },
     modals: {},
     toasts: {}

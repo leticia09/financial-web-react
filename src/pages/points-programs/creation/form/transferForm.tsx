@@ -18,7 +18,6 @@ export const TransferForm: FunctionComponent = () => {
 
 
     useEffect(() => {
-        formStore.resetFormStore();
         formStore.setFormTransfer({
             originProgramId: 0,
             destinyProgramId: 0,
@@ -28,7 +27,7 @@ export const TransferForm: FunctionComponent = () => {
             destinyValue: 1,
             bonus: 0,
             userAuthId: loginStore.userId
-        })
+        });
     }, []);
 
     const handleData = (date) => {
