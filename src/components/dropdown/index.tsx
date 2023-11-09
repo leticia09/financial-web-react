@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,17 +26,26 @@ const MenuProps = {
     },
 };
 
-export const DropdownSingleSelect: FunctionComponent <IDropdownSingleSelect> = ({
-                                                            label,
-                                                            data,
-                                                            disabled,
-                                                            width,
-                                                            getValue,
-                                                            idProperty,
-                                                            descriptionProperty,
-                                                            value
-                                                        }: IDropdownSingleSelect) => {
+export const DropdownSingleSelect: FunctionComponent<IDropdownSingleSelect> = ({
+                                                                                   label,
+                                                                                   data,
+                                                                                   disabled,
+                                                                                   width,
+                                                                                   getValue,
+                                                                                   idProperty,
+                                                                                   descriptionProperty,
+                                                                                   value
+                                                                               }: IDropdownSingleSelect) => {
     const [selectedValue, setSelectedValue] = useState(value || '');
+    useEffect(() => {
+        if (value === "ACTIVE") {
+            setSelectedValue(1);
+        }
+
+        if (value === "INACTIVE") {
+            setSelectedValue(2);
+        }
+    }, []);
 
     function handleChange(event) {
         setSelectedValue(event.target.value);

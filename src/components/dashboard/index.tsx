@@ -1,4 +1,4 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import {FunctionComponent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {ICard, IColumns, IRow} from "../../interfaces/table";
 import {ButtonComponent} from "../button";
@@ -78,6 +78,20 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
             title: {
                 display: true,
                 text: optionText,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                    barThickness: 1
+                },
+            },
+            y: {
+                grid: {
+                    display: true,
+
+                },
             },
         },
     };

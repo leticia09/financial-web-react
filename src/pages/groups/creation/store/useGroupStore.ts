@@ -3,6 +3,7 @@ import { IGroup, ISpecificGroup } from "../../../../interfaces/group";
 
 type State = {
     formList: IGroup;
+    formListEdit: any;
 };
 
 type Actions = {
@@ -12,6 +13,14 @@ type Actions = {
     resetFormStore: () => void;
     setGroupMacroName: (value: string) => void;
     setAuthId: (value: number) => void;
+    //edit
+    setSpecificListEdit: (formList: ISpecificGroup[], indexList: number) => void;
+    deleteItemFormListEdit: (index: number, indexList: number) => void;
+    setFormListEdit: (formList: any) => void;
+    setGroupMacroNameEdit: (value: string, index: number) => void;
+    setStatusEdit: (value: string, index: number) => void;
+    setSpecificListValueEdit: (index: number, field: keyof any, value: any, indexList: number) => void;
+
 };
 
 const initialState: State = {
@@ -26,10 +35,16 @@ const initialState: State = {
             },
         ],
     },
+    formListEdit: {},
 };
 
 const useGroupStore = create<State & Actions>((set) => ({
     ...initialState,
+    setFormListEdit: (formListEdit: any) => {
+        set((state) => ({
+            formListEdit,
+        }));
+    },
     setSpecificList: (formList: ISpecificGroup[]) => {
         set((state) => ({
             formList: {
@@ -93,8 +108,57 @@ const useGroupStore = create<State & Actions>((set) => ({
             };
         });
     },
+    deleteItemFormListEdit: (index: number, indexList: number) => {
+        set((state) => {
+            const formListEdit = { ...state.formListEdit };
+            const specificGroups = [...formListEdit[indexList].specificGroups];
+                if (index >= 0 && index < specificGroups.length) {
+                    specificGroups.splice(index, 1);
+                    formListEdit[indexList].specificGroups = specificGroups;
+                }
+            return {
+                formListEdit
+            };
+        });
+    },
     resetFormStore: () => {
         set(initialState);
+    },
+    setSpecificListEdit: (formList: ISpecificGroup[], indexList: number) => {
+        set((state) => {
+            const updatedFormListEdit = [...state.formListEdit];
+            if (indexList >= 0) {
+                updatedFormListEdit[indexList] = {
+                    ...updatedFormListEdit[indexList],
+                    specificGroups: formList,
+                };
+            }
+            return {
+                formListEdit: updatedFormListEdit,
+            };
+        });
+    },
+
+    setGroupMacroNameEdit: (value: string, index: number) => {
+        set((state) => {
+            const formListEdit = { ...state.formListEdit };
+            formListEdit[index].name = value;
+            return { formListEdit };
+        });
+    },
+    setStatusEdit: (value: string, index: number) => {
+        set((state) => {
+            const formListEdit = { ...state.formListEdit };
+            formListEdit[index].status = value;
+            return { formListEdit };
+        });
+    },
+    setSpecificListValueEdit: (index: number, field: keyof any, value: any, indexList: number) => {
+        set((state) => {
+            const formListEdit = { ...state.formListEdit };
+            formListEdit[indexList].specificGroups[index][field] = value;
+            return { formListEdit };
+        });
     },
 }));
 

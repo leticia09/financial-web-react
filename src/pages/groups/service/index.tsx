@@ -11,7 +11,12 @@ export const GroupsService = (axiosInstance: any = instance) => {
         return axiosInstance.get(url);
     }
 
+    const edit = (payload) => {
+        const url = '/group'
+        return axiosInstance.patch(url, payload);
+    }
+
     return {
-        create, getData
+        create, getData, edit
     }
 }

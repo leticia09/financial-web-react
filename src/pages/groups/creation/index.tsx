@@ -8,7 +8,6 @@ import {GroupsService} from "../service";
 import useGroupStore from "./store/useGroupStore";
 import {ValidateError} from "../../../validate-error/validate-error";
 import {ValidateGroupForm} from "./validate-factory/validate";
-import {ISpecificGroup} from "../../../interfaces/group";
 
 export const GroupsCreation: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -37,7 +36,7 @@ export const GroupsCreation: FunctionComponent = () => {
             userAuthId: loginStore.userId,
             specificGroups: formStore.formList.specificGroups,
         }
-        
+
         try {
             const response = await service.create(payload);
             if (response.data.message === "success") {

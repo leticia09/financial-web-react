@@ -7,8 +7,14 @@ import {IColumns} from "../../../interfaces/table";
 import {BulletComponent} from "../../../components/bullet";
 import {Messages} from "../../../internationalization/message";
 import {GroupsService} from "../service";
+import {ModalComponent} from "../../../components/modal";
+import {ModalForm} from "../../points-programs/management/modal-form/modal-form";
+import {IGroup} from "../../../interfaces/group";
+import {ModalGroupForm} from "./modal";
+import useGroupStore from "../creation/store/useGroupStore";
+import {ValidateError} from "../../../validate-error/validate-error";
 
-const columns: IColumns[]= [
+const columns: IColumns[] = [
     {
         id: "name",
         label: "Grupo Macro",
@@ -41,17 +47,18 @@ const columns: IColumns[]= [
     },
 ];
 
-function createData(user, actions: React.ReactNode[], index) {
+function createData(user, actions, index) {
     const {id, name, specificGroups, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
-        <BulletComponent color="red" showLabel={true} label={'Inativo'} />
+        <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
 
     const names = specificGroups.map(obj => obj.name);
     return {id, name, specificNumbers: names.join(', '), status: statusBullet, actions, key: index};
 }
+
 type RowType = {
     id: number;
     name: string;
@@ -62,27 +69,83 @@ type RowType = {
 
 export const Groups: FunctionComponent = () => {
     const loginStore = useLoginStore();
+    const formStore = useGroupStore();
     const [rows, setRows] = useState<RowType[]>([]);
     const service = GroupsService();
-    const actions = [
+    const [open, setOpen] = useState(false);
+    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [toastMessage, setToastMessage] = useState('');
+    const [openToast, setOpenToast] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleOpen = (index) => {
+        setCurrentIndex(index);
+        setOpen(true);
+    };
+
+    const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
-            <AiIcons.AiOutlineEdit className="icon_space" size={18} />
+            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18}/>
         </div>
-    ];
+    );
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await service.getData(loginStore.userId);
-                const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions, index));
-                setRows(transformedRows);
-            } catch (error) {
-                console.log('Error', error);
-            }
+            getData();
         }
+
         fetchData().then();
-    },[]);
+    }, []);
+
+    const getData = async () => {
+        try {
+            const res = await service.getData(loginStore.userId);
+            const transformedRows = res.data.data.map((user: any, index: number) => createData(user, actions(index), index));
+
+            setRows(transformedRows);
+            let list = [];
+            for (let i = 0; i < res.data.data.length; i++) {
+                list.push(res.data.data[i])
+                formStore.setFormListEdit(list);
+            }
+
+
+        } catch (error) {
+            console.log('Error', error);
+        }
+    }
+
+    const handleClose = () => {
+        getData();
+        setOpen(false);
+    };
+
+    const save = async () => {
+        try {
+            const response = await service.edit(formStore.formListEdit[currentIndex]);
+            if (response.data.message === "success") {
+                setOpen(true);
+                setSeverity("success");
+                setToastMessage(Messages.messages.operationSuccess);
+                setTimeout(() => {
+                    setOpen(false);
+                    getData();
+                }, 2000);
+
+            } else {
+                setOpen(true);
+                setSeverity("error");
+                setToastMessage(ValidateError(response.data.message));
+            }
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpen(true);
+        }
+
+    };
 
     return (
         <>
@@ -92,6 +155,25 @@ export const Groups: FunctionComponent = () => {
                 arrayHeader={columns}
                 path="/grupos/grupos/cadastro"
             />
+            { open &&
+                <ModalComponent
+                    openModal={open}
+                    setOpenModal={handleClose}
+                    label={formStore.formListEdit[currentIndex].name}
+                    getValue={save}
+                    Form={
+                        [
+                            <ModalGroupForm
+                            index={currentIndex}
+                            />
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />}
+
+
         </>
     );
 }

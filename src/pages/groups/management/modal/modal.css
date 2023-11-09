@@ -1,0 +1,29 @@
+.content-edit-form {
+    max-height: 330px;
+    overflow-y: auto;
+}
+
+.content-edit-form::-webkit-scrollbar {
+    width: 5px;
+}
+
+.content-edit-form::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 8px;
+}
+
+.content-edit-form::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.content-edit-form {
+    scrollbar-width: thin;
+}
+
+.content-edit-form::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+.content-edit-form::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
