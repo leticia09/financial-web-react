@@ -48,6 +48,9 @@ export const ValidateError = (message: any): string => {
         case "NOME_IS_EMPTY":
             return Messages.messages.requiredFields;
 
+        case "success":
+            return Messages.messages.operationSuccess;
+
         default:
             return Messages.titles.errorMessage;
     }

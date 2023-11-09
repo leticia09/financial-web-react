@@ -15,9 +15,9 @@ interface IModal {
     label: string;
     getValue: (value: any) => void;
     Form: JSX.Element[];
-    toastMessage: string;
-    severityType: 'success' | 'info' | 'warning' | 'error';
-    openToast: boolean;
+    toastMessage?: string;
+    severityType?: 'success' | 'info' | 'warning' | 'error';
+    openToast?: boolean;
 }
 
 const style = {
@@ -94,7 +94,7 @@ export const ModalComponent: FunctionComponent<IModal> = ({openModal, setOpenMod
                 width="100%"
                 duration={2000}
                 message={toastMessage}
-                open={open}
+                open={openToast}
                 onClose={handleCloseToast}
             />
         </>

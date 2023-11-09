@@ -117,6 +117,8 @@ export const PointProgramData: FunctionComponent = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [openToast, setOpenToast] = useState(false);
     const [responses, setResponses] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [openModalExclusion, setOpenModalExclusion] = useState(false);
 
     const handleOpen = (index) => {
         setCurrentIndex(index);
@@ -129,7 +131,7 @@ export const PointProgramData: FunctionComponent = () => {
     const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
-            <AiIcons.AiOutlineDelete className="icon_delete" size={18}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(index)}/>
         </div>
     );
 
@@ -198,37 +200,62 @@ export const PointProgramData: FunctionComponent = () => {
     }
 
     const save = async () => {
+        setIsLoading(true);
         try {
             const payload = {
                 status: formStore.status,
                 programId: responses[currentIndex].id,
                 userAuthId: loginStore.userId
             }
-            console.log(payload)
             const response = await pointsService.updateStatus(payload);
-            if (response.data.message === "Sucesso") {
-                setSeverity("success");
-                setOpenToast(true);
-                setToastMessage(Messages.messages.operationSuccess);
-                await getData();
-                await getGraphic();
+            setSeverity(response.data.message);
+            setOpenToast(true);
+            setToastMessage(ValidateError(response.data.message));
+            await getData();
+            await getGraphic();
 
-                setTimeout(() => {
-                    setOpen(false);
-                    setOpenToast(false);
-                }, 1000);
-
-            } else {
-                setOpenToast(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
-            }
+            setTimeout(() => {
+                setOpen(false);
+                setOpenToast(false);
+                setIsLoading(false);
+            }, 1000);
         } catch (e) {
             setSeverity("error");
+            setIsLoading(false);
             setToastMessage(Messages.titles.errorMessage);
             setOpenToast(true);
         }
     }
+    const handleOpenModalExclusion = (index) => {
+        setCurrentIndex(index);
+        setOpenModalExclusion(true);
+    }
+    const handleCloseExclusion = () => {
+        setOpenModalExclusion(false);
+    }
+    const exclusion = async () => {
+        setIsLoading(true);
+        try {
+            const response = await pointsService.exclusion(responses[currentIndex].id);
+            setOpenToast(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpenModalExclusion(false);
+                setIsLoading(false);
+                setOpenToast(false);
+                getData();
+                getGraphic();
+
+            }, 2000);
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpen(true);
+            setIsLoading(false);
+        }
+
+    };
 
     return (
         <>
@@ -249,6 +276,7 @@ export const PointProgramData: FunctionComponent = () => {
                 hasAuxButton1={true}
                 auxPath1="/grupos/programa-pontos/programa/utilizar"
                 auxTitle1={Messages.titles.use}
+                showLineProgress={isLoading}
             />
             <ModalComponent
                 openModal={open}
@@ -258,6 +286,25 @@ export const PointProgramData: FunctionComponent = () => {
                 Form={
                     [
                         <ModalForm/>
+                    ]
+                }
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
+
+            <ModalComponent
+                openModal={openModalExclusion}
+                setOpenModal={handleCloseExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusion}
+                Form={
+                    [
+                        <div>
+                            <div style={{
+                                padding: "10px 10px 0 10px"
+                            }}>{Messages.messages.confirm}</div>
+                        </div>
                     ]
                 }
                 toastMessage={toastMessage}

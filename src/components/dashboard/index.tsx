@@ -6,6 +6,8 @@ import {Messages} from "../../internationalization/message";
 import {TableComponent} from "../table";
 import {Bar} from "react-chartjs-2";
 import "./dashboard-component.css"
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 interface IDashboard {
     title: string;
@@ -29,6 +31,7 @@ interface IDashboard {
     hasAuxButton1?: boolean;
     auxPath1?: string;
     auxTitle1?: string;
+    showLineProgress?: boolean;
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -52,7 +55,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       cards,
                                                                       hasAuxButton1,
                                                                       auxPath1,
-                                                                      auxTitle1
+                                                                      auxTitle1,
+                                                                      showLineProgress
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -99,6 +103,11 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
 
     return (
         <>
+            {showLineProgress &&
+                <Box sx={{ marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px" }}>
+                    <LinearProgress />
+                </Box>
+            }
             <div className="content">
                 <div className="labels">
                     <h3>{title}</h3>

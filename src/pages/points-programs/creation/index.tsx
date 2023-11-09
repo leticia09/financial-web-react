@@ -66,24 +66,15 @@ export const CreateProgramPoint: FunctionComponent = () => {
 
         try {
             const response = await pointsService.create(formStore.formList);
-            if (response.data.message === "Sucesso") {
-                setSeverity("success");
-                setOpen(true);
-                setToastMessage(Messages.messages.operationSuccess);
+            setSeverity(response.data.message);
+            setOpen(true);
+            setToastMessage(ValidateError(response.data.message));
 
-                setTimeout(() => {
-                    setOpen(false);
-                    setIsLoading(false);
-                    navigate("/grupos/programa-pontos");
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
                 setIsLoading(false);
-
-            }
+                navigate("/grupos/programa-pontos");
+            }, 2000);
 
         } catch (e) {
             setIsLoading(false);

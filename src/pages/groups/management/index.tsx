@@ -133,21 +133,13 @@ export const Groups: FunctionComponent = () => {
         setIsLoading(true);
         try {
             const response = await service.edit(formStore.formListEdit[currentIndex]);
-            if (response.data.message === "success") {
-                setOpenToast(true);
-                setSeverity("success");
-                setToastMessage(Messages.messages.operationSuccess);
-                setTimeout(() => {
-                    setOpen(false);
-                    getData();
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
-                setIsLoading(true);
-            }
+            setOpenToast(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
+                getData();
+            }, 2000);
 
         } catch (e) {
             setSeverity("error");
@@ -162,17 +154,15 @@ export const Groups: FunctionComponent = () => {
         setIsLoading(true);
         try {
             const response = await service.exclusion(formStore.formListEdit[currentIndex].id);
-            if (response.data.message === "success") {
-                setOpenToast(true);
-                setSeverity("success");
-                setToastMessage(Messages.messages.operationSuccess);
-                setTimeout(() => {
-                    setOpenModalExclusion(false);
-                    setIsLoading(false);
-                    getData();
-                }, 2000);
-            }
-
+            setOpenToast(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpenModalExclusion(false);
+                setIsLoading(false);
+                setOpenToast(false);
+                getData();
+            }, 2000);
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
@@ -191,42 +181,43 @@ export const Groups: FunctionComponent = () => {
                 path="/grupos/grupos/cadastro"
                 showLineProgress={isLoading}
             />
-            {open && !openModalExclusion &&
-                <ModalComponent
-                    openModal={open}
-                    setOpenModal={handleClose}
-                    label={formStore.formListEdit[currentIndex].name}
-                    getValue={save}
-                    Form={
-                        [
-                            <ModalGroupForm
-                                index={currentIndex}
-                            />
-                        ]
-                    }
-                    toastMessage={toastMessage}
-                    severityType={severity}
-                    openToast={openToast}
-                />}
+            <ModalComponent
+                openModal={open}
+                setOpenModal={handleClose}
+                label={formStore.formListEdit[currentIndex].name}
+                getValue={save}
+                Form={
+                    [
+                        <ModalGroupForm
+                            index={currentIndex}
+                        />
+                    ]
+                }
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
 
-            {openModalExclusion &&
-                <ModalComponent
-                    openModal={openModalExclusion}
-                    setOpenModal={handleCloseExclusion}
-                    label={Messages.titles.exclusion}
-                    getValue={exclusion}
-                    Form={
-                        [
-                            <div>
-                                <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirmExclusion}</div>
-                                <div style={{padding: "10px 10px 0 10px", color: "red"}}>{Messages.messages.confirm}</div>
-                            </div>
-                        ]
-                    }
-                    toastMessage={toastMessage}
-                    severityType={severity}
-                    openToast={openToast}
-                />}
+            <ModalComponent
+                openModal={openModalExclusion}
+                setOpenModal={handleCloseExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusion}
+                Form={
+                    [
+                        <div>
+                            <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirmExclusion}</div>
+                            <div style={{
+                                padding: "10px 10px 0 10px",
+                                color: "red"
+                            }}>{Messages.messages.confirm}</div>
+                        </div>
+                    ]
+                }
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
 
 
         </>

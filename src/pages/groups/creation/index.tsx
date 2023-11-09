@@ -28,7 +28,7 @@ export const GroupsCreation: FunctionComponent = () => {
 
     const save = async () => {
         setIsLoading(true);
-        if(formStore.formList.specificGroups.length > 0) {
+        if (formStore.formList.specificGroups.length > 0) {
             formStore.formList.specificGroups.forEach(sp => {
                 sp.userAuthId = loginStore.userId;
             })
@@ -42,23 +42,15 @@ export const GroupsCreation: FunctionComponent = () => {
 
         try {
             const response = await service.create(payload);
-            if (response.data.message === "success") {
-                setOpen(true);
-                setSeverity("success");
-                setToastMessage(Messages.messages.operationSuccess);
+            setOpen(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
 
-                setTimeout(() => {
-                    setOpen(false);
-                    setIsLoading(false);
-                    navigate("/grupos/grupos");
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
                 setIsLoading(false);
-            }
+                navigate("/grupos/grupos");
+            }, 2000);
 
         } catch (e) {
             setIsLoading(false);

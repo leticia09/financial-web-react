@@ -36,6 +36,7 @@ export const MemberForm: FunctionComponent <IMemberForm> = ({i, hasDelete}: IMem
                 disabled={false}
                 width="200px"
                 getValue={(value) => formStore.setFormListValue(i, 'name', value)}
+                inputValue={formStore.formList[i].name}
             />
 
             { hasDelete && (

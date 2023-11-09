@@ -25,12 +25,6 @@ export const SidebarData = [
             },
 
             {
-                title: 'Programas de Pontos',
-                path: '/grupos/programa-pontos',
-                icon: <GiIcons.GiAirplaneDeparture size={16}/>,
-            },
-
-            {
                 title: 'Dados Bancários',
                 path: '/grupos/dados-bancarios',
                 icon: <FcIcons.FcLibrary size={16}/>
@@ -43,6 +37,7 @@ export const SidebarData = [
             }
         ]
     },
+
     {
         title: 'Receitas',
         path: '/entrada',
@@ -61,6 +56,13 @@ export const SidebarData = [
         title: 'Despesas',
         path: '/despesas/graficos',
         icon: <FcIcons.FcBearish size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
+    },
+    {
+        title: 'Programas de Pontos',
+        path: '/grupos/programa-pontos',
+        icon: <GiIcons.GiAirplaneDeparture size={16}/>,
         iconClosed: <RiIcons.RiArrowDownSFill/>,
         iconOpened: <RiIcons.RiArrowUpSFill/>,
     },

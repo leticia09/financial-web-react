@@ -30,12 +30,18 @@ export const PointsService = (axiosInstance: any = instance) => {
         return axiosInstance.post(url, payload);
     }
 
+    const exclusion = (id: number) => {
+        const url = '/points/' +  id;
+        return axiosInstance.delete(url);
+    }
+
     return {
         create,
         get,
         transfer,
         getData,
         updateStatus,
-        use
+        use,
+        exclusion
     }
 }

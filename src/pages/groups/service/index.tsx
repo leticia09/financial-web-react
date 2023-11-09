@@ -11,8 +11,8 @@ export const GroupsService = (axiosInstance: any = instance) => {
         return axiosInstance.get(url);
     }
 
-    const exclusion = (authId) => {
-        const url = '/group/' + authId;
+    const exclusion = (id) => {
+        const url = '/group/' + id;
         return axiosInstance.delete(url);
     }
 

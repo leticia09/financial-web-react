@@ -57,26 +57,18 @@ export const RegisterMember: FunctionComponent = () => {
 
         try {
             const response = await registerMembersService.createMember(formStore.formList);
-            if (response.data.message === "Sucesso") {
-                setOpen(true);
-                setSeverity("success");
-                setToastMessage(Messages.titles.addMember);
+            setOpen(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
 
-                const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
-                globalStore.setMember(memberResponse.data.data);
+            const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
+            globalStore.setMember(memberResponse.data.data);
 
-                setTimeout(() => {
-                    setOpen(false);
-                    navigate("/grupos/membros");
-                    setIsLoading(false);
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
+                navigate("/grupos/membros");
                 setIsLoading(false);
-            }
+            }, 2000);
 
         } catch (e) {
             setIsLoading(false);

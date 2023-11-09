@@ -30,24 +30,16 @@ export const TransferProgram: FunctionComponent = () => {
 
         try {
             const response = await pointsService.transfer(formStore.formTransfer);
-            if (response.data.message === "Sucesso") {
-                setOpen(true);
-                setSeverity("success");
-                setToastMessage(Messages.messages.operationSuccess);
-                formStore.resetFormStore();
+            setOpen(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
+            formStore.resetFormStore();
 
-                setTimeout(() => {
-                    setOpen(false);
-                    setIsLoading(false);
-                    navigate("/grupos/programa-pontos");
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
                 setIsLoading(false);
-            }
+                navigate("/grupos/programa-pontos");
+            }, 2000);
 
         } catch (e) {
             setIsLoading(false);

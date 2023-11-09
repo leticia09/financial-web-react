@@ -16,8 +16,7 @@ export const UsePoint: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const formStore = useUpdateFormStore();
     const pointsService = PointsService();
-    const navigate =  useNavigate();
-
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -32,30 +31,20 @@ export const UsePoint: FunctionComponent = () => {
     };
 
 
-
     const save = async () => {
         setIsLoading(true);
 
         try {
             const response = await pointsService.use(formStore.formUse);
-            if (response.data.message === "Sucesso") {
-                setOpen(true);
-                setSeverity("success");
-                setToastMessage(Messages.messages.operationSuccess);
+            setOpen(true);
+            setSeverity(response.data.message);
+            setToastMessage(ValidateError(response.data.message));
 
-                setTimeout(() => {
-                    setOpen(false);
-                    setIsLoading(false);
-                    navigate("/grupos/programa-pontos");
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                setOpen(false);
                 setIsLoading(false);
-
-            }
+                navigate("/grupos/programa-pontos");
+            }, 2000);
 
         } catch (e) {
             setIsLoading(false);
