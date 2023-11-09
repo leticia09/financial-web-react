@@ -181,22 +181,25 @@ export const Groups: FunctionComponent = () => {
                 path="/grupos/grupos/cadastro"
                 showLineProgress={isLoading}
             />
-            <ModalComponent
-                openModal={open}
-                setOpenModal={handleClose}
-                label={formStore.formListEdit[currentIndex].name}
-                getValue={save}
-                Form={
-                    [
-                        <ModalGroupForm
-                            index={currentIndex}
-                        />
-                    ]
-                }
-                toastMessage={toastMessage}
-                severityType={severity}
-                openToast={openToast}
-            />
+            {open &&
+                <ModalComponent
+                    openModal={open}
+                    setOpenModal={handleClose}
+                    label={formStore.formListEdit[currentIndex].name}
+                    getValue={save}
+                    Form={
+                        [
+                            <ModalGroupForm
+                                index={currentIndex}
+                            />
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
+
 
             <ModalComponent
                 openModal={openModalExclusion}
