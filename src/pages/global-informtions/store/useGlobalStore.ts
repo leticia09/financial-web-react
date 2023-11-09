@@ -9,6 +9,7 @@ type State = {
     typeOfScore: any[];
     program: any[];
     status: any[];
+    currency: any[];
 };
 
 type Actions = {
@@ -27,6 +28,7 @@ const initialState: State = {
     typeOfScore: [],
     program: [],
     status: [],
+    currency: [{id: 1, description: "Real (R$)"}, {id: 2, description: "Dólar ($)"}]
 };
 
 const useGlobalStore = create<State & Actions>((set) => ({

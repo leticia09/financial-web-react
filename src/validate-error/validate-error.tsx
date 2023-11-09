@@ -50,6 +50,8 @@ export const ValidateError = (message: any): string => {
 
         case "success":
             return Messages.messages.operationSuccess;
+        case "USER_EXISTS":
+            return Messages.messages.userExists;
 
         default:
             return Messages.titles.errorMessage;

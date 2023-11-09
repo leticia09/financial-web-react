@@ -10,6 +10,7 @@ import {InputCPF} from "../../components/input-cpf-validation";
 import {validateEmail} from "../../utils/validateEmail";
 import {RegisterAccountService} from "./service";
 import {Toast} from "../../components/toast";
+import {ValidateError} from "../../validate-error/validate-error";
 
 export const dataSex = [
     {
@@ -54,21 +55,16 @@ export const RegisterAccount: FunctionComponent = () => {
 
             try {
                 const response = await registerAccountService.auth(payload);
-                if (response.data.message === "Sucesso") {
-                    setSeverity('success')
-                    setToastMessage(Messages.titles.userRegisterSucess)
-                    setOpen(true);
 
-                    setTimeout(() => {
-                        setOpen(false);
-                        navigate("/login");
-                    }, 2000);
+                setSeverity(response.data.message)
+                setToastMessage(ValidateError(response.data.message));
+                setOpen(true);
 
-                } else {
-                    setSeverity('error')
-                    setToastMessage(Messages.titles.errorMessage)
-                    setOpen(true);
-                }
+                setTimeout(() => {
+                    setOpen(false);
+                    navigate("/login");
+                }, 2000);
+
 
             } catch (e) {
                 console.log('error:', e);
@@ -120,13 +116,13 @@ export const RegisterAccount: FunctionComponent = () => {
                 />
 
                 <DropdownSingleSelect
-                label={Messages.titles.sex}
-                data={dataSex}
-                idProperty={"id"}
-                descriptionProperty={"description"}
-                disabled={false}
-                width={"300px"}
-                getValue={(value) => setSex(value)}
+                    label={Messages.titles.sex}
+                    data={dataSex}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
+                    disabled={false}
+                    width={"300px"}
+                    getValue={(value) => setSex(value)}
                 />
 
                 <InputPassword

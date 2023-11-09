@@ -78,6 +78,7 @@ const Messages = {
         specificGroup: 'Grupo Específico',
         addGroup: 'Adicionar G.Específico',
         exclusion: 'Excluir',
+        score: 'Pontua',
 
     },
     buttons: {},
@@ -103,6 +104,7 @@ const Messages = {
         nameExists: 'Membro já existe!',
         confirm: 'Tem certeza de que deseja continuar?',
         confirmExclusion: 'Ao excluir este Grupo Macro, todos os Grupos Específicos associados também serão permanentemente removidos.',
+        userExists: 'Usuário já existe!'
     },
     modals: {},
     toasts: {}

@@ -20,6 +20,7 @@ export interface ICard {
     closingDate: number,
     dueDate: number,
     index: number,
+    program?: string,
     point?: number;
     currencyPoint?: string;
 }

@@ -10,8 +10,9 @@ import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
 import {ValidateCard} from "../validade-factory/validadeFactory";
 import {BankDataManagementService} from "../../service";
 import useLoginStore from "../../../login/store/useLoginStore";
-import { useParams } from 'react-router-dom';
-import { IAccount } from "interfaces/bankData";
+import {useParams} from 'react-router-dom';
+import {IAccount} from "interfaces/bankData";
+import {FormControlLabel, Switch} from "@mui/material";
 
 
 export const BankDataForm: FunctionComponent = () => {
@@ -31,6 +32,7 @@ export const BankDataForm: FunctionComponent = () => {
     const {id} = useParams();
     const bankDataManagementService = BankDataManagementService();
     const [bankName, setBankName] = useState(null);
+    const [hasScore, setScore] = useState(false);
 
     const days = [];
 
@@ -38,6 +40,7 @@ export const BankDataForm: FunctionComponent = () => {
         formStore.resetAccounts();
         formStore.setRows([]);
         resetFields();
+        setScore(false);
         resetCardFields();
         if (id) {
             const fetchData = async () => {
@@ -120,6 +123,10 @@ export const BankDataForm: FunctionComponent = () => {
         setClosingDate(value);
     }
 
+    const handleChangeScore = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setScore(event.target.checked);
+    };
+
     const transformDataToRows = (formList) => {
         const rows = formList.accounts.map((account) => {
             return account.cards.map((card) => ([
@@ -131,7 +138,6 @@ export const BankDataForm: FunctionComponent = () => {
                 {label: card.dueDate,}
             ]));
         });
-        console.log('rows', rows)
 
         formStore.setRows(rows);
     }
@@ -303,7 +309,49 @@ export const BankDataForm: FunctionComponent = () => {
                                 value={closingDate}
                             />
                         )}
+                        {(cardModality === 1 || cardModality === 3) && (
+                            <FormControlLabel style={{marginLeft: "12px"}}
+                                              control={
+                                                  <Switch checked={hasScore} onChange={handleChangeScore} name="gilad"/>
+                                              }
+                                              label={Messages.titles.score}
+                            />
+                        )}
                     </div>
+
+                    {hasScore &&
+                        <div className="register-bank">
+                            <DropdownSingleSelect
+                                label={Messages.titles.program}
+                                data={globalStore.program}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => handleClosingDate(value)}
+                                value={closingDate}
+                            />
+                            <Input
+                                label={Messages.titles.points}
+                                disabled={false}
+                                width="200px"
+                                getValue={(value) => handleFinalCard(value)}
+                                inputValue={finalCard}
+                                maskNumeric={true}
+                            />
+
+                            <DropdownSingleSelect
+                                label={Messages.titles.currency}
+                                data={globalStore.currency}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => handleClosingDate(value)}
+                                value={closingDate}
+                            />
+                        </div>
+                    }
 
 
                     <div className="register-bank">
