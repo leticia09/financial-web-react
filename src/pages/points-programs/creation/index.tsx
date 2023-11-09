@@ -70,10 +70,10 @@ export const CreateProgramPoint: FunctionComponent = () => {
                 setSeverity("success");
                 setOpen(true);
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
 
                 setTimeout(() => {
                     setOpen(false);
+                    setIsLoading(false);
                     navigate("/grupos/programa-pontos");
                 }, 2000);
 
@@ -113,7 +113,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
             pathBack="/grupos/programa-pontos"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             hasButton={true}
             handleClose={handleClose}

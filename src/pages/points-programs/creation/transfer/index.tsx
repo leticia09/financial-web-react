@@ -34,11 +34,11 @@ export const TransferProgram: FunctionComponent = () => {
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
                 formStore.resetFormStore();
 
                 setTimeout(() => {
                     setOpen(false);
+                    setIsLoading(false);
                     navigate("/grupos/programa-pontos");
                 }, 2000);
 
@@ -70,7 +70,7 @@ export const TransferProgram: FunctionComponent = () => {
             pathBack="/grupos/programa-pontos"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             handleClose={handleClose}
             hasButton={false}

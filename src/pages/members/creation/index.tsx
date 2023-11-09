@@ -61,7 +61,6 @@ export const RegisterMember: FunctionComponent = () => {
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.titles.addMember);
-                setIsLoading(false);
 
                 const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
                 globalStore.setMember(memberResponse.data.data);
@@ -69,6 +68,7 @@ export const RegisterMember: FunctionComponent = () => {
                 setTimeout(() => {
                     setOpen(false);
                     navigate("/grupos/membros");
+                    setIsLoading(false);
                 }, 2000);
 
             } else {
@@ -104,7 +104,7 @@ export const RegisterMember: FunctionComponent = () => {
             pathBack="/grupos/membros"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             disabledSaveButton={!formStore.formList[0].name}
             hasButton={true}

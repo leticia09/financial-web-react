@@ -6,6 +6,7 @@ import {ValidateFormUse} from "../validate-factory/validateForms";
 import useUpdateFormStore from "../store/useUpdateFormStore";
 import {PointsService} from "../../service";
 import {useNavigate} from "react-router-dom";
+import {ValidateError} from "../../../../validate-error/validate-error";
 
 
 export const UsePoint: FunctionComponent = () => {
@@ -38,20 +39,20 @@ export const UsePoint: FunctionComponent = () => {
         try {
             const response = await pointsService.use(formStore.formUse);
             if (response.data.message === "Sucesso") {
-                setSeverity("success");
                 setOpen(true);
+                setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
 
                 setTimeout(() => {
                     setOpen(false);
+                    setIsLoading(false);
                     navigate("/grupos/programa-pontos");
                 }, 2000);
 
             } else {
                 setOpen(true);
                 setSeverity("error");
-                //setToastMessage(ValidateError(response.data.message));
+                setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
 
             }
@@ -79,7 +80,7 @@ export const UsePoint: FunctionComponent = () => {
             pathBack="/grupos/programa-pontos"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             hasButton={false}
             handleClose={handleClose}

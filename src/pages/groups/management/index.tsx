@@ -8,8 +8,6 @@ import {BulletComponent} from "../../../components/bullet";
 import {Messages} from "../../../internationalization/message";
 import {GroupsService} from "../service";
 import {ModalComponent} from "../../../components/modal";
-import {ModalForm} from "../../points-programs/management/modal-form/modal-form";
-import {IGroup} from "../../../interfaces/group";
 import {ModalGroupForm} from "./modal";
 import useGroupStore from "../creation/store/useGroupStore";
 import {ValidateError} from "../../../validate-error/validate-error";
@@ -77,16 +75,22 @@ export const Groups: FunctionComponent = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [openToast, setOpenToast] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-
+    const [openModalExclusion, setOpenModalExclusion] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const handleOpen = (index) => {
         setCurrentIndex(index);
         setOpen(true);
     };
 
+    const handleOpenModalExclusion = (index) => {
+        setCurrentIndex(index);
+        setOpenModalExclusion(true);
+    }
+
     const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
-            <AiIcons.AiOutlineDelete className="icon_delete" size={18}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(index)}/>
         </div>
     );
 
@@ -99,6 +103,7 @@ export const Groups: FunctionComponent = () => {
     }, []);
 
     const getData = async () => {
+        setIsLoading(true);
         try {
             const res = await service.getData(loginStore.userId);
             const transformedRows = res.data.data.map((user: any, index: number) => createData(user, actions(index), index));
@@ -109,8 +114,7 @@ export const Groups: FunctionComponent = () => {
                 list.push(res.data.data[i])
                 formStore.setFormListEdit(list);
             }
-
-
+            setIsLoading(false);
         } catch (error) {
             console.log('Error', error);
         }
@@ -121,11 +125,16 @@ export const Groups: FunctionComponent = () => {
         setOpen(false);
     };
 
+    const handleCloseExclusion = () => {
+        setOpenModalExclusion(false);
+    }
+
     const save = async () => {
+        setIsLoading(true);
         try {
             const response = await service.edit(formStore.formListEdit[currentIndex]);
             if (response.data.message === "success") {
-                setOpen(true);
+                setOpenToast(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
                 setTimeout(() => {
@@ -137,12 +146,38 @@ export const Groups: FunctionComponent = () => {
                 setOpen(true);
                 setSeverity("error");
                 setToastMessage(ValidateError(response.data.message));
+                setIsLoading(true);
             }
 
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
             setOpen(true);
+            setIsLoading(true);
+        }
+
+    };
+
+    const exclusion = async () => {
+        setIsLoading(true);
+        try {
+            const response = await service.exclusion(formStore.formListEdit[currentIndex].id);
+            if (response.data.message === "success") {
+                setOpenToast(true);
+                setSeverity("success");
+                setToastMessage(Messages.messages.operationSuccess);
+                setTimeout(() => {
+                    setOpenModalExclusion(false);
+                    setIsLoading(false);
+                    getData();
+                }, 2000);
+            }
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpen(true);
+            setIsLoading(false);
         }
 
     };
@@ -154,8 +189,9 @@ export const Groups: FunctionComponent = () => {
                 rows={rows}
                 arrayHeader={columns}
                 path="/grupos/grupos/cadastro"
+                showLineProgress={isLoading}
             />
-            { open &&
+            {open && !openModalExclusion &&
                 <ModalComponent
                     openModal={open}
                     setOpenModal={handleClose}
@@ -164,8 +200,27 @@ export const Groups: FunctionComponent = () => {
                     Form={
                         [
                             <ModalGroupForm
-                            index={currentIndex}
+                                index={currentIndex}
                             />
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />}
+
+            {openModalExclusion &&
+                <ModalComponent
+                    openModal={openModalExclusion}
+                    setOpenModal={handleCloseExclusion}
+                    label={Messages.titles.exclusion}
+                    getValue={exclusion}
+                    Form={
+                        [
+                            <div>
+                                <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirmExclusion}</div>
+                                <div style={{padding: "10px 10px 0 10px", color: "red"}}>{Messages.messages.confirm}</div>
+                            </div>
                         ]
                     }
                     toastMessage={toastMessage}

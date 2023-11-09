@@ -7,6 +7,8 @@ import {GiCheckMark} from "react-icons/gi";
 import {Toast} from "../toast";
 import {LoadingComponent} from "../loading";
 import {BlockComponent} from "../block";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 interface ICreation {
     titles: string;
@@ -15,7 +17,6 @@ interface ICreation {
     pathBack: string;
     toastMessage: string;
     severityType: 'success' | 'info' | 'warning' | 'error';
-    isLoading: boolean;
     open: boolean;
     handleClose: (reason: string) => void;
     hasBlock?: boolean;
@@ -26,27 +27,28 @@ interface ICreation {
     handleAddMember?: () => void;
     titlesButton: string;
     hasButton?: boolean;
+    showLineProgress?: boolean;
 }
 
-export const Creation: FunctionComponent <ICreation> = ({
-                                                titles,
-                                                Form,
-                                                save,
-                                                pathBack,
-                                                toastMessage,
-                                                severityType,
-                                                isLoading,
-                                                open,
-                                                handleClose,
-                                                hasButton,
-                                                hasBlock,
-                                                blocksNumber,
-                                                columns,
-                                                rows,
-                                                disabledSaveButton,
-                                                handleAddMember,
-                                                titlesButton,
-                                            }: ICreation) => {
+export const Creation: FunctionComponent<ICreation> = ({
+                                                           titles,
+                                                           Form,
+                                                           save,
+                                                           pathBack,
+                                                           toastMessage,
+                                                           severityType,
+                                                           open,
+                                                           handleClose,
+                                                           hasButton,
+                                                           hasBlock,
+                                                           blocksNumber,
+                                                           columns,
+                                                           rows,
+                                                           disabledSaveButton,
+                                                           handleAddMember,
+                                                           titlesButton,
+                                                           showLineProgress
+                                                       }: ICreation) => {
 
 
     const handleSave = () => {
@@ -63,6 +65,11 @@ export const Creation: FunctionComponent <ICreation> = ({
 
     return (
         <>
+            {showLineProgress &&
+                <Box sx={{marginTop: "58px", marginLeft: "-5px", width: '100.6%'}}>
+                    <LinearProgress/>
+                </Box>
+            }
             <div className="content-member">
 
                 <div className="labels-member">
@@ -122,10 +129,6 @@ export const Creation: FunctionComponent <ICreation> = ({
                     open={open}
                     onClose={handleCloseToast}
                 />
-
-                {isLoading && (
-                    <LoadingComponent/>
-                )}
             </div>
         </>
     );

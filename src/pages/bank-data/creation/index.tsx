@@ -27,9 +27,8 @@ export const RegisterBankData: FunctionComponent = () => {
     };
 
     const save = async () => {
-        formStore.formList.userAuthId = loginStore.userId;
-
         setIsLoading(true);
+        formStore.formList.userAuthId = loginStore.userId;
 
         try {
             const response = await registerBankService.saveRegisterBank(formStore.formList);
@@ -37,10 +36,10 @@ export const RegisterBankData: FunctionComponent = () => {
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
 
                 setTimeout(() => {
                     setOpen(false);
+                    setIsLoading(false);
                     navigate("/grupos/dados-bancarios");
                 }, 2000);
 
@@ -71,7 +70,7 @@ export const RegisterBankData: FunctionComponent = () => {
             pathBack="/grupos/dados-bancarios"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             handleClose={handleClose}
             hasBlock={true}

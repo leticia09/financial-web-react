@@ -27,13 +27,7 @@ const initialState: State = {
     formList: {
         name: "",
         userAuthId: 0,
-        specificGroups: [
-            {
-                name: "",
-                index: 0,
-                userAuthId: 0
-            },
-        ],
+        specificGroups: [],
     },
     formListEdit: {},
 };
@@ -126,7 +120,7 @@ const useGroupStore = create<State & Actions>((set) => ({
     },
     setSpecificListEdit: (formList: ISpecificGroup[], indexList: number) => {
         set((state) => {
-            const updatedFormListEdit = [...state.formListEdit];
+            const updatedFormListEdit = { ...state.formListEdit };
             if (indexList >= 0) {
                 updatedFormListEdit[indexList] = {
                     ...updatedFormListEdit[indexList],

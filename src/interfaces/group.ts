@@ -7,5 +7,5 @@ export interface IGroup {
 export interface ISpecificGroup {
     name: string;
     index: number,
-    userAuthId,
+    userAuthId: number,
 }

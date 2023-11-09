@@ -42,8 +42,10 @@ export const GroupForm: FunctionComponent = () => {
                     getValue={(value) => formStore.setGroupMacroName(value)}
                 />
             </div>
+            { formStore.formList.specificGroups.length > 0 &&
+                <h3 className="title-bank">{Messages.titles.specificGroup}</h3>
+            }
 
-            <h3 className="title-bank">{Messages.titles.specificGroup}</h3>
             {formStore.formList.specificGroups.map((groupEs, i) => (
                 <div className="register-member" key={groupEs.index}>
                     <Input
@@ -52,23 +54,21 @@ export const GroupForm: FunctionComponent = () => {
                         width="200px"
                         getValue={(value) => formStore.setSpecificListValue(i, 'name', value)}
                     />
+                    <ButtonComponent
+                        disabled={false}
+                        width="30px"
+                        height="30px"
+                        cursor="pointer"
+                        borderRadius="4px"
+                        color="red"
+                        background="transparent"
+                        border="none"
+                        padding="2px"
+                        marginBottom="1px"
+                        fontWeight="400"
+                        icon={<BsTrash size={12}/>}
+                        action={() => handleDeleteMember(i)}/>
 
-                    {formStore.formList.specificGroups.length > 1 && i > 0 && (
-                        <ButtonComponent
-                            disabled={false}
-                            width="30px"
-                            height="30px"
-                            cursor="pointer"
-                            borderRadius="4px"
-                            color="red"
-                            background="transparent"
-                            border="none"
-                            padding="2px"
-                            marginBottom="1px"
-                            fontWeight="400"
-                            icon={<BsTrash size={12}/>}
-                            action={() => handleDeleteMember(i)}/>
-                    )}
                 </div>
             ))
             }

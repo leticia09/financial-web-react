@@ -28,9 +28,12 @@ export const GroupsCreation: FunctionComponent = () => {
 
     const save = async () => {
         setIsLoading(true);
-        formStore.formList.specificGroups.forEach(sp => {
-            sp.userAuthId = loginStore.userId;
-        })
+        if(formStore.formList.specificGroups.length > 0) {
+            formStore.formList.specificGroups.forEach(sp => {
+                sp.userAuthId = loginStore.userId;
+            })
+        }
+
         const payload = {
             name: formStore.formList.name,
             userAuthId: loginStore.userId,
@@ -43,10 +46,10 @@ export const GroupsCreation: FunctionComponent = () => {
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
 
                 setTimeout(() => {
                     setOpen(false);
+                    setIsLoading(false);
                     navigate("/grupos/grupos");
                 }, 2000);
 
@@ -77,9 +80,9 @@ export const GroupsCreation: FunctionComponent = () => {
             pathBack="/grupos/grupos"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
             open={open}
             handleClose={handleClose}
+            showLineProgress={isLoading}
         />
     );
 }

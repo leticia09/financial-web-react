@@ -76,7 +76,8 @@ const Messages = {
         registerGroups: 'Cadastro de Grupos',
         macroGroup: 'Grupo Macro',
         specificGroup: 'Grupo Específico',
-        addGroup: 'Adicionar G.Específico'
+        addGroup: 'Adicionar G.Específico',
+        exclusion: 'Excluir',
 
     },
     buttons: {},
@@ -100,6 +101,8 @@ const Messages = {
         macroNameExists: 'Grupo macro já existe!',
         specificNameExists: 'Grupo específico já existe!',
         nameExists: 'Membro já existe!',
+        confirm: 'Tem certeza de que deseja continuar?',
+        confirmExclusion: 'Ao excluir este Grupo Macro, todos os Grupos Específicos associados também serão permanentemente removidos.',
     },
     modals: {},
     toasts: {}

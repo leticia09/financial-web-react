@@ -5,6 +5,8 @@ import {IColumns, IRow} from "../../interfaces/table";
 import {ButtonComponent} from "../button";
 import {Messages} from "../../internationalization/message";
 import {TableComponent} from "../table";
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 
 interface IManagement {
     title: string;
@@ -17,6 +19,7 @@ interface IManagement {
     hasMoreTable?: boolean;
     moreTableArrayHeader?: IColumns[];
     moreTableRows?: IRow[];
+    showLineProgress?: boolean;
 }
 
 export const Management: FunctionComponent<IManagement> = ({
@@ -29,12 +32,18 @@ export const Management: FunctionComponent<IManagement> = ({
                                                                menuOptions,
                                                                hasMoreTable = false,
                                                                moreTableArrayHeader,
-                                                               moreTableRows
+                                                               moreTableRows,
+                                                               showLineProgress
                                                            }: IManagement) => {
     const navigate = useNavigate();
 
     return (
         <>
+            {showLineProgress &&
+                <Box sx={{ marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px" }}>
+                    <LinearProgress />
+                </Box>
+            }
             <div className="content">
                 <div className="labels">
                     <h3>{title}</h3>
