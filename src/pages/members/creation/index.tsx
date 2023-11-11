@@ -25,6 +25,15 @@ export const RegisterMember: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        formStore.setFormList([
+            {
+                id: 0,
+                name: '',
+                index: 0,
+                userAuthId: 0,
+                color: ''
+            }
+        ])
         formStore.resetFormStore();
     }, []);
 
@@ -42,7 +51,8 @@ export const RegisterMember: FunctionComponent = () => {
                 id: null,
                 name: '',
                 index: updateList.length,
-                userAuthId: loginStore.userId
+                userAuthId: loginStore.userId,
+                color: ''
             }
         )
         formStore.setFormList(updateList);

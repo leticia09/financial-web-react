@@ -5,6 +5,7 @@ type State = {
     status: string;
     programId: number;
     userAuthId: number;
+    ownerId: number;
     formUse: IUse;
 };
 
@@ -14,6 +15,7 @@ type Actions = {
     setUserAuthId: (userAuthId: number) => void;
     setFormUse: (formUse: IUse) => void;
 
+    setOwnerId: (ownerId: number) => void;
     setProgram: (programId: number) => void;
     setProgramValue: (value: number) => void;
     resetFormStore: () => void;
@@ -23,10 +25,12 @@ const initialState: State = {
     status: '',
     programId: 0,
     userAuthId: 0,
+    ownerId: 0,
     formUse: {
         programId: 0,
         value: null,
-        userAuthId: 0
+        userAuthId: 0,
+        ownerId: 0
     }
 };
 
@@ -40,6 +44,11 @@ const useUpdateFormStore = create<State & Actions>((set) => ({
     setProgramId: (programId) => {
         set((state) => ({
             programId: programId
+        }));
+    },
+    setOwnerId: (ownerId) => {
+        set((state) => ({
+            formUse: {...state.formUse, ownerId: ownerId},
         }));
     },
     setUserAuthId: (value) => {

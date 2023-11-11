@@ -19,6 +19,13 @@ import {ValidateError} from "../../../validate-error/validate-error";
 
 const columns: IColumns[] = [
     {
+        id: "owner",
+        label: "Titular",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
         id: "program",
         label: "Programa",
         minWidth: 70,
@@ -65,7 +72,7 @@ const columns: IColumns[] = [
 
 
 function createData(user, actions, index) {
-    const {id, program, value, typeOfScore, pointsExpirationDate, status} = user;
+    const {id, owner, program, value, typeOfScore, pointsExpirationDate, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
@@ -78,6 +85,8 @@ function createData(user, actions, index) {
 
     return {
         id,
+        owner: owner.name,
+        ownerID: owner.id,
         program,
         typeOfScore,
         value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
@@ -119,6 +128,27 @@ export const PointProgramData: FunctionComponent = () => {
     const [responses, setResponses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [openModalExclusion, setOpenModalExclusion] = useState(false);
+
+    // const datasets = [
+    //     {
+    //         label: labelData,
+    //         data: dataData,
+    //         borderColor: colorData,
+    //         backgroundColor: colorData,
+    //     },
+    //     {
+    //         label: "Hamilton",
+    //         data: dataData,
+    //         borderColor: colorData,
+    //         backgroundColor: "red",
+    //     },
+    //     {
+    //         label: "Saron",
+    //         data: dataData,
+    //         borderColor: colorData,
+    //         backgroundColor: "grey",
+    //     },
+    // ]
 
     const handleOpen = (index) => {
         setCurrentIndex(index);
@@ -163,7 +193,7 @@ export const PointProgramData: FunctionComponent = () => {
         const programsData = await pointsService.getData(loginStore.userId);
         store.setGraphicData(
             programsData.data.data.labels,
-            programsData.data.data.data,
+            programsData.data.data.dataSet,
             programsData.data.data.totalPoints,
             programsData.data.data.totalMiles,
             programsData.data.data.totalProgramActive,
@@ -267,10 +297,8 @@ export const PointProgramData: FunctionComponent = () => {
                 hasAuxButton={true}
                 auxPath="/grupos/programa-pontos/programa/tranferencia"
                 auxTitle={Messages.titles.transfer}
+                dataSets={store.graphicData.dataSet}
                 labelsData={store.graphicData.labels}
-                dataData={store.graphicData.data}
-                colorData="#01b8aa"
-                labelData={Messages.titles.valuePrevius}
                 optionText={Messages.titles.pointsAndMiles}
                 cards={cards}
                 hasAuxButton1={true}
@@ -278,39 +306,44 @@ export const PointProgramData: FunctionComponent = () => {
                 auxTitle1={Messages.titles.use}
                 showLineProgress={isLoading}
             />
-            <ModalComponent
-                openModal={open}
-                setOpenModal={handleClose}
-                label={store.graphicData.labels[currentIndex]}
-                getValue={save}
-                Form={
-                    [
-                        <ModalForm/>
-                    ]
-                }
-                toastMessage={toastMessage}
-                severityType={severity}
-                openToast={openToast}
-            />
+            {open &&
+                <ModalComponent
+                    openModal={open}
+                    setOpenModal={handleClose}
+                    label={store.graphicData.labels[currentIndex]}
+                    getValue={save}
+                    Form={
+                        [
+                            <ModalForm/>
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
 
-            <ModalComponent
-                openModal={openModalExclusion}
-                setOpenModal={handleCloseExclusion}
-                label={Messages.titles.exclusion}
-                getValue={exclusion}
-                Form={
-                    [
-                        <div>
-                            <div style={{
-                                padding: "10px 10px 0 10px"
-                            }}>{Messages.messages.confirm}</div>
-                        </div>
-                    ]
-                }
-                toastMessage={toastMessage}
-                severityType={severity}
-                openToast={openToast}
-            />
+            {openModalExclusion &&
+                <ModalComponent
+                    openModal={openModalExclusion}
+                    setOpenModal={handleCloseExclusion}
+                    label={Messages.titles.exclusion}
+                    getValue={exclusion}
+                    Form={
+                        [
+                            <div>
+                                <div style={{
+                                    padding: "10px 10px 0 10px"
+                                }}>{Messages.messages.confirm}</div>
+                            </div>
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
+
         </>
     );
 }

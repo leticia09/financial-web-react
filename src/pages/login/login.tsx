@@ -1,27 +1,17 @@
 import {FunctionComponent, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import './login.css'
-// @ts-ignore
-import {Input} from "../../components/input/index.tsx";
-// @ts-ignore
-import {InputPassword} from "../../components/password/index.tsx";
-// @ts-ignore
-import {Messages} from "../../internationalization/message/index.ts";
-// @ts-ignore
-import {ButtonComponent} from "../../components/button/index.tsx";
-import {useNavigate} from "react-router-dom";
-// @ts-ignore
-import {LoginService} from "./service/index.tsx";
-// @ts-ignore
-import useLoginStore from "./store/useLoginStore.ts";
-// @ts-ignore
-import {Toast} from "../../components/toast/index.tsx";
-// @ts-ignore
-import useGlobalStore from "../global-informtions/store/useGlobalStore.ts";
-// @ts-ignore
-import {BankDataManagementService} from "../bank-data/service/index.tsx";
-// @ts-ignore
-import {GlobalService} from "../global-informtions/service/index.tsx";
+import {LoginService} from "./service";
+import useLoginStore from "./store/useLoginStore";
+import useGlobalStore from "../global-informtions/store/useGlobalStore";
+import {BankDataManagementService} from "../bank-data/service";
+import {GlobalService} from "../global-informtions/service";
+import {Messages} from "../../internationalization/message";
+import {Input} from "../../components/input";
+import {InputPassword} from "../../components/password";
+import {ButtonComponent} from "../../components/button";
+import {Toast} from "../../components/toast";
+
 
 export const Login: FunctionComponent = () => {
     const navigate = useNavigate();

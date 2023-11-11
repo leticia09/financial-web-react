@@ -5,7 +5,6 @@ import {FooterRegister} from "../footer-register";
 import {BsBackspace} from "react-icons/bs";
 import {GiCheckMark} from "react-icons/gi";
 import {Toast} from "../toast";
-import {LoadingComponent} from "../loading";
 import {BlockComponent} from "../block";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";

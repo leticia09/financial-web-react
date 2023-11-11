@@ -31,6 +31,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
             index: 0,
             userAuthId: 0,
             typeOfScore: '',
+            ownerId: 0
         }])
     }, []);
 
@@ -52,6 +53,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
             index: updatedList.length,
             userAuthId: loginStore.userId,
             typeOfScore: '',
+            ownerId: 0
         });
 
         formStore.setFormList(updatedList);

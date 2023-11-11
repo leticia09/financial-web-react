@@ -12,6 +12,7 @@ import useFormStore from "../creation/store/useFormStore";
 import {MembersManagmentService} from "../service";
 import {MemberForm} from "../creation/form";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {collapseClasses} from "@mui/material";
 
 const columns: IColumns[] = [
     {
@@ -20,6 +21,13 @@ const columns: IColumns[] = [
         minWidth: 70,
         align: "right",
         format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "color",
+        label: "Cor",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
     },
     {
         id: "status",
@@ -39,13 +47,16 @@ const columns: IColumns[] = [
 ];
 
 function createData(user, actions, index) {
-    const {id, name, status} = user;
+    const {id, name, color, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
-    return {id, name, status: statusBullet, actions, key: index};
+
+    const colorBullet = <BulletComponent color={color} showLabel={false}/>
+
+    return {id, name, color: colorBullet, status: statusBullet, actions, key: index};
 }
 
 type RowType = {
@@ -79,6 +90,7 @@ export const Members: FunctionComponent = () => {
     const handleOpenModalEdit = (index) => {
         setCurrentIndex(index);
         setOpenModalEdit(true);
+        setOpenToast(false);
     }
 
     const handleOpenModalExclusion = (index) => {
@@ -86,11 +98,15 @@ export const Members: FunctionComponent = () => {
         setOpenModalExclusion(true);
     }
     const handleCloseEdit = () => {
+        getData();
         setOpenModalEdit(false);
+        setOpenToast(false);
     };
 
     const handleCloseExclusion = () => {
+        getData();
         setOpenModalExclusion(false);
+        setOpenToast(false);
     }
 
 
@@ -126,6 +142,7 @@ export const Members: FunctionComponent = () => {
                 id: formStore.formList[currentIndex].id,
                 name: formStore.formList[currentIndex].name,
                 status: null,
+                color: formStore.formList[currentIndex].color,
                 userAuthId: formStore.formList[currentIndex].userAuthId
 
             }
@@ -135,8 +152,8 @@ export const Members: FunctionComponent = () => {
             setSeverity(response.data.message);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
-                setOpenModalEdit(false);
                 getData();
+                setOpenModalEdit(false);
                 setIsLoading(false);
             }, 2000);
 
@@ -160,7 +177,6 @@ export const Members: FunctionComponent = () => {
                 setOpenModalExclusion(false);
                 setOpenToast(false);
                 setIsLoading(false);
-                getData();
             }, 2000);
 
         } catch (e) {
@@ -181,39 +197,46 @@ export const Members: FunctionComponent = () => {
                 path="/grupos/membros/cadastro"
                 showLineProgress={isLoading}
             />
+            {openModalEdit &&
+                <ModalComponent
+                    openModal={openModalEdit}
+                    setOpenModal={handleCloseEdit}
+                    label={formStore.formList[currentIndex].name}
+                    getValue={edit}
+                    Form={
+                        [
+                            <MemberForm
+                                key={currentIndex}
+                                i={currentIndex}
+                                hasDelete={false}
+                            />
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
 
-            <ModalComponent
-                openModal={openModalEdit}
-                setOpenModal={handleCloseEdit}
-                label={formStore.formList[currentIndex].name}
-                getValue={edit}
-                Form={
-                    [
-                        <MemberForm
-                            key={currentIndex}
-                            i={currentIndex}
-                            hasDelete={false}
-                        />
-                    ]
-                }
-            />
+            {openModalExclusion &&
+                <ModalComponent
+                    openModal={openModalExclusion}
+                    setOpenModal={handleCloseExclusion}
+                    label={Messages.titles.exclusion}
+                    getValue={exclusion}
+                    Form={
+                        [
+                            <div>
+                                <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
+                            </div>
+                        ]
+                    }
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
 
-            <ModalComponent
-                openModal={openModalExclusion}
-                setOpenModal={handleCloseExclusion}
-                label={Messages.titles.exclusion}
-                getValue={exclusion}
-                Form={
-                    [
-                        <div>
-                            <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
-                        </div>
-                    ]
-                }
-                toastMessage={toastMessage}
-                severityType={severity}
-                openToast={openToast}
-            />
         </>
     );
 }

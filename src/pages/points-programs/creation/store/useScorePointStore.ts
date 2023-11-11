@@ -1,5 +1,4 @@
 import {create} from "zustand";
-import {IMember} from "../../../../interfaces/member";
 import {IProgram} from "../../../../interfaces/points-program";
 
 type State = {
@@ -23,6 +22,7 @@ const initialState: State = {
             index: 0,
             userAuthId: 0,
             typeOfScore: '',
+            ownerId: 0
         }
     ],
 };
@@ -46,6 +46,7 @@ const useScorePointStore = create<State & Actions>((set) => ({
                     index: 0,
                     userAuthId: authId,
                     typeOfScore: '',
+                    ownerId: 0
                 };
             }
 

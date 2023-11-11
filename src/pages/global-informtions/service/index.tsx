@@ -26,7 +26,10 @@ export const GlobalService = (axiosInstance: any = instance) => {
         return axiosInstance.get(endPoint);
     }
 
-    return {
-        getModality, getBank, getTypeOfScore, getProgram, getStatus
+    const getProgramById = (id) => {
+        const endPoint = 'points/program/' + id;
+        return axiosInstance.get(endPoint);
     }
+
+    return { getModality, getBank, getTypeOfScore, getProgram, getStatus, getProgramById }
 }

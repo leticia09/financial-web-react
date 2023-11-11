@@ -6,6 +6,7 @@ export interface IProgram {
     index: number;
     userAuthId: number;
     typeOfScore: string;
+    ownerId: number;
 }
 
 export interface ITransfer {
@@ -16,19 +17,30 @@ export interface ITransfer {
     originValue: number;
     destinyValue: number;
     bonus: number;
+    ownerIdOrigin: number;
+    ownerIdDestiny: number;
     userAuthId: number;
 }
 
 export interface IGraphic {
+    dataSet: IDataSet[],
     labels: [],
-    data: [],
     totalMiles: number,
     totalPoints: number,
     totalProgramActive: number,
     totalProgramInactive: number,
 }
 
+export interface IDataSet {
+    data: [],
+    label: string,
+    backgroundColor: string,
+    borderColor:string,
+}
+
+
 export interface IUse {
+    ownerId: number;
     programId: number;
     value: number;
     userAuthId: number;

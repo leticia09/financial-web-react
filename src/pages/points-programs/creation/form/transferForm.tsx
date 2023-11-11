@@ -7,6 +7,11 @@ import {DropdownSingleSelect} from "../../../../components/dropdown";
 import {InputDataComponent} from "../../../../components/input-data";
 import {FormControlLabel, Switch} from "@mui/material";
 import useLoginStore from "../../../login/store/useLoginStore";
+import {ValidateError} from "../../../../validate-error/validate-error";
+import {PointsService} from "../../service";
+import {MembersManagmentService} from "../../../members/service";
+import {GlobalService} from "../../../global-informtions/service";
+import {Toast} from "../../../../components/toast";
 
 
 export const TransferForm: FunctionComponent = () => {
@@ -15,6 +20,14 @@ export const TransferForm: FunctionComponent = () => {
     const [data, setDate] = useState();
     const [hasbonus, setBonus] = useState(false);
     const globalStore = useGlobalStore();
+    const service = GlobalService();
+    const [programOrigin, setProgramOrigin] = useState([]);
+    const [programDestiny, setProgramDestiny] = useState([]);
+    const [toastMessage, setToastMessage] = useState("");
+    const [severityType, setSeverityType] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [open, setOpen] = useState(false);
+    const [disableField, setDisableField] = useState(true);
+
 
 
     useEffect(() => {
@@ -26,9 +39,25 @@ export const TransferForm: FunctionComponent = () => {
             originValue: 1,
             destinyValue: 1,
             bonus: 0,
-            userAuthId: loginStore.userId
+            userAuthId: loginStore.userId,
+            ownerIdOrigin: 0,
+            ownerIdDestiny: 0,
         });
     }, []);
+
+    const getProgram = async (id) => {
+        const response = await service.getProgramById(id);
+        if(response.data.data.length === 0) {
+            setToastMessage(Messages.messages.ownerEmpty);
+            setSeverityType("error");
+            setOpen(true);
+            setDisableField(true);
+        } else {
+            setDisableField(false);
+        }
+
+        return response.data.data;
+    };
 
     const handleData = (date) => {
         setDate(date);
@@ -38,6 +67,22 @@ export const TransferForm: FunctionComponent = () => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setBonus(event.target.checked);
     };
+
+    const handleOwnerOrigin = async (value) => {
+        formStore.setOwnerOriginId(value);
+        setProgramOrigin(await getProgram(value));
+    };
+
+    const handleOwnerDestiny = async (value) => {
+        formStore.setOwnerDestinyId(value);
+        setProgramDestiny(await getProgram(value));
+    };
+
+
+    const handleCloseToast = () => {
+        setOpen(false);
+    };
+
 
     const validateValue = (value) => {
         return /^0+$/.test(value);
@@ -50,9 +95,19 @@ export const TransferForm: FunctionComponent = () => {
                 <div className="register-member">
 
                     <DropdownSingleSelect
-                        label={Messages.titles.origin}
-                        data={globalStore.program}
+                        label={Messages.titles.ownerOrigin}
+                        data={globalStore.members}
                         disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => handleOwnerOrigin(value) }
+                    />
+
+                    <DropdownSingleSelect
+                        label={Messages.titles.origin}
+                        data={programOrigin}
+                        disabled={disableField}
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
@@ -60,9 +115,19 @@ export const TransferForm: FunctionComponent = () => {
                     />
 
                     <DropdownSingleSelect
-                        label={Messages.titles.destiny}
-                        data={globalStore.program}
+                        label={Messages.titles.ownerDestiny}
+                        data={globalStore.members}
                         disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => handleOwnerDestiny(value) }
+                    />
+
+                    <DropdownSingleSelect
+                        label={Messages.titles.destiny}
+                        data={programDestiny}
+                        disabled={disableField}
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
@@ -70,7 +135,7 @@ export const TransferForm: FunctionComponent = () => {
                     />
                     <Input
                         label={Messages.titles.quantity}
-                        disabled={false}
+                        disabled={disableField}
                         width="200px"
                         maskNumeric={true}
                         invalidField={formStore.formTransfer.quantity? validateValue(formStore.formTransfer.quantity.toString()) : false}
@@ -87,7 +152,7 @@ export const TransferForm: FunctionComponent = () => {
                 <div className="register-member">
                     <Input
                         label={Messages.titles.origin}
-                        disabled={false}
+                        disabled={disableField}
                         width="200px"
                         invalidField={formStore.formTransfer.originValue? validateValue(formStore.formTransfer.originValue.toString()) : false}
                         invalidMessage={Messages.messages.zero}
@@ -98,7 +163,7 @@ export const TransferForm: FunctionComponent = () => {
                     <span>PARA</span>
                     <Input
                         label={Messages.titles.destiny}
-                        disabled={false}
+                        disabled={disableField}
                         width="200px"
                         invalidField={formStore.formTransfer.destinyValue? validateValue(formStore.formTransfer.destinyValue.toString()) : false}
                         invalidMessage={Messages.messages.zero}
@@ -108,14 +173,14 @@ export const TransferForm: FunctionComponent = () => {
                     />
                     <InputDataComponent
                         label={Messages.titles.expirationDate}
-                        disabled={false}
+                        disabled={disableField}
                         width="200px"
                         getValue={(value) => handleData(value)}
                         viewMode={false}
                     />
                     <FormControlLabel style={{marginLeft: "12px"}}
                                       control={
-                                          <Switch checked={hasbonus} onChange={handleChange} name="gilad"/>
+                                          <Switch  disabled={disableField} checked={hasbonus} onChange={handleChange} name="gilad"/>
                                       }
                                       label={Messages.titles.bonus}
                     />
@@ -138,7 +203,14 @@ export const TransferForm: FunctionComponent = () => {
                     </div>
                 </div>
             }
-
+            <Toast
+                severity={severityType}
+                width="100%"
+                duration={2000}
+                message={toastMessage}
+                open={open}
+                onClose={handleCloseToast}
+            />
         </div>
     );
 };

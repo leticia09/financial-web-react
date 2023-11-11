@@ -8,6 +8,7 @@ import {Bar} from "react-chartjs-2";
 import "./dashboard-component.css"
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import {IDataSet} from "../../interfaces/points-program";
 
 interface IDashboard {
     title: string;
@@ -23,15 +24,13 @@ interface IDashboard {
     moreTableArrayHeader?: IColumns[];
     moreTableRows?: IRow[];
     labelsData?: [];
-    dataData?: [];
-    colorData?: string;
-    labelData?: string;
     optionText?: string;
     cards: ICard[];
     hasAuxButton1?: boolean;
     auxPath1?: string;
     auxTitle1?: string;
     showLineProgress?: boolean;
+    dataSets?: IDataSet[];
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -39,9 +38,6 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       rows,
                                                                       arrayHeader,
                                                                       labelsData,
-                                                                      labelData,
-                                                                      dataData,
-                                                                      colorData,
                                                                       path,
                                                                       auxPath,
                                                                       auxTitle,
@@ -56,21 +52,15 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       hasAuxButton1,
                                                                       auxPath1,
                                                                       auxTitle1,
-                                                                      showLineProgress
+                                                                      showLineProgress,
+                                                                      dataSets
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
 
     const data = {
         labels: labelsData,
-        datasets: [
-            {
-                label: labelData,
-                data: dataData,
-                borderColor: colorData,
-                backgroundColor: colorData,
-            },
-        ],
+        datasets: dataSets,
     };
 
     const option = {
@@ -86,15 +76,16 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
         },
         scales: {
             x: {
+                stacked: true,
                 grid: {
                     display: false,
                     barThickness: 1
                 },
             },
             y: {
+                stacked: true,
                 grid: {
                     display: true,
-
                 },
             },
         },
@@ -192,7 +183,7 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 </div>
             }
 
-            {dataData.length > 0 &&
+            {dataSets.length > 0 &&
                 <div className="dash_content">
                     <div className="dash_item_content">
                         <Bar data={data} options={option} width={chartWidth} height={300}/>

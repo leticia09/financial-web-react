@@ -18,7 +18,8 @@ const initialState: State = {
             id: 0,
             name: '',
             index: 0,
-            userAuthId: 0
+            userAuthId: 0,
+            color: ''
         }
     ],
 };
@@ -38,7 +39,8 @@ const useFormStore = create<State & Actions>((set) => ({
                     id: null,
                     index: 0,
                     name: "",
-                    userAuthId: authId
+                    userAuthId: authId,
+                    color: ''
                 };
             }
 
