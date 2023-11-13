@@ -10,6 +10,7 @@ import {Creation} from "../../../components/creation";
 import {BankDataManagementService} from "../../bank-data/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {ValidateFormMember} from "./validate-factory";
 
 
 export const RegisterMember: FunctionComponent = () => {
@@ -27,9 +28,9 @@ export const RegisterMember: FunctionComponent = () => {
     useEffect(() => {
         formStore.setFormList([
             {
-                id: 0,
-                name: '',
+                id: null,
                 index: 0,
+                name: "",
                 userAuthId: 0,
                 color: ''
             }
@@ -68,7 +69,7 @@ export const RegisterMember: FunctionComponent = () => {
         try {
             const response = await registerMembersService.createMember(formStore.formList);
             setOpen(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
 
             const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
@@ -108,7 +109,7 @@ export const RegisterMember: FunctionComponent = () => {
             severityType={severity}
             showLineProgress={isLoading}
             open={open}
-            disabledSaveButton={!formStore.formList[0].name}
+            disabledSaveButton={ValidateFormMember(formStore.formList)}
             hasButton={true}
             handleClose={handleClose}
         />

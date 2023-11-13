@@ -238,7 +238,7 @@ export const PointProgramData: FunctionComponent = () => {
                 userAuthId: loginStore.userId
             }
             const response = await pointsService.updateStatus(payload);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setOpenToast(true);
             setToastMessage(ValidateError(response.data.message));
             await getData();
@@ -268,7 +268,7 @@ export const PointProgramData: FunctionComponent = () => {
         try {
             const response = await pointsService.exclusion(responses[currentIndex].id);
             setOpenToast(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
                 setOpenModalExclusion(false);
@@ -317,6 +317,7 @@ export const PointProgramData: FunctionComponent = () => {
                             <ModalForm/>
                         ]
                     }
+                    disabledSave={false}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}
@@ -338,6 +339,7 @@ export const PointProgramData: FunctionComponent = () => {
                             </div>
                         ]
                     }
+                    disabledSave={false}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}

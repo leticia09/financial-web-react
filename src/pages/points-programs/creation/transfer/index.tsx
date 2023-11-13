@@ -31,7 +31,7 @@ export const TransferProgram: FunctionComponent = () => {
         try {
             const response = await pointsService.transfer(formStore.formTransfer);
             setOpen(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             formStore.resetFormStore();
 

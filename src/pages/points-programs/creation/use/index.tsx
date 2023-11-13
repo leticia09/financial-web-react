@@ -37,7 +37,7 @@ export const UsePoint: FunctionComponent = () => {
         try {
             const response = await pointsService.use(formStore.formUse);
             setOpen(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
 
             setTimeout(() => {

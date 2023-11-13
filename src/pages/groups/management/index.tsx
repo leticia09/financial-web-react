@@ -11,6 +11,7 @@ import {ModalComponent} from "../../../components/modal";
 import {ModalGroupForm} from "./modal";
 import useGroupStore from "../creation/store/useGroupStore";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {ValidateGroupForm, ValidateGroupFormEdit} from "../creation/validate-factory/validate";
 
 const columns: IColumns[] = [
     {
@@ -77,6 +78,7 @@ export const Groups: FunctionComponent = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [openModalExclusion, setOpenModalExclusion] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentForm, setCurrentForm] = useState([]);
     const handleOpen = (index) => {
         setCurrentIndex(index);
         setOpen(true);
@@ -104,16 +106,35 @@ export const Groups: FunctionComponent = () => {
 
     const getData = async () => {
         setIsLoading(true);
+
         try {
             const res = await service.getData(loginStore.userId);
+
             const transformedRows = res.data.data.map((user: any, index: number) => createData(user, actions(index), index));
 
             setRows(transformedRows);
             let list = [];
+            let listCurrent = [];
             for (let i = 0; i < res.data.data.length; i++) {
-                list.push(res.data.data[i])
+                let listSpecifics = [];
+                for (let j = 0; j < res.data.data[i].specificGroups.length; j++) {
+                    listSpecifics.push({
+                        name: res.data.data[i].specificGroups[j].name
+                    })
+                }
+                listCurrent.push(
+                    {
+                        id: res.data.data[i].id,
+                        name: res.data.data[i].name,
+                        specificGroups: listSpecifics,
+                        status: res.data.data[i].status
+                    }
+                )
+                list.push(res.data.data[i]);
                 formStore.setFormListEdit(list);
             }
+
+            setCurrentForm(listCurrent);
             setIsLoading(false);
         } catch (error) {
             console.log('Error', error);
@@ -134,17 +155,18 @@ export const Groups: FunctionComponent = () => {
         try {
             const response = await service.edit(formStore.formListEdit[currentIndex]);
             setOpenToast(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
                 setOpen(false);
+                setOpenToast(false);
                 getData();
             }, 2000);
 
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
-            setOpen(true);
+            setOpenToast(false);
             setIsLoading(true);
         }
 
@@ -155,7 +177,7 @@ export const Groups: FunctionComponent = () => {
         try {
             const response = await service.exclusion(formStore.formListEdit[currentIndex].id);
             setOpenToast(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
                 setOpenModalExclusion(false);
@@ -194,6 +216,7 @@ export const Groups: FunctionComponent = () => {
                             />
                         ]
                     }
+                    disabledSave={ValidateGroupFormEdit(formStore.formListEdit[currentIndex], currentForm[currentIndex])}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}
@@ -217,6 +240,7 @@ export const Groups: FunctionComponent = () => {
                         </div>
                     ]
                 }
+                disabledSave={false}
                 toastMessage={toastMessage}
                 severityType={severity}
                 openToast={openToast}

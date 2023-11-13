@@ -21,7 +21,6 @@ export const MemberForm: FunctionComponent<IMemberForm> = ({i, hasDelete}: IMemb
 
     return (
         <div className="register-member">
-
             <Input
                 label={Messages.titles.name}
                 disabled={false}

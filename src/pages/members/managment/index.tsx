@@ -13,6 +13,7 @@ import {MembersManagmentService} from "../service";
 import {MemberForm} from "../creation/form";
 import {ValidateError} from "../../../validate-error/validate-error";
 import {collapseClasses} from "@mui/material";
+import {ValidateFormMember} from "../creation/validate-factory";
 
 const columns: IColumns[] = [
     {
@@ -98,13 +99,11 @@ export const Members: FunctionComponent = () => {
         setOpenModalExclusion(true);
     }
     const handleCloseEdit = () => {
-        getData();
         setOpenModalEdit(false);
         setOpenToast(false);
     };
 
     const handleCloseExclusion = () => {
-        getData();
         setOpenModalExclusion(false);
         setOpenToast(false);
     }
@@ -149,7 +148,7 @@ export const Members: FunctionComponent = () => {
             const response = await service.edit(payload);
 
             setOpenToast(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
                 getData();
@@ -171,9 +170,10 @@ export const Members: FunctionComponent = () => {
         try {
             const response = await service.exclusion(formStore.formList[currentIndex].userAuthId, formStore.formList[currentIndex].id);
             setOpenToast(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
+                getData();
                 setOpenModalExclusion(false);
                 setOpenToast(false);
                 setIsLoading(false);
@@ -212,6 +212,7 @@ export const Members: FunctionComponent = () => {
                             />
                         ]
                     }
+                    disabledSave={ValidateFormMember(formStore.formList)}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}
@@ -231,6 +232,7 @@ export const Members: FunctionComponent = () => {
                             </div>
                         ]
                     }
+                    disabledSave={false}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}

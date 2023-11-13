@@ -43,7 +43,7 @@ export const GroupsCreation: FunctionComponent = () => {
         try {
             const response = await service.create(payload);
             setOpen(true);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
 
             setTimeout(() => {
@@ -56,7 +56,7 @@ export const GroupsCreation: FunctionComponent = () => {
             setIsLoading(false);
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
-            setOpen(true);
+            setOpen(false);
         }
     }
 

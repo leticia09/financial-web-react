@@ -47,7 +47,7 @@ export const Login: FunctionComponent = () => {
 
             try {
                 const response = await loginService.auth(payload);
-                if (response.data.message === "SUCCESS") {
+                if (response.data.message === "success") {
                     setAuth(response.data.data.auth);
                     setUser(response.data.data.name);
                     setUserId(response.data.data.id);

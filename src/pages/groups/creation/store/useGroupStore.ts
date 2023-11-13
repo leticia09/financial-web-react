@@ -3,7 +3,7 @@ import { IGroup, ISpecificGroup } from "../../../../interfaces/group";
 
 type State = {
     formList: IGroup;
-    formListEdit: any;
+    formListEdit: IGroup;
 };
 
 type Actions = {
@@ -29,7 +29,11 @@ const initialState: State = {
         userAuthId: 0,
         specificGroups: [],
     },
-    formListEdit: {},
+    formListEdit: {
+        name: "",
+        userAuthId: 0,
+        specificGroups: [],
+    },
 };
 
 const useGroupStore = create<State & Actions>((set) => ({

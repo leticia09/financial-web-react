@@ -1,5 +1,4 @@
 import {Messages} from "../internationalization/message";
-import {readUsedSize} from "chart.js/helpers";
 
 export const ValidateError = (message: any): string => {
 
@@ -50,8 +49,12 @@ export const ValidateError = (message: any): string => {
 
         case "success":
             return Messages.messages.operationSuccess;
+
         case "USER_EXISTS":
             return Messages.messages.userExists;
+
+        case "NAME_ALREADY_EXISTS":
+            return Messages.messages.nameExists;
 
         default:
             return Messages.titles.errorMessage;

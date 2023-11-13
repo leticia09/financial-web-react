@@ -18,6 +18,7 @@ interface IModal {
     toastMessage?: string;
     severityType?: 'success' | 'info' | 'warning' | 'error';
     openToast?: boolean;
+    disabledSave: boolean;
 }
 
 const style = {
@@ -30,9 +31,17 @@ const style = {
     borderRadius: '2px',
 };
 
-export const ModalComponent: FunctionComponent<IModal> = ({openModal, setOpenModal, label, getValue, Form, toastMessage,
+export const ModalComponent: FunctionComponent<IModal> = ({
+                                                              openModal,
+                                                              setOpenModal,
+                                                              label,
+                                                              getValue,
+                                                              Form,
+                                                              toastMessage,
                                                               severityType,
-                                                              openToast}: IModal) => {
+                                                              disabledSave,
+                                                              openToast
+                                                          }: IModal) => {
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpenModal(false);
 
@@ -80,7 +89,7 @@ export const ModalComponent: FunctionComponent<IModal> = ({openModal, setOpenMod
 
                         <Box>
                             <FooterRegister
-                                disabled={false}
+                                disabled={disabledSave}
                                 widthButton="100px"
                                 showBackButton={false}
                                 getValue={handleChange}

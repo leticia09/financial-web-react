@@ -68,7 +68,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
 
         try {
             const response = await pointsService.create(formStore.formList);
-            setSeverity(response.data.message);
+            setSeverity(response.data.severity);
             setOpen(true);
             setToastMessage(ValidateError(response.data.message));
 
