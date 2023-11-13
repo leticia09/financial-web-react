@@ -2,7 +2,8 @@ import {create} from "zustand";
 import {IUse} from "../../../../interfaces/points-program";
 
 type State = {
-    status: string;
+    status: number;
+    value: number;
     programId: number;
     userAuthId: number;
     ownerId: number;
@@ -10,7 +11,8 @@ type State = {
 };
 
 type Actions = {
-    setStatus: (status: string) => void,
+    setStatus: (status: number) => void,
+    setValue: (value: number) => void,
     setProgramId: (programId: number) => void;
     setUserAuthId: (userAuthId: number) => void;
     setFormUse: (formUse: IUse) => void;
@@ -22,7 +24,8 @@ type Actions = {
 };
 
 const initialState: State = {
-    status: '',
+    status: 0,
+    value: 0,
     programId: 0,
     userAuthId: 0,
     ownerId: 0,
@@ -39,6 +42,11 @@ const useUpdateFormStore = create<State & Actions>((set) => ({
     setStatus: (status) => {
         set((state) => ({
             status: status
+        }));
+    },
+    setValue: (value) => {
+        set((state) => ({
+            value: value
         }));
     },
     setProgramId: (programId) => {

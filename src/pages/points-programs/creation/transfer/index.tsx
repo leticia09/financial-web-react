@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import usePointFormStore from "../store/usePointFormStore";
 import {useNavigate} from "react-router-dom";
 import {PointsService} from "../../service";
@@ -7,9 +7,13 @@ import {Creation} from "../../../../components/creation";
 import {TransferForm} from "../form/transferForm";
 import {ValidateFormTransfer} from "../validate-factory/validateForms";
 import {ValidateError} from "../../../../validate-error/validate-error";
+import {BankDataManagementService} from "../../../bank-data/service";
+import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
+import useLoginStore from "../../../login/store/useLoginStore";
 
 
 export const TransferProgram: FunctionComponent = () => {
+    const loginStore = useLoginStore();
     const formStore = usePointFormStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
@@ -17,6 +21,16 @@ export const TransferProgram: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const pointsService = PointsService();
+    const bankDataManagementService = BankDataManagementService();
+    const globalStore = useGlobalStore();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
+            globalStore.setMember(memberResponse.data.data);
+        };
+        fetchData();
+    }, []);
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {

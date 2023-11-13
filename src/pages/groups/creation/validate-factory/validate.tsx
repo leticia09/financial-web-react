@@ -48,7 +48,5 @@ export const ValidateGroupFormEdit = (form: any, formCurrent: any): boolean => {
 
     }
 
-    console.log(validate && validateSpecific, validate, validateSpecific)
-
     return validate && validateSpecific;
 };

@@ -45,7 +45,7 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
     return (
         <div className="register-member">
             <Input
-                label={Messages.titles.name}
+                label={Messages.titles.program}
                 disabled={false}
                 width="200px"
                 getValue={(value) => formStore.setFormListValue(i, 'program', value)}

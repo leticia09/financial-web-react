@@ -21,3 +21,7 @@ export const ValidateFormUse = (message: any): boolean => {
     return errors;
 
 };
+
+export const ValidateFormEdit = (form: any, currentForm: any): boolean => {
+    return form.status === currentForm.status && form.value.toString() === currentForm.value.toString();
+};

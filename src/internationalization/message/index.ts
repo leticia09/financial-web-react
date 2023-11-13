@@ -81,7 +81,8 @@ const Messages = {
         score: 'Pontua',
         ownerOrigin: 'Titular Origem',
         ownerDestiny: 'Titular Destino',
-        color: 'Cor *'
+        color: 'Cor *',
+        currentValue: 'Valor',
 
     },
     buttons: {},

@@ -1,19 +1,31 @@
-import React, {FunctionComponent, useEffect} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import {Messages} from "../../../../internationalization/message";
 import {DropdownSingleSelect} from "../../../../components/dropdown";
 import UseGlobalStore from "../../../global-informtions/store/useGlobalStore";
 import useUpdateFormStore from "../../creation/store/useUpdateFormStore";
 import useLoginStore from "../../../login/store/useLoginStore";
+import {Input} from "../../../../components/input";
 
+interface IModal {
+    currentForm: any
+}
 
-export const ModalForm: FunctionComponent = () => {
+export const ModalForm: FunctionComponent<IModal> = ({currentForm}: IModal) => {
     const globalStore = UseGlobalStore();
     const formStore = useUpdateFormStore();
-    const loginStore  = useLoginStore();
+    const loginStore = useLoginStore();
+    const [status, setStatus] = useState(currentForm.status);
 
     useEffect(() => {
         formStore.setUserAuthId(loginStore.userId);
+        formStore.setStatus(currentForm.status);
+        formStore.setValue(currentForm.value);
     }, [])
+
+    const handleStatus = (value) => {
+        setStatus(value)
+        formStore.setStatus(value)
+    }
 
     return (
         <div>
@@ -26,10 +38,21 @@ export const ModalForm: FunctionComponent = () => {
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
-                        getValue={(value) => formStore.setStatus(globalStore.status.filter(st => st.id === value)[0].description)}
+                        value={status}
+                        getValue={(value) => handleStatus(value)}
+                    />
+                    <Input
+                        label={Messages.titles.currentValue}
+                        disabled={false}
+                        width="200px"
+                        maskNumeric={true}
+                        getValue={(value) => formStore.setValue(value)}
+                        inputValue={formStore.value}
+                        viewMode={false}
                     />
                 </div>
             </div>
         </div>
     );
+
 };

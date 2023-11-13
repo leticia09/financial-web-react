@@ -15,6 +15,7 @@ import {ModalComponent} from "../../../components/modal";
 import {ModalForm} from "./modal-form/modal-form";
 import useUpdateFormStore from "../creation/store/useUpdateFormStore";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {ValidateFormEdit} from "../creation/validate-factory/validateForms";
 
 
 const columns: IColumns[] = [
@@ -73,9 +74,9 @@ const columns: IColumns[] = [
 
 function createData(user, actions, index) {
     const {id, owner, program, value, typeOfScore, pointsExpirationDate, status} = user;
-    const statusBullet = status === 'ACTIVE' ? (
+    const statusBullet = status === 1 ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
-    ) : status === 'INACTIVE' ? (
+    ) : status === 2 ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
     let date = pointsExpirationDate;
@@ -128,27 +129,7 @@ export const PointProgramData: FunctionComponent = () => {
     const [responses, setResponses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [openModalExclusion, setOpenModalExclusion] = useState(false);
-
-    // const datasets = [
-    //     {
-    //         label: labelData,
-    //         data: dataData,
-    //         borderColor: colorData,
-    //         backgroundColor: colorData,
-    //     },
-    //     {
-    //         label: "Hamilton",
-    //         data: dataData,
-    //         borderColor: colorData,
-    //         backgroundColor: "red",
-    //     },
-    //     {
-    //         label: "Saron",
-    //         data: dataData,
-    //         borderColor: colorData,
-    //         backgroundColor: "grey",
-    //     },
-    // ]
+    const [currentForm, setCurrentForm] = useState([])
 
     const handleOpen = (index) => {
         setCurrentIndex(index);
@@ -187,6 +168,8 @@ export const PointProgramData: FunctionComponent = () => {
         setResponses(response.data.data);
         const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
         setRows(transformedRows);
+        setCurrentForm(response.data.data);
+
     }
 
     const getGraphic = async () => {
@@ -234,6 +217,7 @@ export const PointProgramData: FunctionComponent = () => {
         try {
             const payload = {
                 status: formStore.status,
+                value: formStore.value,
                 programId: responses[currentIndex].id,
                 userAuthId: loginStore.userId
             }
@@ -310,14 +294,18 @@ export const PointProgramData: FunctionComponent = () => {
                 <ModalComponent
                     openModal={open}
                     setOpenModal={handleClose}
-                    label={store.graphicData.labels[currentIndex]}
+                    label={currentForm[currentIndex].program}
                     getValue={save}
                     Form={
                         [
-                            <ModalForm/>
+                            <ModalForm
+                                currentForm={currentForm[currentIndex]}/>
                         ]
                     }
-                    disabledSave={false}
+                    disabledSave={ValidateFormEdit({
+                        status: formStore.status,
+                        value: formStore.value
+                    }, currentForm[currentIndex],)}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}
