@@ -229,9 +229,10 @@ export const PointProgramData: FunctionComponent = () => {
             await getGraphic();
 
             setTimeout(() => {
-                setOpen(false);
                 setOpenToast(false);
                 setIsLoading(false);
+                if (response.data.severity === "success")
+                    setOpen(false);
             }, 1000);
         } catch (e) {
             setSeverity("error");
@@ -255,12 +256,13 @@ export const PointProgramData: FunctionComponent = () => {
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
-                setOpenModalExclusion(false);
                 setIsLoading(false);
                 setOpenToast(false);
-                getData();
-                getGraphic();
-
+                if (response.data.severity === "success") {
+                    setOpenModalExclusion(false);
+                    getData();
+                    getGraphic();
+                }
             }, 2000);
         } catch (e) {
             setSeverity("error");
@@ -297,10 +299,8 @@ export const PointProgramData: FunctionComponent = () => {
                     label={currentForm[currentIndex].program}
                     getValue={save}
                     Form={
-                        [
-                            <ModalForm
-                                currentForm={currentForm[currentIndex]}/>
-                        ]
+                        <ModalForm
+                            currentForm={currentForm[currentIndex]}/>
                     }
                     disabledSave={ValidateFormEdit({
                         status: formStore.status,
@@ -319,13 +319,11 @@ export const PointProgramData: FunctionComponent = () => {
                     label={Messages.titles.exclusion}
                     getValue={exclusion}
                     Form={
-                        [
-                            <div>
-                                <div style={{
-                                    padding: "10px 10px 0 10px"
-                                }}>{Messages.messages.confirm}</div>
-                            </div>
-                        ]
+                        <div>
+                            <div style={{
+                                padding: "10px 10px 0 10px"
+                            }}>{Messages.messages.confirm}</div>
+                        </div>
                     }
                     disabledSave={false}
                     toastMessage={toastMessage}

@@ -10,3 +10,7 @@ export const ValidateFormMember = (formList: IMember[]): boolean => {
     }
     return false;
 };
+
+export const ValidateFormMemberEdit = (form: IMember, currentForm: any): boolean => {
+        return form.name === currentForm.name && form.color === currentForm.color && form.status === currentForm.status;
+};

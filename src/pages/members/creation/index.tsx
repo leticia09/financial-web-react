@@ -7,17 +7,17 @@ import {MemberForm} from "./form/";
 import useFormStore from "./store/useFormStore";
 import {Messages} from "../../../internationalization/message";
 import {Creation} from "../../../components/creation";
-import {BankDataManagementService} from "../../bank-data/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {ValidateError} from "../../../validate-error/validate-error";
 import {ValidateFormMember} from "./validate-factory";
+import {MembersManagementService} from "../service";
 
 
 export const RegisterMember: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormStore();
     const globalStore = useGlobalStore();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
     const registerMembersService = RegisterMembersService();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -32,7 +32,8 @@ export const RegisterMember: FunctionComponent = () => {
                 index: 0,
                 name: "",
                 userAuthId: 0,
-                color: ''
+                color: '',
+                status: 0
             }
         ])
         formStore.resetFormStore();
@@ -53,7 +54,8 @@ export const RegisterMember: FunctionComponent = () => {
                 name: '',
                 index: updateList.length,
                 userAuthId: loginStore.userId,
-                color: ''
+                color: '',
+                status: 0
             }
         )
         formStore.setFormList(updateList);
@@ -72,11 +74,12 @@ export const RegisterMember: FunctionComponent = () => {
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
 
-            const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
+            const memberResponse = await membersManagementService.getMembersDropdown(response.data.data.id);
             globalStore.setMember(memberResponse.data.data);
 
             setTimeout(() => {
                 setOpen(false);
+                if (response.data.severity === "success")
                 navigate("/grupos/membros");
                 setIsLoading(false);
             }, 2000);
@@ -95,7 +98,7 @@ export const RegisterMember: FunctionComponent = () => {
             Form={
                 formStore.formList.map((member, i) => (
                     <MemberForm
-                        key={member.index}
+                        key={i}
                         i={i}
                         hasDelete={i > 0}
                     />

@@ -109,7 +109,8 @@ const Messages = {
         confirm: 'Tem certeza de que deseja continuar?',
         confirmExclusion: 'Ao excluir este Grupo Macro, todos os Grupos Específicos associados também serão permanentemente removidos.',
         userExists: 'Usuário já existe!',
-        ownerEmpty: 'Titular não possui nenhum programa ativo!'
+        ownerEmpty: 'Titular não possui nenhum programa ativo!',
+        insufficientBalance: "Saldo insuficiente!"
     },
     modals: {},
     toasts: {}

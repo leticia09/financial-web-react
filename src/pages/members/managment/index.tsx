@@ -6,14 +6,12 @@ import "../../bank-data/management/bankData.css"
 import {IColumns} from "../../../interfaces/table";
 import {BulletComponent} from "../../../components/bullet";
 import {ModalComponent} from "../../../components/modal";
-import {ModalGroupForm} from "../../groups/management/modal";
 import {Messages} from "../../../internationalization/message";
 import useFormStore from "../creation/store/useFormStore";
-import {MembersManagmentService} from "../service";
-import {MemberForm} from "../creation/form";
+import {MembersManagementService} from "../service";
 import {ValidateError} from "../../../validate-error/validate-error";
-import {collapseClasses} from "@mui/material";
-import {ValidateFormMember} from "../creation/validate-factory";
+import {ValidateFormMemberEdit} from "../creation/validate-factory";
+import {Form} from "./modal/form";
 
 const columns: IColumns[] = [
     {
@@ -49,9 +47,9 @@ const columns: IColumns[] = [
 
 function createData(user, actions, index) {
     const {id, name, color, status} = user;
-    const statusBullet = status === 'ACTIVE' ? (
+    const statusBullet = status === 1 ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
-    ) : status === 'INACTIVE' ? (
+    ) : status === 2 ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
 
@@ -71,7 +69,7 @@ type RowType = {
 export const Members: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormStore();
-    const service = MembersManagmentService()
+    const service = MembersManagementService()
     const [rows, setRows] = useState<RowType[]>([]);
     const [openModalEdit, setOpenModalEdit] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,6 +78,7 @@ export const Members: FunctionComponent = () => {
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [openToast, setOpenToast] = useState(false);
+    const [currentForm, setCurrentForm] = useState([]);
 
     const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
@@ -124,10 +123,17 @@ export const Members: FunctionComponent = () => {
             setRows(transformedRows);
 
             let list = [];
+            let listCurrent = [];
             for (let i = 0; i < response.data.data.length; i++) {
                 list.push(response.data.data[i])
                 formStore.setFormList(list);
+                listCurrent.push({
+                    name: response.data.data[i].name,
+                    color: response.data.data[i].color,
+                    status: response.data.data[i].status,
+                })
             }
+            setCurrentForm(listCurrent);
             setIsLoading(false);
         } catch (error) {
             console.log('Error', error);
@@ -140,7 +146,7 @@ export const Members: FunctionComponent = () => {
             const payload = {
                 id: formStore.formList[currentIndex].id,
                 name: formStore.formList[currentIndex].name,
-                status: null,
+                status: formStore.formList[currentIndex].status,
                 color: formStore.formList[currentIndex].color,
                 userAuthId: formStore.formList[currentIndex].userAuthId
 
@@ -151,9 +157,11 @@ export const Members: FunctionComponent = () => {
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
-                getData();
-                setOpenModalEdit(false);
                 setIsLoading(false);
+                if (response.data.severity === "success") {
+                    setOpenModalEdit(false);
+                    getData();
+                }
             }, 2000);
 
         } catch (e) {
@@ -173,10 +181,12 @@ export const Members: FunctionComponent = () => {
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
-                getData();
-                setOpenModalExclusion(false);
-                setOpenToast(false);
                 setIsLoading(false);
+                setOpenToast(false);
+                if (response.data.severity === "success") {
+                    getData();
+                    setOpenModalExclusion(false);
+                }
             }, 2000);
 
         } catch (e) {
@@ -204,15 +214,12 @@ export const Members: FunctionComponent = () => {
                     label={formStore.formList[currentIndex].name}
                     getValue={edit}
                     Form={
-                        [
-                            <MemberForm
-                                key={currentIndex}
-                                i={currentIndex}
-                                hasDelete={false}
-                            />
-                        ]
+                        <Form
+                            i={currentIndex}
+                            currentForm={currentForm[currentIndex]}
+                        />
                     }
-                    disabledSave={ValidateFormMember(formStore.formList)}
+                    disabledSave={ValidateFormMemberEdit(formStore.formList[currentIndex], currentForm[currentIndex])}
                     toastMessage={toastMessage}
                     severityType={severity}
                     openToast={openToast}
@@ -226,11 +233,9 @@ export const Members: FunctionComponent = () => {
                     label={Messages.titles.exclusion}
                     getValue={exclusion}
                     Form={
-                        [
-                            <div>
-                                <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
-                            </div>
-                        ]
+                        <div>
+                            <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
+                        </div>
                     }
                     disabledSave={false}
                     toastMessage={toastMessage}

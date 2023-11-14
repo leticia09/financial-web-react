@@ -1,12 +1,7 @@
-// @ts-ignore
-import {instance} from "../../../services/Core/api/api.tsx";
+import {instance} from "../../../services/Core/api/api";
+
 
 export const BankDataManagementService = (axiosInstance: any = instance) => {
-    const getMembers = (id) => {
-        const endPoint = '/member/' + id;
-        return axiosInstance.get(endPoint);
-    }
-
     const getRegisterBank = (id) => {
         const endPoint = '/register-bank/' + id;
         return axiosInstance.get(endPoint);
@@ -23,9 +18,8 @@ export const BankDataManagementService = (axiosInstance: any = instance) => {
     }
 
     return {
-        getMembers,
         getRegisterBank,
         saveRegisterBank,
-        getRegisterBankById
+        getRegisterBankById,
     }
 }

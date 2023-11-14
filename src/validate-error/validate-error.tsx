@@ -56,6 +56,9 @@ export const ValidateError = (message: any): string => {
         case "NAME_ALREADY_EXISTS":
             return Messages.messages.nameExists;
 
+        case "INSUFFICIENT_BALANCE":
+            return Messages.messages.insufficientBalance;
+
         default:
             return Messages.titles.errorMessage;
     }

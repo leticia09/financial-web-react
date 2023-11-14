@@ -4,13 +4,13 @@ import './login.css'
 import {LoginService} from "./service";
 import useLoginStore from "./store/useLoginStore";
 import useGlobalStore from "../global-informtions/store/useGlobalStore";
-import {BankDataManagementService} from "../bank-data/service";
 import {GlobalService} from "../global-informtions/service";
 import {Messages} from "../../internationalization/message";
 import {Input} from "../../components/input";
 import {InputPassword} from "../../components/password";
 import {ButtonComponent} from "../../components/button";
 import {Toast} from "../../components/toast";
+import {MembersManagementService} from "../members/service";
 
 
 export const Login: FunctionComponent = () => {
@@ -21,7 +21,7 @@ export const Login: FunctionComponent = () => {
     const [open, setOpen] = useState(false);
     const {setAuth, setUser, setUserId, setSex} = useLoginStore();
     const globalStore = useGlobalStore();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
     const globalService = GlobalService();
 
     const handleClose = (reason: string) => {
@@ -47,14 +47,14 @@ export const Login: FunctionComponent = () => {
 
             try {
                 const response = await loginService.auth(payload);
-                if (response.data.message === "success") {
+                if (response.data.severity === "success") {
                     setAuth(response.data.data.auth);
                     setUser(response.data.data.name);
                     setUserId(response.data.data.id);
                     setSex(response.data.data.sex);
                     navigate("/dashboard");
 
-                    const memberResponse = await bankDataManagementService.getMembers(response.data.data.id);
+                    const memberResponse = await membersManagementService.getMembersDropdown(response.data.data.id);
                     globalStore.setMember(memberResponse.data.data);
 
                     const modalityResponse = await globalService.getModality();

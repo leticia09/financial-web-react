@@ -19,7 +19,8 @@ const initialState: State = {
             index: 0,
             name: "",
             userAuthId: 0,
-            color: ''
+            color: '',
+            status: 0,
         }
     ],
 };
@@ -39,8 +40,9 @@ const useFormStore = create<State & Actions>((set) => ({
                     id: null,
                     index: 0,
                     name: "",
-                    userAuthId: authId,
-                    color: ''
+                    userAuthId: 0,
+                    color: '',
+                    status: 0,
                 };
             }
 
@@ -64,10 +66,11 @@ const useFormStore = create<State & Actions>((set) => ({
             formList: [
                 {
                     id: null,
-                    name: null,
-                    index: null,
-                    userAuthId: null,
-                    color: null
+                    index: 0,
+                    name: "",
+                    userAuthId: 0,
+                    color: '',
+                    status: 0,
                 }
             ]
         })

@@ -7,9 +7,6 @@ import {DropdownSingleSelect} from "../../../../components/dropdown";
 import {InputDataComponent} from "../../../../components/input-data";
 import {FormControlLabel, Switch} from "@mui/material";
 import useLoginStore from "../../../login/store/useLoginStore";
-import {ValidateError} from "../../../../validate-error/validate-error";
-import {PointsService} from "../../service";
-import {MembersManagmentService} from "../../../members/service";
 import {GlobalService} from "../../../global-informtions/service";
 import {Toast} from "../../../../components/toast";
 

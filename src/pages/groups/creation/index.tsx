@@ -49,7 +49,8 @@ export const GroupsCreation: FunctionComponent = () => {
             setTimeout(() => {
                 setOpen(false);
                 setIsLoading(false);
-                navigate("/grupos/grupos");
+                if (response.data.severity === "success")
+                    navigate("/grupos/grupos");
             }, 2000);
 
         } catch (e) {

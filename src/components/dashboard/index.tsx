@@ -174,8 +174,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
 
             {cards && cards.length > 0 &&
                 <div className="card_content">
-                    {cards.map((card) => (
-                        <div className="card">{card.label}
+                    {cards.map((card, index) => (
+                        <div className="card" key={index}>{card.label}
                             <div className="value">{card.value}</div>
                         </div>
 

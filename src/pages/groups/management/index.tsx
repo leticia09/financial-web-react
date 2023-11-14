@@ -159,8 +159,10 @@ export const Groups: FunctionComponent = () => {
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
                 setOpen(false);
-                setOpenToast(false);
-                getData();
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    getData();
+                }
             }, 2000);
 
         } catch (e) {
@@ -182,8 +184,11 @@ export const Groups: FunctionComponent = () => {
             setTimeout(() => {
                 setOpenModalExclusion(false);
                 setIsLoading(false);
-                setOpenToast(false);
-                getData();
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    getData();
+                }
+
             }, 2000);
         } catch (e) {
             setSeverity("error");
@@ -210,11 +215,9 @@ export const Groups: FunctionComponent = () => {
                     label={formStore.formListEdit[currentIndex].name}
                     getValue={save}
                     Form={
-                        [
-                            <ModalGroupForm
-                                index={currentIndex}
-                            />
-                        ]
+                        <ModalGroupForm
+                            index={currentIndex}
+                        />
                     }
                     disabledSave={ValidateGroupFormEdit(formStore.formListEdit[currentIndex], currentForm[currentIndex])}
                     toastMessage={toastMessage}
@@ -230,15 +233,13 @@ export const Groups: FunctionComponent = () => {
                 label={Messages.titles.exclusion}
                 getValue={exclusion}
                 Form={
-                    [
-                        <div>
-                            <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirmExclusion}</div>
-                            <div style={{
-                                padding: "10px 10px 0 10px",
-                                color: "red"
-                            }}>{Messages.messages.confirm}</div>
-                        </div>
-                    ]
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirmExclusion}</div>
+                        <div style={{
+                            padding: "10px 10px 0 10px",
+                            color: "red"
+                        }}>{Messages.messages.confirm}</div>
+                    </div>
                 }
                 disabledSave={false}
                 toastMessage={toastMessage}

@@ -14,7 +14,7 @@ interface IModal {
     setOpenModal: (value: boolean) => void;
     label: string;
     getValue: (value: any) => void;
-    Form: JSX.Element[];
+    Form: JSX.Element;
     toastMessage?: string;
     severityType?: 'success' | 'info' | 'warning' | 'error';
     openToast?: boolean;

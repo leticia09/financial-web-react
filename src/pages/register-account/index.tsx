@@ -56,13 +56,14 @@ export const RegisterAccount: FunctionComponent = () => {
             try {
                 const response = await registerAccountService.auth(payload);
 
-                setSeverity(response.data.message)
+                setSeverity(response.data.severity)
                 setToastMessage(ValidateError(response.data.message));
                 setOpen(true);
 
                 setTimeout(() => {
                     setOpen(false);
-                    navigate("/login");
+                    if(response.data.severity === "success")
+                        navigate("/login");
                 }, 2000);
 
 

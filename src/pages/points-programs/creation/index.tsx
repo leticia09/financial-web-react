@@ -9,8 +9,8 @@ import {IProgram} from "../../../interfaces/points-program";
 import useScorePointStore from "./store/useScorePointStore";
 import {ValidateFormCreate} from "./validate-factory/validateForms";
 import {ValidateError} from "../../../validate-error/validate-error";
-import {BankDataManagementService} from "../../bank-data/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {MembersManagementService} from "../../members/service";
 
 export const CreateProgramPoint: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -21,12 +21,12 @@ export const CreateProgramPoint: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const pointsService = PointsService();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
     const globalStore = useGlobalStore();
 
     useEffect(() => {
         const fetchData = async () => {
-            const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
+            const memberResponse = await membersManagementService.getMembersDropdown(loginStore.userId);
             globalStore.setMember(memberResponse.data.data);
         };
         fetchData();

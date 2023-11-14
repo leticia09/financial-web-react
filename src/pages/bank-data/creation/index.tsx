@@ -40,7 +40,8 @@ export const RegisterBankData: FunctionComponent = () => {
                 setTimeout(() => {
                     setOpen(false);
                     setIsLoading(false);
-                    navigate("/grupos/dados-bancarios");
+                    if (response.data.severity === "success")
+                        navigate("/grupos/dados-bancarios");
                 }, 2000);
 
             } else {

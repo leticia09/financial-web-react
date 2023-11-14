@@ -211,9 +211,9 @@ export const Dashboard: FunctionComponent = () => {
             <div className="page">
                 <div className="painel">
                     <div className="labels_dash">
-                        {tiposDespesas.map((item) => {
+                        {tiposDespesas.map((item, index) => {
                             return (
-                                <div className="label_dash">
+                                <div className="label_dash" key={index}>
                                     <div className="label_despesas">{item.nome}</div>
                                     <div >{item.valor}</div>
                                 </div>

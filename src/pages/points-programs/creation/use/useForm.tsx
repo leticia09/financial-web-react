@@ -22,6 +22,8 @@ export const UseForm: FunctionComponent = () => {
 
     useEffect(() => {
         formStore.resetFormStore();
+        formStore.setProgramId(0)
+        formStore.setValue(0);
         formStore.setUserAuthId(loginStore.userId);
     }, []);
 
@@ -34,8 +36,8 @@ export const UseForm: FunctionComponent = () => {
         if(response.data.data.length === 0) {
             setToastMessage(Messages.messages.ownerEmpty);
             setSeverityType("error");
-            setOpen(true);
             setDisableField(true);
+            setOpen(true);
         } else {
             setDisableField(false);
         }

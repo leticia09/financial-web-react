@@ -4,4 +4,5 @@ export interface IMember {
     index: number;
     userAuthId: number;
     color: string;
+    status: number;
 }

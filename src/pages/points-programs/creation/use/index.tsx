@@ -7,9 +7,9 @@ import useUpdateFormStore from "../store/useUpdateFormStore";
 import {PointsService} from "../../service";
 import {useNavigate} from "react-router-dom";
 import {ValidateError} from "../../../../validate-error/validate-error";
-import {BankDataManagementService} from "../../../bank-data/service";
 import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
 import useLoginStore from "../../../login/store/useLoginStore";
+import {MembersManagementService} from "../../../members/service";
 
 
 export const UsePoint: FunctionComponent = () => {
@@ -22,13 +22,12 @@ export const UsePoint: FunctionComponent = () => {
     const pointsService = PointsService();
     const navigate = useNavigate();
     const globalStore = useGlobalStore();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
 
 
     useEffect(() => {
-        formStore.resetFormStore();
         const fetch = async () => {
-            const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
+            const memberResponse = await membersManagementService.getMembersDropdown(loginStore.userId);
             globalStore.setMember(memberResponse.data.data);
         };
         fetch();
@@ -60,6 +59,7 @@ export const UsePoint: FunctionComponent = () => {
             setTimeout(() => {
                 setOpen(false);
                 setIsLoading(false);
+                if(response.data.severity === "success")
                 navigate("/grupos/programa-pontos");
             }, 2000);
 
