@@ -8,6 +8,8 @@ import {ValidateForm} from "./validade-factory/validadeFactory";
 import {BankDataManagementService} from "../service";
 import {useNavigate} from "react-router-dom";
 import {ValidateError} from "../../../validate-error/validate-error";
+import {accordionActionsClasses} from "@mui/material";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 
 export const RegisterBankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -18,6 +20,7 @@ export const RegisterBankData: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const registerBankService = BankDataManagementService();
     const navigate = useNavigate();
+    const globalStore = useGlobalStore();
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -28,7 +31,18 @@ export const RegisterBankData: FunctionComponent = () => {
 
     const save = async () => {
         setIsLoading(true);
+
         formStore.formList.userAuthId = loginStore.userId;
+
+
+        formStore.formList.accounts.forEach(account => {
+            account.cards.forEach(card => {
+                let program = globalStore.program.filter(pro => pro.description === card.program)[0];
+                let owner = globalStore.members.filter(mem => mem.name === card.owner)[0]
+                card.program = program ? program.id : null;
+                card.owner = owner ? owner.id.toString() : null;
+            })
+        })
 
         try {
             const response = await registerBankService.saveRegisterBank(formStore.formList);

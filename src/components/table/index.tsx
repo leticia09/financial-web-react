@@ -66,7 +66,7 @@ export const TableComponent: FunctionComponent <ITableComponent> = ({columns, ro
                                             const value = row[column.id];
                                             return (
                                                 <TableCell
-                                                    key={column.id}
+                                                    key={`${row.id}-${column.id}`}
                                                     align={column.align}
                                                     sx={{ textAlign: "start" }}
                                                 >

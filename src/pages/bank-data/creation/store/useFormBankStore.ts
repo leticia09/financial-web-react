@@ -27,7 +27,11 @@ const initialState: State = {
         {label: "Final"},
         {label: "Modalidade"},
         {label: "Vencimento"},
-        {label: "Fatura"}],
+        {label: "Fatura"},
+        {label: "Programa"},
+        {label: "Pontuação"},
+        {label: "Moeda"}
+    ],
     rows: [],
     formType: "CREATE"
 };

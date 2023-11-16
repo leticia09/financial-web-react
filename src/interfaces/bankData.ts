@@ -6,7 +6,7 @@ export interface IBankData {
 
 export interface IAccount {
     label: string,
-    accountNumber: number,
+    accountNumber: string,
     owner: string,
     cards: ICard[],
     index: number
@@ -21,6 +21,6 @@ export interface ICard {
     dueDate: number,
     index: number,
     program?: string,
-    point?: number;
-    currencyPoint?: string;
+    point?: number,
+    currency?: string
 }

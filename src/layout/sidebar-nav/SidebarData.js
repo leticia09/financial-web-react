@@ -45,13 +45,13 @@ export const SidebarData = [
         iconClosed: <RiIcons.RiArrowDownSFill/>,
         iconOpened: <RiIcons.RiArrowUpSFill/>,
     },
-    // {
-    //   title: 'Mov. Bancária',
-    //   path: '/movimentacao-bancaria/graficos',
-    //   icon: <FcIcons.FcMoneyTransfer size={20} />,
-    //   iconClosed: <RiIcons.RiArrowDownSFill />,
-    //   iconOpened: <RiIcons.RiArrowUpSFill />,
-    // },
+    {
+        title: 'Mov. Bancária',
+        path: '/movimentacao-bancaria/graficos',
+        icon: <FcIcons.FcMoneyTransfer size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
+    },
     {
         title: 'Despesas',
         path: '/despesas/graficos',
@@ -60,9 +60,9 @@ export const SidebarData = [
         iconOpened: <RiIcons.RiArrowUpSFill/>,
     },
     {
-        title: 'Programas de Pontos',
+        title: 'Programa de Pontos',
         path: '/grupos/programa-pontos',
-        icon: <GiIcons.GiAirplaneDeparture size={16}/>,
+        icon: <GiIcons.GiAirplaneDeparture size={20}/>,
         iconClosed: <RiIcons.RiArrowDownSFill/>,
         iconOpened: <RiIcons.RiArrowUpSFill/>,
     },

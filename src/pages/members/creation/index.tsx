@@ -74,9 +74,6 @@ export const RegisterMember: FunctionComponent = () => {
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
 
-            const memberResponse = await membersManagementService.getMembersDropdown(response.data.data.id);
-            globalStore.setMember(memberResponse.data.data);
-
             setTimeout(() => {
                 setOpen(false);
                 if (response.data.severity === "success")

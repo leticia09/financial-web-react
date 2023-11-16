@@ -24,6 +24,7 @@ export const ModalGroupForm: FunctionComponent<IModal> = ({index}) => {
             {
                 name: '',
                 index: updateList.length,
+                status: 0,
                 userAuthId: loginStore.userId,
             }
         )

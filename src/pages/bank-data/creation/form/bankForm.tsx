@@ -13,14 +13,15 @@ import useLoginStore from "../../../login/store/useLoginStore";
 import {useParams} from 'react-router-dom';
 import {IAccount} from "interfaces/bankData";
 import {FormControlLabel, Switch} from "@mui/material";
+import {GlobalService} from "../../../global-informtions/service";
 
 
 export const BankDataForm: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormBankStore();
     const globalStore = useGlobalStore();
-    const [numberAccount, setNumberAccount] = useState(null);
-    const [accountOwner, setAccountOwner] = useState(null);
+    const [numberAccount, setNumberAccount] = useState('');
+    const [accountOwner, setAccountOwner] = useState('');
     const [showComment, setShowComment] = useState(false);
     const [account, setAccount] = useState(null);
     const [cardName, setCardName] = useState(null);
@@ -33,6 +34,11 @@ export const BankDataForm: FunctionComponent = () => {
     const bankDataManagementService = BankDataManagementService();
     const [bankName, setBankName] = useState(null);
     const [hasScore, setScore] = useState(false);
+    const [program, setProgram] = useState(null);
+    const [points, setPoints] = useState(null);
+    const [currency, setCurrency] = useState(null);
+    const [programData, setProgramData] = useState([])
+    const service = GlobalService();
 
     const days = [];
 
@@ -47,6 +53,7 @@ export const BankDataForm: FunctionComponent = () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
                     fillForm(response.data.data);
+
                 } catch (error) {
                     console.log('Error', error);
                 }
@@ -83,9 +90,9 @@ export const BankDataForm: FunctionComponent = () => {
             formStore.addAccount({
                 label: null,
                 accountNumber: numberAccount,
-                owner: globalStore.members.filter(member => member.id === accountOwner)[0].name,
+                owner: globalStore.members.filter(member => member.id.toString() === accountOwner.toString())[0].name,
                 cards: null,
-                index: formStore.formList.accounts.length
+                index: formStore.formList.accounts.length + 1
             });
             resetFields();
         } else {
@@ -103,8 +110,13 @@ export const BankDataForm: FunctionComponent = () => {
         setCardName(value);
     }
 
-    const handleCardOwner = (value: any) => {
+    const handleCardOwner = async (value: any) => {
         setCardOwner(value);
+        setScore(false);
+        setCurrency("");
+        setPoints("");
+        setProgram(null);
+        setProgramData(await getProgram(value));
     }
 
     const handleFinalCard = (value: any) => {
@@ -127,18 +139,37 @@ export const BankDataForm: FunctionComponent = () => {
         setScore(event.target.checked);
     };
 
+    const handleProgram = (value: any) => {
+        setProgram(value);
+    }
+
+    const handlePoints = (value: any) => {
+        setPoints(value);
+    }
+
+    const handleCurrency = (value: any) => {
+        setCurrency(value);
+    }
+
+    const getProgram = async (id) => {
+        const response = await service.getProgramById(id);
+        return response.data.data;
+    };
+
     const transformDataToRows = (formList) => {
         const rows = formList.accounts.map((account) => {
             return account.cards.map((card) => ([
                 {label: card.name},
-                {label: account.owner,},
-                {label: card.finalNumber,},
-                {label: card.modality,},
-                {label: card.closingDate,},
-                {label: card.dueDate,}
+                {label: card.owner.name},
+                {label: card.finalNumber},
+                {label: card.modality},
+                {label: card.closingDate},
+                {label: card.dueDate},
+                {label: card.program.program},
+                {label: card.point},
+                {label: card.currency}
             ]));
         });
-
         formStore.setRows(rows);
     }
 
@@ -151,9 +182,12 @@ export const BankDataForm: FunctionComponent = () => {
                 modality: globalStore.modality.filter(modality => modality.id === cardModality)[0].name,
                 closingDate: closingDate,
                 dueDate: dueDate,
-                index: formStore.formList.accounts[account].cards.length,
+                index: formStore.formList.accounts[account - 1].cards.length + 1,
+                program: programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,
+                points: points,
+                currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
             };
-            formStore.addCard(newCard, account);
+            formStore.addCard(newCard, account - 1);
             transformDataToRows(formStore.formList);
             resetCardFields();
         }
@@ -161,12 +195,16 @@ export const BankDataForm: FunctionComponent = () => {
 
     const resetCardFields = () => {
         setCardName('');
-        setCardOwner({id: ''});
+        setCardOwner('');
         setFinalCard('');
-        setCardModality(null);
+        setCardModality('');
         setClosingDate(null);
         setDueDate(null);
-        setAccount({id: ''});
+        setAccount('');
+        setPoints(null);
+        setProgram('');
+        setCurrency('');
+        setScore(false);
     }
 
     return (
@@ -312,7 +350,11 @@ export const BankDataForm: FunctionComponent = () => {
                         {(cardModality === 1 || cardModality === 3) && (
                             <FormControlLabel style={{marginLeft: "12px"}}
                                               control={
-                                                  <Switch checked={hasScore} onChange={handleChangeScore} name="gilad"/>
+                                                  <Switch
+                                                      disabled={programData.length === 0}
+                                                      checked={hasScore}
+                                                      onChange={handleChangeScore}
+                                                      name="gilad"/>
                                               }
                                               label={Messages.titles.score}
                             />
@@ -323,20 +365,20 @@ export const BankDataForm: FunctionComponent = () => {
                         <div className="register-bank">
                             <DropdownSingleSelect
                                 label={Messages.titles.program}
-                                data={globalStore.program}
+                                data={programData}
                                 disabled={false}
                                 width={"200px"}
                                 idProperty={"id"}
                                 descriptionProperty={"description"}
-                                getValue={(value) => handleClosingDate(value)}
-                                value={closingDate}
+                                getValue={(value) => handleProgram(value)}
+                                value={program}
                             />
                             <Input
                                 label={Messages.titles.points}
                                 disabled={false}
                                 width="200px"
-                                getValue={(value) => handleFinalCard(value)}
-                                inputValue={finalCard}
+                                getValue={(value) => handlePoints(value)}
+                                inputValue={points}
                                 maskNumeric={true}
                             />
 
@@ -347,8 +389,8 @@ export const BankDataForm: FunctionComponent = () => {
                                 width={"200px"}
                                 idProperty={"id"}
                                 descriptionProperty={"description"}
-                                getValue={(value) => handleClosingDate(value)}
-                                value={closingDate}
+                                getValue={(value) => handleCurrency(value)}
+                                value={currency}
                             />
                         </div>
                     }
