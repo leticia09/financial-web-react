@@ -58,6 +58,8 @@ export const ValidateError = (message: any): string => {
 
         case "INSUFFICIENT_BALANCE":
             return Messages.messages.insufficientBalance;
+        case "DUPLICATE_NAMES_FOUND":
+            return Messages.messages.duplicateNames;
 
         default:
             return Messages.titles.errorMessage;

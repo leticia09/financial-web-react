@@ -158,18 +158,36 @@ export const BankDataForm: FunctionComponent = () => {
 
     const transformDataToRows = (formList) => {
         const rows = formList.accounts.map((account) => {
-            return account.cards.map((card) => ([
-                {label: card.name},
-                {label: card.owner.name},
-                {label: card.finalNumber},
-                {label: card.modality},
-                {label: card.closingDate},
-                {label: card.dueDate},
-                {label: card.program.program},
-                {label: card.point},
-                {label: card.currency}
-            ]));
+            return account.cards.map((card) => {
+                    let row = [
+                        {label: card.name},
+                        {label: card.owner},
+                        {label: card.finalNumber},
+                        {label: card.modality},
+                        {label: card.closingDate},
+                        {label: card.dueDate}
+                    ];
+                    if(card.program) {
+                        row.push({label: card.program});
+                    } else {
+                        row.push({label: null});
+                    }
+                    if(card.point) {
+                        row.push({label: card.point});
+                    } else {
+                        row.push({label: null});
+                    }
+
+                    if(card.currency) {
+                        row.push({label: card.currency});
+                    } else {
+                        row.push({label: null});
+                    }
+                    return row;
+                }
+            );
         });
+        console.log(rows)
         formStore.setRows(rows);
     }
 

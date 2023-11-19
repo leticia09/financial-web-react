@@ -17,8 +17,6 @@ interface IForm {
 export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) => {
     const formStore = useScorePointStore();
     const globalStore = useGlobalStore();
-    const [type, setType] = useState("");
-    const [owner, setOwner] = useState("")
     const [data, setDate] = useState();
 
 
@@ -32,16 +30,13 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
     }
 
     const handleType = (type, index) => {
-        const selectedType = globalStore.typeOfScore.find(item => item.id === type);
-        setType(selectedType.description);
-        formStore.setFormListValue(index, 'typeOfScore', selectedType.description);
+        formStore.setFormListValue(index, 'typeOfScore', type);
     }
 
     const handleOwner= (value, index) => {
-        const selectedType = globalStore.members.find(item => item.id === value);
-        setOwner(selectedType.name);
         formStore.setFormListValue(index, 'ownerId', value);
     }
+
     return (
         <div className="register-member">
             <Input
@@ -59,7 +54,7 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
                 idProperty={"id"}
                 descriptionProperty={"name"}
                 getValue={(value) => handleOwner(value, i)}
-                value={owner}
+                value={formStore.formList[i].ownerId}
             />
             <DropdownSingleSelect
                 label={Messages.titles.typeOfScore}
@@ -69,7 +64,7 @@ export const ProgramPointForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm
                 idProperty={"id"}
                 descriptionProperty={"description"}
                 getValue={(value) => handleType(value, i)}
-                value={type}
+                value={formStore.formList[i].typeOfScore}
             />
             <Input
                 label={Messages.titles.value}

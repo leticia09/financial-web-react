@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import {Creation} from "../../../components/creation";
 import {Messages} from "../../../internationalization/message";
 import useLoginStore from "../../login/store/useLoginStore";
@@ -10,6 +10,7 @@ import {useNavigate} from "react-router-dom";
 import {ValidateError} from "../../../validate-error/validate-error";
 import {accordionActionsClasses} from "@mui/material";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {MembersManagementService} from "../../members/service";
 
 export const RegisterBankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -21,6 +22,16 @@ export const RegisterBankData: FunctionComponent = () => {
     const registerBankService = BankDataManagementService();
     const navigate = useNavigate();
     const globalStore = useGlobalStore();
+    const membersManagementService = MembersManagementService();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const memberResponse = await membersManagementService.getMembersDropdown(loginStore.userId);
+            globalStore.setMember(memberResponse.data.data);
+        };
+        fetchData();
+    }, []);
+
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {

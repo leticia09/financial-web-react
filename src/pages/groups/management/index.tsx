@@ -136,6 +136,7 @@ export const Groups: FunctionComponent = () => {
 
             setCurrentForm(listCurrent);
             setIsLoading(false);
+            console.log(currentForm)
         } catch (error) {
             console.log('Error', error);
         }
