@@ -9,7 +9,9 @@ export interface IAccount {
     accountNumber: string,
     owner: string,
     cards: ICard[],
-    index: number
+    index: number,
+    value: number,
+    currency: string,
 }
 
 export interface ICard {

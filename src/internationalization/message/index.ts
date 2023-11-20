@@ -111,7 +111,8 @@ const Messages = {
         userExists: 'Usuário já existe!',
         ownerEmpty: 'Titular não possui nenhum programa ativo!',
         insufficientBalance: "Saldo insuficiente!",
-        duplicateNames: "Não é permitido nomes duplicados!"
+        duplicateNames: "Não é permitido nomes duplicados!",
+        exclusionBank: "Ao excluir este Banco, todas as contas e cartões associados também serão permanentemente removidos.",
     },
     modals: {},
     toasts: {}

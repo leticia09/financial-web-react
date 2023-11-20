@@ -37,6 +37,8 @@ export const BankDataForm: FunctionComponent = () => {
     const [program, setProgram] = useState(null);
     const [points, setPoints] = useState(null);
     const [currency, setCurrency] = useState(null);
+    const [accountValue, setAccountValue] = useState(null);
+    const [accountCurrency, setAccountCurrency] = useState(null);
     const [programData, setProgramData] = useState([])
     const service = GlobalService();
 
@@ -92,7 +94,9 @@ export const BankDataForm: FunctionComponent = () => {
                 accountNumber: numberAccount,
                 owner: globalStore.members.filter(member => member.id.toString() === accountOwner.toString())[0].name,
                 cards: null,
-                index: formStore.formList.accounts.length + 1
+                index: formStore.formList.accounts.length + 1,
+                value: accountValue,
+                currency: globalStore.currency.filter(currency => currency.id.toString() === accountCurrency.toString())[0].description,
             });
             resetFields();
         } else {
@@ -104,6 +108,8 @@ export const BankDataForm: FunctionComponent = () => {
     const resetFields = () => {
         setNumberAccount('');
         setAccountOwner('');
+        setAccountValue('');
+        setAccountCurrency('');
     };
 
     const handleCardName = (value: any) => {
@@ -151,34 +157,48 @@ export const BankDataForm: FunctionComponent = () => {
         setCurrency(value);
     }
 
-    const getProgram = async (id) => {
+    const handleAccountValue = (value: any) => {
+        setAccountValue(value);
+    }
+
+    const handleAccountCurrency = (value: any) => {
+        setAccountCurrency(value);
+    }
+
+    const getProgram = async (id: number) => {
         const response = await service.getProgramById(id);
         return response.data.data;
     };
 
-    const transformDataToRows = (formList) => {
-        const rows = formList.accounts.map((account) => {
-            return account.cards.map((card) => {
-                    let row = [
-                        {label: card.name},
-                        {label: card.owner},
-                        {label: card.finalNumber},
-                        {label: card.modality},
-                        {label: card.closingDate},
-                        {label: card.dueDate}
-                    ];
-                    if(card.program) {
+    const transformDataToRows = (formList: any) => {
+        const rows = formList.accounts.map((account: any) => {
+            return account.cards.map((card: any) => {
+                    let row = [];
+                    row.push({label: card.name});
+                    if (card.owner.name) {
+                        row.push({label: card.owner.name});
+                    } else if (card.owner) {
+                        row.push({label: card.owner});
+                    }
+                    row.push({label: card.finalNumber});
+                    row.push({label: card.modality});
+                    row.push({label: card.closingDate});
+                    row.push({label: card.dueDate});
+
+                    if (card.program && card.program.program) {
+                        row.push({label: card.program.program});
+                    } else if (card.program) {
                         row.push({label: card.program});
                     } else {
                         row.push({label: null});
                     }
-                    if(card.point) {
+                    if (card.point) {
                         row.push({label: card.point});
                     } else {
                         row.push({label: null});
                     }
 
-                    if(card.currency) {
+                    if (card.currency) {
                         row.push({label: card.currency});
                     } else {
                         row.push({label: null});
@@ -262,6 +282,27 @@ export const BankDataForm: FunctionComponent = () => {
                         getValue={(value) => handleAccountOwner(value)}
                         value={accountOwner}
                     />
+
+                    <Input
+                        label={Messages.titles.value}
+                        disabled={false}
+                        width="200px"
+                        getValue={(value) => handleAccountValue(value)}
+                        inputValue={accountValue}
+                        maskNumeric={true}
+                    />
+
+                    <DropdownSingleSelect
+                        label={Messages.titles.currency}
+                        data={globalStore.currency}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"description"}
+                        getValue={(value) => handleAccountCurrency(value)}
+                        value={accountCurrency}
+                    />
+
                 </div>
             }
             {formStore.formType === "CREATE" &&

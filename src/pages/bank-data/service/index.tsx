@@ -2,24 +2,30 @@ import {instance} from "../../../services/Core/api/api";
 
 
 export const BankDataManagementService = (axiosInstance: any = instance) => {
-    const getRegisterBank = (id) => {
+    const getRegisterBank = (id: number) => {
         const endPoint = '/register-bank/' + id;
         return axiosInstance.get(endPoint);
     }
 
-    const saveRegisterBank = (payload) => {
+    const saveRegisterBank = (payload: any) => {
         const url = '/register-bank';
         return axiosInstance.post(url, payload);
     }
 
-    const getRegisterBankById = (authId, id) => {
+    const getRegisterBankById = (authId: number, id: any) => {
         const endPoint = '/register-bank/' + authId + "/" + id;
         return axiosInstance.get(endPoint);
+    }
+
+    const exclusion = (id: number) => {
+        const endPoint = '/register-bank/' + id;
+        return axiosInstance.delete(endPoint);
     }
 
     return {
         getRegisterBank,
         saveRegisterBank,
         getRegisterBankById,
+        exclusion,
     }
 }
