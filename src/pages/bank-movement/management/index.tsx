@@ -4,18 +4,11 @@ import {Messages} from "../../../internationalization/message";
 import {IColumns} from "../../../interfaces/table";
 import useLoginStore from "../../login/store/useLoginStore";
 import * as AiIcons from "react-icons/ai";
-import {PointsService} from "../service";
 import {BulletComponent} from "../../../components/bullet";
 import {DashboardComponent} from "../../../components/dashboard";
 import {format} from "date-fns";
-import usePointFormStore from "../creation/store/usePointFormStore";
-import {GlobalService} from "../../global-informtions/service";
-import useGlobalStore from "../../global-informtions/store/useGlobalStore";
-import {ModalComponent} from "../../../components/modal";
-import {ModalForm} from "./modal-form/modal-form";
-import useUpdateFormStore from "../creation/store/useUpdateFormStore";
-import {ValidateError} from "../../../validate-error/validate-error";
-import {ValidateFormEdit} from "../creation/validate-factory/validateForms";
+import {MovementBankService} from "../service";
+import movementBankStore from "../store";
 
 
 const columns: IColumns[] = [
@@ -111,15 +104,11 @@ function formatData(inputDate: string): string {
     return formattedDate;
 }
 
-export const PointProgramData: FunctionComponent = () => {
+export const BankMovementData: FunctionComponent = () => {
     const loginStore = useLoginStore();
-
-    const formStore = useUpdateFormStore();
-    const pointsService = PointsService();
-    const store = usePointFormStore();
+    const store = movementBankStore();
+    const service = MovementBankService();
     const [rows, setRows] = useState<RowType[]>([]);
-    const globalService = GlobalService();
-    const globalStore = useGlobalStore();
     const [cards, setCards] = useState([]);
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -150,11 +139,11 @@ export const PointProgramData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await getData();
+               // await getData();
                 await getGraphic();
 
-                const programResponse = await globalService.getProgram(loginStore.userId);
-                globalStore.setProgram(programResponse.data.data);
+                // const programResponse = await globalService.getProgram(loginStore.userId);
+                // globalStore.setProgram(programResponse.data.data);
 
             } catch (error) {
                 console.log('Error', error);
@@ -164,50 +153,50 @@ export const PointProgramData: FunctionComponent = () => {
     }, []);
 
     const getData = async () => {
-        const response = await pointsService.get(loginStore.userId);
-        setResponses(response.data.data);
-        const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
-        setRows(transformedRows);
-        setCurrentForm(response.data.data);
+        // const response = await pointsService.get(loginStore.userId);
+        // setResponses(response.data.data);
+        // const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
+        // setRows(transformedRows);
+        // setCurrentForm(response.data.data);
 
     }
 
     const getGraphic = async () => {
-        const programsData = await pointsService.getData(loginStore.userId);
+        const data = await service.getData(loginStore.userId);
         store.setGraphicData(
-            programsData.data.data.labels,
-            programsData.data.data.dataSet,
-            programsData.data.data.total2,
-            programsData.data.data.total1,
-            programsData.data.data.total3,
-            programsData.data.data.total4
+            data.data.data.labels,
+            data.data.data.dataSet,
+            data.data.data.total1,
+            data.data.data.total2,
+            data.data.data.total3,
+            data.data.data.total4
         );
 
         let card = {
-            label: Messages.titles.totalPoints,
-            value: programsData.data.data.total2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            label: Messages.titles.totalMoney,
+            value: "R$ " + data.data.data.total1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card1 = {
-            label: Messages.titles.totalMiles,
-            value: programsData.data.data.total1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            label: Messages.titles.totalAvailable,
+            value: "R$ " + data.data.data.total2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card2 = {
-            label: Messages.titles.totalActive,
-            value: programsData.data.data.total3
+            label: Messages.titles.totalGoal,
+            value: "R$ " + data.data.data.total3.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card3 = {
-            label: Messages.titles.totalInactive,
-            value: programsData.data.data.total4
+            label: Messages.titles.totalDollar,
+            value: "U$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let cards = [];
         cards.push(card);
         cards.push(card1);
         cards.push(card2);
-        cards.push(card3);
+        cards.push(card3)
 
         setCards(cards);
     }
@@ -215,25 +204,25 @@ export const PointProgramData: FunctionComponent = () => {
     const save = async () => {
         setIsLoading(true);
         try {
-            const payload = {
-                status: formStore.status,
-                value: formStore.value,
-                programId: responses[currentIndex].id,
-                userAuthId: loginStore.userId
-            }
-            const response = await pointsService.updateStatus(payload);
-            setSeverity(response.data.severity);
-            setOpenToast(true);
-            setToastMessage(ValidateError(response.data.message));
-            await getData();
-            await getGraphic();
-
-            setTimeout(() => {
-                setOpenToast(false);
-                setIsLoading(false);
-                if (response.data.severity === "success")
-                    setOpen(false);
-            }, 1000);
+            // const payload = {
+            //     status: formStore.status,
+            //     value: formStore.value,
+            //     programId: responses[currentIndex].id,
+            //     userAuthId: loginStore.userId
+            // }
+            // const response = await pointsService.updateStatus(payload);
+            // setSeverity(response.data.severity);
+            // setOpenToast(true);
+            // setToastMessage(ValidateError(response.data.message));
+            // await getData();
+            // await getGraphic();
+            //
+            // setTimeout(() => {
+            //     setOpenToast(false);
+            //     setIsLoading(false);
+            //     if (response.data.severity === "success")
+            //         setOpen(false);
+            // }, 1000);
         } catch (e) {
             setSeverity("error");
             setIsLoading(false);
@@ -251,19 +240,19 @@ export const PointProgramData: FunctionComponent = () => {
     const exclusion = async () => {
         setIsLoading(true);
         try {
-            const response = await pointsService.exclusion(responses[currentIndex].id);
-            setOpenToast(true);
-            setSeverity(response.data.severity);
-            setToastMessage(ValidateError(response.data.message));
-            setTimeout(() => {
-                setIsLoading(false);
-                setOpenToast(false);
-                if (response.data.severity === "success") {
-                    setOpenModalExclusion(false);
-                    getData();
-                    getGraphic();
-                }
-            }, 2000);
+            // const response = await pointsService.exclusion(responses[currentIndex].id);
+            // setOpenToast(true);
+            // setSeverity(response.data.severity);
+            // setToastMessage(ValidateError(response.data.message));
+            // setTimeout(() => {
+            //     setIsLoading(false);
+            //     setOpenToast(false);
+            //     if (response.data.severity === "success") {
+            //         setOpenModalExclusion(false);
+            //         getData();
+            //         getGraphic();
+            //     }
+            // }, 2000);
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
@@ -276,62 +265,23 @@ export const PointProgramData: FunctionComponent = () => {
     return (
         <>
             <DashboardComponent
-                titleButton={Messages.titles.add}
-                title={Messages.titles.pointsProgram}
+                titleButton={Messages.titles.transfer}
+                path="/grupos/programa-pontos/programa/cadastro"
+                title={Messages.titles.movementBank}
                 rows={rows}
                 arrayHeader={columns}
-                path="/grupos/programa-pontos/programa/cadastro"
                 hasAuxButton={true}
+                auxTitle={Messages.titles.pay}
                 auxPath="/grupos/programa-pontos/programa/tranferencia"
-                auxTitle={Messages.titles.transfer}
                 dataSets={store.graphicData.dataSet}
                 labelsData={store.graphicData.labels}
                 optionText={Messages.titles.pointsAndMiles}
                 cards={cards}
                 hasAuxButton1={true}
+                auxTitle1={Messages.titles.receive}
                 auxPath1="/grupos/programa-pontos/programa/utilizar"
-                auxTitle1={Messages.titles.use}
                 showLineProgress={isLoading}
             />
-            {open &&
-                <ModalComponent
-                    openModal={open}
-                    setOpenModal={handleClose}
-                    label={currentForm[currentIndex].program}
-                    getValue={save}
-                    Form={
-                        <ModalForm
-                            currentForm={currentForm[currentIndex]}/>
-                    }
-                    disabledSave={ValidateFormEdit({
-                        status: formStore.status,
-                        value: formStore.value
-                    }, currentForm[currentIndex],)}
-                    toastMessage={toastMessage}
-                    severityType={severity}
-                    openToast={openToast}
-                />
-            }
-
-            {openModalExclusion &&
-                <ModalComponent
-                    openModal={openModalExclusion}
-                    setOpenModal={handleCloseExclusion}
-                    label={Messages.titles.exclusion}
-                    getValue={exclusion}
-                    Form={
-                        <div>
-                            <div style={{
-                                padding: "10px 10px 0 10px"
-                            }}>{Messages.messages.confirm}</div>
-                        </div>
-                    }
-                    disabledSave={false}
-                    toastMessage={toastMessage}
-                    severityType={severity}
-                    openToast={openToast}
-                />
-            }
 
         </>
     );

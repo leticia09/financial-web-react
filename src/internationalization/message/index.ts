@@ -83,6 +83,13 @@ const Messages = {
         ownerDestiny: 'Titular Destino',
         color: 'Cor *',
         currentValue: 'Valor',
+        movementBank: "Movimentação Bancária",
+        pay: "Pagar",
+        receive: "Receber",
+        totalMoney: "Total Acumulado",
+        totalAvailable: "Total Disponível",
+        totalGoal: 'Total Meta',
+        totalDollar: 'Total em Dólar'
 
     },
     buttons: {},

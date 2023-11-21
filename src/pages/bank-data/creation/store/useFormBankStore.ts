@@ -33,7 +33,7 @@ const initialState: State = {
         {label: "Moeda"}
     ],
     rows: [],
-    formType: "CREATE"
+    formType: "CREATE",
 };
 
 const useFormBankStore = create<State & Actions>((set) => ({

@@ -57,10 +57,10 @@ const initialState: State = {
     graphicData: {
         dataSet: [],
         labels: [],
-        totalMiles: 0,
-        totalPoints: 0,
-        totalProgramActive: 0,
-        totalProgramInactive: 0,
+        total1: 0,
+        total2: 0,
+        total3: 0,
+        total4: 0,
     }
 };
 
@@ -158,19 +158,18 @@ const usePointFormStore = create<State & Actions>((set) => ({
             set({formTransfer: transfer});
         },
 
-        setGraphicData: (labels: [], dataSet: [], totalMiles: number, totalPoints: number, totalProgramActive: number, totalProgramInactive: number) => {
-            set((state) => ({
-                graphicData: {
-                    labels: labels,
-                    dataSet: dataSet,
-                    totalPoints: totalPoints,
-                    totalMiles: totalMiles,
-                    totalProgramActive: totalProgramActive,
-                    totalProgramInactive: totalProgramInactive
-                },
-            }));
-        }
-        ,
+    setGraphicData: (labels: [], dataSet: [], total1: number, total2: number, total3: number, total4: number) => {
+        set((state) => ({
+            graphicData: {
+                labels: labels,
+                dataSet: dataSet,
+                total1: total1,
+                total2: total2,
+                total3: total3,
+                total4: total4
+            },
+        }));
+    },
     }))
 ;
 

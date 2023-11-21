@@ -71,11 +71,10 @@ export const BankDataForm: FunctionComponent = () => {
     }
 
     const fillForm = (form) => {
-        setBankName(form.name);
+        formStore.setBankNameFormList(form.name)
         form.accounts.forEach((account: IAccount) => {
             formStore.addAccount(account);
         })
-
         transformDataToRows(form);
     }
     const handleAccountBank = (value) => {
@@ -92,7 +91,7 @@ export const BankDataForm: FunctionComponent = () => {
             formStore.addAccount({
                 label: null,
                 accountNumber: numberAccount,
-                owner: globalStore.members.filter(member => member.id.toString() === accountOwner.toString())[0].name,
+                owner: accountOwner,
                 cards: null,
                 index: formStore.formList.accounts.length + 1,
                 value: accountValue,
@@ -207,7 +206,6 @@ export const BankDataForm: FunctionComponent = () => {
                 }
             );
         });
-        console.log(rows)
         formStore.setRows(rows);
     }
 
@@ -245,6 +243,7 @@ export const BankDataForm: FunctionComponent = () => {
         setScore(false);
     }
 
+
     return (
         <div>
             <h3 className="title-bank">Banco</h3>
@@ -254,7 +253,7 @@ export const BankDataForm: FunctionComponent = () => {
                     disabled={formStore.formType === "VIEW"}
                     width="200px"
                     getValue={(value) => formStore.setBankNameFormList(value)}
-                    inputValue={bankName}
+                    inputValue={formStore.formList.name}
                     viewMode={formStore.formType === "VIEW"}
                 />
             </div>

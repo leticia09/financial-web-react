@@ -25,10 +25,10 @@ export interface ITransfer {
 export interface IGraphic {
     dataSet: IDataSet[],
     labels: [],
-    totalMiles: number,
-    totalPoints: number,
-    totalProgramActive: number,
-    totalProgramInactive: number,
+    total1: number,
+    total2: number,
+    total3: number,
+    total4: number,
 }
 
 export interface IDataSet {

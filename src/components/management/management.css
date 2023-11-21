@@ -2,7 +2,7 @@
     font-size: 0.85rem;
     border-radius: 4px;
     color: #333;
-    margin-top: 65px;
+    margin-top: 60px;
     background: white;
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     border: 2px solid white;
@@ -25,12 +25,23 @@
     font-size: 1rem;
     border-radius: 4px;
     color: #333;
-    margin-top: 8px;
+    margin-top: 12px;
     padding: 20px;
     text-align: center;
     background: white;
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     border: 2px solid white;
+    width: 100%;
+}
+
+.content-accordion {
+    font-size: 1rem;
+    border-radius: 4px;
+    color: #333;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    margin-top: 12px;
+    text-align: center;
+    background: transparent;
     width: 100%;
 }
 

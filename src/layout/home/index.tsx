@@ -13,6 +13,7 @@ import {TransferProgram} from "../../pages/points-programs/creation/transfer";
 import {UsePoint} from "../../pages/points-programs/creation/use";
 import {GroupsCreation} from "../../pages/groups/creation";
 import {Groups} from "../../pages/groups/management";
+import {BankMovementData} from "../../pages/bank-movement/management";
 
 export const Home: FunctionComponent = () => {
 
@@ -55,7 +56,8 @@ export const Home: FunctionComponent = () => {
                        element={<Groups />}/>
                 <Route path="/grupos/grupos/cadastro"
                        element={<GroupsCreation />}/>
-
+                <Route path="/movimentacao-bancaria"
+                       element={<BankMovementData/>} />
 
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>

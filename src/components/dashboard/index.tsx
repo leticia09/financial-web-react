@@ -31,6 +31,7 @@ interface IDashboard {
     auxTitle1?: string;
     showLineProgress?: boolean;
     dataSets?: IDataSet[];
+    titleButton: string;
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -53,7 +54,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       auxPath1,
                                                                       auxTitle1,
                                                                       showLineProgress,
-                                                                      dataSets
+                                                                      dataSets,
+                                                                      titleButton
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -76,14 +78,12 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
         },
         scales: {
             x: {
-                stacked: true,
                 grid: {
                     display: false,
                     barThickness: 1
                 },
             },
             y: {
-                stacked: true,
                 grid: {
                     display: true,
                 },
@@ -105,7 +105,7 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
 
                     <div className={`button-create ${hasAuxButton ? 'button-aux' : ''}`}>
                         <ButtonComponent
-                            label={Messages.titles.add}
+                            label={titleButton}
                             disabled={false}
                             width="120px"
                             height="40px"
