@@ -8,12 +8,14 @@ import {useNavigate} from "react-router-dom";
 import useFormBankStore from "../creation/store/useFormBankStore";
 import {ModalComponent} from "../../../components/modal";
 import {Messages} from "../../../internationalization/message";
-import {ValidateError} from "../../../validate-error/validate-error";
 import {IAccordion} from "../../../interfaces/accordion";
 import {AccordionComponent} from "../../../components/accordion";
 import {TableComponent} from "../../../components/table";
 import {IColumns} from "../../../interfaces/table";
 import {BulletComponent} from "../../../components/bullet";
+import {AccountModalForm} from "./modal/accountModalForm";
+import {CardModalForm} from "./modal/cardModalForm";
+import {ValidateError} from "../../../validate-error/validate-error";
 
 const columns: IColumns[] = [
     {
@@ -90,37 +92,7 @@ const columns: IColumns[] = [
     },
 ];
 
-function createAccordion(user, index) {
-    const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account));
-    return {
-        label: user.name,
-        Component: <AccordionComponent
-            label={accordionAccount[0].label}
-            Component={accordionAccount[0].Component}
-            showView={false}
-            showEdit={true}
-            showDelete={true}
-        />
-    }
-}
-
-function createAccount(account) {
-    const transformedRows = account.cards.map((user: any, index: number) => createData(user));
-    return {
-        label: account.accountNumber,
-        Component: <TableComponent
-            columns={columns}
-            rows={transformedRows}
-            pagination={true}
-            width={"100%"}
-        />,
-        showEdit: true,
-        showDelete: true,
-        showView: false
-    }
-}
-
-function createData(user) {
+function createData(user, actions) {
     const {name, finalNumber, owner, closingDate, dueDate, point, program, currency, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
         <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
@@ -141,7 +113,8 @@ function createData(user) {
         point,
         program: programName,
         currency,
-        status: statusBullet
+        status: statusBullet,
+        actions
     };
 }
 
@@ -152,34 +125,136 @@ export const BankData: FunctionComponent = () => {
     const bankDataManagementService = BankDataManagementService();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
     const navigate = useNavigate();
-    const [openModalExclusion, setOpenModalExclusion] = useState(false);
-    const [currentId, setCurrentId] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [isLoading, setIsLoading] = useState(false);
-    const actions = (id: number, index: number) => [
-        <div style={{width: "90%", display: "flex", justifyContent: "space-between"}}>
-            <AiIcons.AiOutlineEye onClick={() => handleOpenView(id)} className="icon_space" size={18}/>
-            <AiIcons.AiOutlineEdit onClick={() => handleOpenEdit(id)} className="icon_space" size={18}/>
+    const [currentAccountIndex, setCurrentAccountIndex] = useState(0);
+    const [openBankModalExclusion, setOpenBankModalExclusion] = useState(false);
+    const [openAccountModalExclusion, setOpenAccountModalExclusion] = useState(false);
+    const [openCardModalExclusion, setOpenCardModalExclusion] = useState(false);
+    const [openAccountModalEdit, setOpenAccountModalEdit] = useState(false);
+    const [openCardModalEdit, setOpenCardModalEdit] = useState(false);
+    const [currentCardIndex, setCurrentCardIndex] = useState(0);
+
+    const actionsBank = (index: number) => [
+        <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEye onClick={() => handleBankOpenView(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineEdit onClick={() => handleBankOpenEdit(index)} className="icon_space" size={18}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18}
-                                     onClick={() => handleOpenModalExclusion(id)}/>
+                                     onClick={() => handleBankOpenModalExclusion()}/>
         </div>
     ];
 
-    const handleOpenEdit = (id) => {
-        setCurrentId(id);
-        useBankStore.setFormType("EDIT");
-        navigate(`/grupos/dados-bancarios/${id}`);
-    };
+    const actionsAccount = (index: number) => [
+        <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEye onClick={() => handleAccountOpenModalEdit(index, "VIEW")} className="icon_space"
+                                  size={18}/>
+            <AiIcons.AiOutlineEdit onClick={() => handleAccountOpenModalEdit(index, "EDIT")} className="icon_space"
+                                   size={18}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18}
+                                     onClick={() => handleAccountOpenModalExclusion(index)}/>
+        </div>
+    ];
 
-    const handleOpenModalExclusion = (id: number) => {
-        setCurrentId(id);
-        setOpenModalExclusion(true);
+    const actionsCard = (index: number) => [
+        <div style={{width: "65%", display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEdit onClick={() => handleCardOpenModalEdit(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18}
+                                     onClick={() => handleCardOpenModalExclusion(index)}/>
+        </div>
+    ];
+
+    function createAccordion(user, index) {
+        const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account, index));
+        let accordions = [];
+        accordionAccount.map((accordion, index) => {
+            accordions.push(<AccordionComponent
+                key={index}
+                label={accordion.label}
+                Component={accordion.Component}
+                actions={actionsAccount(index)}
+                index={index}
+                getValue={(value) =>  setCurrentAccountIndex(value)}
+            />)
+        })
+        return {
+            label: user.name,
+            Component: accordions,
+            actions: actionsBank(index)
+        }
     }
 
-    const handleCloseExclusion = () => {
-        setOpenModalExclusion(false);
+    function createAccount(account, index) {
+        const transformedRows = account.cards.map((user: any, index: number) => createData(user, actionsCard(index)));
+        return {
+            label: account.accountNumber,
+            Component: <TableComponent
+                columns={columns}
+                rows={transformedRows}
+                pagination={true}
+                width={"100%"}
+            />,
+
+        }
+    }
+
+    const handleBankOpenView = (index) => {
+        if (useBankStore.forms[index]) {
+            let id = useBankStore.forms[index].id;
+            useBankStore.setFormType("VIEW");
+            navigate(`/grupos/dados-bancarios/${id}`);
+        }
+    };
+    const handleBankOpenEdit = (index) => {
+        if (useBankStore.forms[index]) {
+            let id = useBankStore.forms[index].id;
+            useBankStore.setFormType("EDIT");
+            navigate(`/grupos/dados-bancarios/${id}`);
+        }
+    };
+
+    const handleBankOpenModalExclusion = () => {
+        setOpenBankModalExclusion(true);
+    }
+
+    const handleBankCloseExclusion = () => {
+        setOpenBankModalExclusion(false);
+    }
+
+    const handleAccountOpenModalEdit = (index: number, mode) => {
+        setCurrentAccountIndex(index);
+        useBankStore.setFormType(mode);
+        setOpenAccountModalEdit(true);
+    }
+
+    const handleAccountCloseEdit = () => {
+        setOpenAccountModalEdit(false);
+    }
+    const handleAccountOpenModalExclusion = (index: number) => {
+        setCurrentAccountIndex(index);
+        setOpenAccountModalExclusion(true);
+    }
+
+    const handleAccountCloseExclusion = () => {
+        setOpenAccountModalExclusion(false);
+    }
+    const handleCardOpenModalEdit = (index: number) => {
+        setCurrentCardIndex(index);
+        setOpenCardModalEdit(true);
+
+    }
+
+    const handleCardCloseEdit = () => {
+        setOpenCardModalEdit(false);
+    }
+
+    const handleCardOpenModalExclusion = (index: number) => {
+        setOpenCardModalExclusion(true);
+    }
+
+    const handleCardCloseExclusion = () => {
+        setOpenCardModalExclusion(false);
     }
 
     useEffect(() => {
@@ -193,6 +268,7 @@ export const BankData: FunctionComponent = () => {
         try {
             const response = await bankDataManagementService.getRegisterBank(loginStore.userId);
             const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index));
+            useBankStore.setForms(response.data.data);
             setAccordionData(accordion);
 
             console.log(accordion)
@@ -202,36 +278,83 @@ export const BankData: FunctionComponent = () => {
         }
     }
 
-    const handleOpenView = (id) => {
-        useBankStore.setFormType("VIEW");
-        navigate(`/grupos/dados-bancarios/${id}`);
-    }
-
-    const exclusion = async () => {
+    const exclusionBank = async () => {
         setIsLoading(true);
         try {
-            const response = await bankDataManagementService.exclusion(currentId);
-            setSeverity(response.data.severity);
+            const response = await bankDataManagementService.exclusion(useBankStore.forms[useBankStore.currentBankIndex].id);
             setOpenToast(true);
+            setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setTimeout(() => {
-                setOpenModalExclusion(false);
-                setIsLoading(false);
                 if (response.data.severity === "success") {
                     setOpenToast(false);
+                    setOpenBankModalExclusion(false);
+                    setIsLoading(false);
                     getData();
                 }
-
             }, 2000);
+
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);
-            setOpenToast(true);
+            setOpenToast(false);
             setIsLoading(false);
         }
-
     };
 
+    const exclusionAccount = async () => {
+        setIsLoading(true);
+        try {
+            const response = await bankDataManagementService.exclusionAccount(useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex].id);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenAccountModalExclusion(false);
+                    setIsLoading(false);
+                    getData();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    };
+
+    const exclusionCard = async () => {
+        setIsLoading(true);
+        try {
+            const response = await bankDataManagementService.exclusionCard(
+                useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex].cards[currentCardIndex].id);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenCardModalExclusion(false);
+                    setIsLoading(false);
+                    getData();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    }
+
+    const editAccount = async () => {
+    };
+    const editCard = async () => {
+    };
 
     return (
         <>
@@ -240,15 +363,49 @@ export const BankData: FunctionComponent = () => {
                 path="/grupos/dados-bancarios/cadastro"
                 showLineProgress={isLoading}
                 hasAccordion={true}
-                accordionComponent={<div>OLA</div>}
                 accordionData={accordionData}
+                getValue={(value) => useBankStore.setCurrentBankIndex(value)}
+
             />
+            { (useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts ) &&
+                <ModalComponent
+                    openModal={openAccountModalEdit}
+                    setOpenModal={handleAccountCloseEdit}
+                    label={Messages.titles.account}
+                    getValue={editAccount}
+                    Form={
+                        <AccountModalForm
+                            currentForm={useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex]}
+                            mode={useBankStore.formType}/>
+                    }
+                    disabledSave={false}
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
+            {useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex] &&
+                <ModalComponent
+                    openModal={openCardModalEdit}
+                    setOpenModal={handleCardCloseEdit}
+                    label={Messages.titles.card}
+                    getValue={editCard}
+                    Form={
+                        <CardModalForm
+                            currentForm={useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex].cards[currentCardIndex]}/>
+                    }
+                    disabledSave={false}
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
 
             <ModalComponent
-                openModal={openModalExclusion}
-                setOpenModal={handleCloseExclusion}
+                openModal={openBankModalExclusion}
+                setOpenModal={handleBankCloseExclusion}
                 label={Messages.titles.exclusion}
-                getValue={exclusion}
+                getValue={exclusionBank}
                 Form={
                     <div>
                         <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.exclusionBank}</div>
@@ -256,6 +413,42 @@ export const BankData: FunctionComponent = () => {
                             padding: "10px 10px 0 10px",
                             color: "red"
                         }}>{Messages.messages.confirm}</div>
+                    </div>
+                }
+                disabledSave={false}
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
+
+            <ModalComponent
+                openModal={openAccountModalExclusion}
+                setOpenModal={handleAccountCloseExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusionAccount}
+                Form={
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.exclusionAccount}</div>
+                        <div style={{
+                            padding: "10px 10px 0 10px",
+                            color: "red"
+                        }}>{Messages.messages.confirm}</div>
+                    </div>
+                }
+                disabledSave={false}
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
+
+            <ModalComponent
+                openModal={openCardModalExclusion}
+                setOpenModal={handleCardCloseExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusionCard}
+                Form={
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
                     </div>
                 }
                 disabledSave={false}

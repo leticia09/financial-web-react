@@ -4,49 +4,46 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {FunctionComponent} from "react";
-import * as AiIcons from "react-icons/ai";
+import {FunctionComponent, useEffect, useState} from "react";
 import "./accordion.css"
 import {IAccordion} from 'interfaces/accordion';
 
 export const AccordionComponent: FunctionComponent<IAccordion> = ({
                                                                       label,
                                                                       Component,
-                                                                      handleView,
-                                                                      handleEdit,
-                                                                      handleDelete,
-                                                                      showView,
-                                                                      showEdit,
-                                                                      showDelete
+                                                                      actions,
+                                                                      getValue,
+                                                                      index,
+                                                                      expanded = false
                                                                   }: IAccordion) => {
+    const [isExpanded, setIsExpanded] = useState(expanded);
+
+    useEffect(() => {
+        setIsExpanded(expanded);
+    }, [expanded]);
+
+    const handleAccordionChange = () => {
+        setIsExpanded(!isExpanded);
+        getValue(index);
+    };
+
 
     return (
-        <div>
-            <Accordion>
+        <div className="accordion-content">
+            <Accordion expanded={isExpanded} onChange={handleAccordionChange}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon/>}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                    <div className="accordion-summary">
+                    <div className={expanded ? "accordion-summary-border" : "accordion-summary"}>
                         <div>
                             <Typography>{label}</Typography>
                         </div>
-                        {(showDelete ||showView || showDelete) &&
-                            <div className="accordion-icons">
-                                {showView &&
-                                    <AiIcons.AiOutlineEye size={18}/>
-                                }
-                                {showEdit &&
 
-                                    <AiIcons.AiOutlineEdit size={18}/>
-                                }
-                                {showDelete &&
-                                    <AiIcons.AiOutlineDelete size={18}/>
-                                }
-                            </div>
-                        }
-
+                        <div>
+                            {actions}
+                        </div>
                     </div>
 
 

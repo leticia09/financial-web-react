@@ -1,11 +1,9 @@
 export interface IAccordion {
     label: string;
     Component: JSX.Element[];
-    handleView?: (value: any) => void;
-    handleEdit?: (value: any) => void;
-    handleDelete?: (value: any) => void;
-    showView?: boolean;
-    showEdit?: boolean;
-    showDelete?: boolean;
+    actions: JSX.Element[];
+    getValue: (value: any) => void;
+    index: number;
+    expanded?: boolean;
 }
 

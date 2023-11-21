@@ -22,10 +22,22 @@ export const BankDataManagementService = (axiosInstance: any = instance) => {
         return axiosInstance.delete(endPoint);
     }
 
+    const exclusionAccount = (id: number) => {
+        const endPoint = '/register-bank/account/' + id;
+        return axiosInstance.delete(endPoint);
+    }
+
+    const exclusionCard = (id: number) => {
+        const endPoint = '/register-bank/card/' + id;
+        return axiosInstance.delete(endPoint);
+    }
+
     return {
         getRegisterBank,
         saveRegisterBank,
         getRegisterBankById,
         exclusion,
+        exclusionAccount,
+        exclusionCard
     }
 }

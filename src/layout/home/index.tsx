@@ -24,8 +24,8 @@ export const Home: FunctionComponent = () => {
                 flexGrow: 1,
                 p: 1,
                 background: "#f2f7fb",
-                height: "100vh",
-                width: "100%"
+                width: "100%",
+                minHeight: '100vh',
             }}
         >
             <Routes>

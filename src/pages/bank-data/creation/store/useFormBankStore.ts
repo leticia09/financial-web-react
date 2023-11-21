@@ -2,13 +2,16 @@ import create from 'zustand';
 import {IAccount, IBankData, ICard} from '../../../../interfaces/bankData';
 
 type State = {
+    forms: any[];
     formList: IBankData;
     columns: any[];
     rows: any[];
     formType: string;
+    currentBankIndex: number
 };
 
 type Actions = {
+    setForms: (forms: any[]) => void;
     setFormList: (data: IBankData) => void;
     setColumns: (columns: any[]) => void;
     setRows: (rows: any[]) => void;
@@ -17,6 +20,7 @@ type Actions = {
     setBankNameFormList: (bankName: string) => void;
     addCard: (card: ICard, index: number) => void;
     setFormType: (type: string) => void;
+    setCurrentBankIndex: (index: number) => void;
 };
 
 const initialState: State = {
@@ -33,13 +37,16 @@ const initialState: State = {
         {label: "Moeda"}
     ],
     rows: [],
+    forms: [],
     formType: "CREATE",
+    currentBankIndex: 0
 };
 
 const useFormBankStore = create<State & Actions>((set) => ({
     ...initialState,
     setFormList: (data) => set({formList: data}),
     setColumns: (columns) => set({columns}),
+    setForms: (forms) => set({forms}),
     setRows: (rows) => set({rows}),
     addAccount: (newAccount) => {
         set((state) => {
@@ -85,6 +92,7 @@ const useFormBankStore = create<State & Actions>((set) => ({
         });
     },
     setFormType: (type) => set({formType: type}),
+    setCurrentBankIndex: (index) => set({currentBankIndex: index}),
 
 }));
 

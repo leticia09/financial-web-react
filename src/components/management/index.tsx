@@ -1,4 +1,4 @@
-import {FunctionComponent, useEffect} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./management.css";
 import {IColumns, IRow} from "../../interfaces/table";
@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import {AccordionComponent} from "../accordion";
 import {IAccordion} from "../../interfaces/accordion";
+import {getValue} from "@testing-library/user-event/dist/utils";
 
 interface IManagement {
     title: string;
@@ -24,7 +25,7 @@ interface IManagement {
     showLineProgress?: boolean;
     hasAccordion?: boolean;
     accordionData?: IAccordion[];
-    accordionComponent?: JSX.Element;
+    getValue?: (value: any) => void;
 }
 
 export const Management: FunctionComponent<IManagement> = ({
@@ -40,10 +41,17 @@ export const Management: FunctionComponent<IManagement> = ({
                                                                moreTableRows,
                                                                showLineProgress,
                                                                hasAccordion,
-                                                               accordionComponent,
-                                                               accordionData
+                                                               accordionData,
+                                                               getValue,
                                                            }: IManagement) => {
     const navigate = useNavigate();
+    const [expandedAccordion, setExpandedAccordion] = useState<number | null>(null);
+
+
+    const handleAccordion = (index) => {
+        setExpandedAccordion((prev) => (prev === index ? null : index));
+        getValue(index);
+    }
 
     return (
         <>
@@ -108,11 +116,13 @@ export const Management: FunctionComponent<IManagement> = ({
                 accordionData.map((accordion, index) => (
                     <div key={index} className="content-accordion">
                         <AccordionComponent
+                            key={index}
                             label={accordion.label}
                             Component={accordion.Component}
-                            showView={accordion.showView}
-                            showDelete={accordion.showDelete}
-                            showEdit={accordion.showEdit}
+                            actions={accordion.actions}
+                            getValue={(value) => handleAccordion(value)}
+                            index={index}
+                            expanded={expandedAccordion === index}
                         />
                     </div>
                 ))

@@ -119,7 +119,8 @@ const Messages = {
         ownerEmpty: 'Titular não possui nenhum programa ativo!',
         insufficientBalance: "Saldo insuficiente!",
         duplicateNames: "Não é permitido nomes duplicados!",
-        exclusionBank: "Ao excluir este Banco, todas as contas e cartões associados também serão permanentemente removidos.",
+        exclusionBank: "Ao excluir este banco, todas as contas e cartões associados também serão permanentemente removidos.",
+        exclusionAccount: "Ao excluir esta conta, todos os cartões associados também serão permanentemente removidos.",
     },
     modals: {},
     toasts: {}

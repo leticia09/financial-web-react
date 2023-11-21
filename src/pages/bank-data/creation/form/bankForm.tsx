@@ -210,6 +210,8 @@ export const BankDataForm: FunctionComponent = () => {
     }
 
     const addCard = () => {
+        //TEM UM ERRO AQUI MANE
+        console.log('aa', programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,)
         if (account !== null) {
             const newCard = {
                 name: cardName,
@@ -260,7 +262,7 @@ export const BankDataForm: FunctionComponent = () => {
             <h3 className="title-bank">{Messages.titles.account}
                 {showComment && <span className="title-bank-comment"> {Messages.messages.notAllowedMoreThan}</span>}
             </h3>
-            {formStore.formType === "CREATE" &&
+            {(formStore.formType === "CREATE" || formStore.formType === "EDIT") &&
                 <div className="register-bank">
                     <Input
                         label={Messages.titles.accountNumber}
@@ -304,7 +306,7 @@ export const BankDataForm: FunctionComponent = () => {
 
                 </div>
             }
-            {formStore.formType === "CREATE" &&
+            {(formStore.formType === "CREATE" || formStore.formType === "EDIT") &&
                 <div className="register-bank">
                     <div className="register-bank-add-button">
                         <ButtonComponent
@@ -324,7 +326,7 @@ export const BankDataForm: FunctionComponent = () => {
                     </div>
                 </div>
             }
-            {formStore.formList.accounts && formStore.formList.accounts.length > 0 && formStore.formType === "CREATE" && (
+            {formStore.formList.accounts && formStore.formList.accounts.length > 0 && (formStore.formType === "CREATE" || formStore.formType === "EDIT") && (
                 <div>
                     <h3 className="title-bank">Cartão</h3>
                     <div className="register-bank">
