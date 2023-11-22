@@ -10,64 +10,61 @@ import {DropdownSingleSelect} from "../../../../components/dropdown";
 interface IModal {
     currentForm: any;
     mode: string
+    updateAccountValue: (field: string, value: any) => void
 }
 
-export const AccountModalForm: FunctionComponent<IModal> = ({currentForm, mode}) => {
+export const AccountModalForm: FunctionComponent<IModal> = ({currentForm, mode, updateAccountValue}) => {
     const globalStore = UseGlobalStore();
     const loginStore = useLoginStore();
 
     return (
         <div>
             <div className="register-member">
-                {currentForm.accountNumber &&
-                    <Input
-                        label={Messages.titles.accountNumber}
-                        disabled={mode === "VIEW"}
-                        width="200px"
-                        getValue={(value) => console.log(value)}
-                        inputValue={currentForm.accountNumber}
-                        maskNumeric={true}
-                    />
-                }
 
-                {currentForm.status &&
-                    <DropdownSingleSelect
-                        label={Messages.titles.status}
-                        data={globalStore.status}
-                        disabled={mode === "VIEW"}
-                        width={"200px"}
-                        idProperty={"id"}
-                        descriptionProperty={"description"}
-                        getValue={(value) => console.log(value)}
-                        value={currentForm.status}
-                    />
-                }
+                <Input
+                    label={Messages.titles.accountNumber}
+                    disabled={mode === "VIEW"}
+                    width="200px"
+                    getValue={(value) => updateAccountValue("accountNumber", value)}
+                    inputValue={currentForm.accountNumber}
+                    maskNumeric={true}
+                />
+
+
+                <DropdownSingleSelect
+                    label={Messages.titles.status}
+                    data={globalStore.status}
+                    disabled={mode === "VIEW"}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
+                    getValue={(value) => updateAccountValue("status", value)}
+                    value={currentForm.status}
+                />
+
             </div>
             <div className="register-member">
 
-                {currentForm.owner &&
-                    <DropdownSingleSelect
-                        label={Messages.titles.owner}
-                        data={globalStore.members}
-                        disabled={mode === "VIEW"}
-                        width={"200px"}
-                        idProperty={"id"}
-                        descriptionProperty={"name"}
-                        getValue={(value) => console.log(value)}
-                        value={currentForm.owner}
-                    />
-                }
+                <DropdownSingleSelect
+                    label={Messages.titles.owner}
+                    data={globalStore.members}
+                    disabled={mode === "VIEW"}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"name"}
+                    getValue={(value) => updateAccountValue("owner", value)}
+                    value={currentForm.owner}
+                />
 
-                {currentForm.value &&
-                    <Input
-                        label={Messages.titles.value}
-                        disabled={mode === "VIEW"}
-                        width="200px"
-                        getValue={(value) => console.log(value)}
-                        inputValue={currentForm.value}
-                        maskNumeric={true}
-                    />
-                }
+
+                <Input
+                    label={Messages.titles.value}
+                    disabled={mode === "VIEW"}
+                    width="200px"
+                    getValue={(value) => updateAccountValue("value", value)}
+                    inputValue={currentForm.value}
+                    maskNumeric={true}
+                />
 
             </div>
 

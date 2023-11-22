@@ -5,5 +5,6 @@ export interface IAccordion {
     getValue: (value: any) => void;
     index: number;
     expanded?: boolean;
+    status: JSX.Element;
 }
 

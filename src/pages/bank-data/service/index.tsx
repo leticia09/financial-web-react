@@ -32,12 +32,24 @@ export const BankDataManagementService = (axiosInstance: any = instance) => {
         return axiosInstance.delete(endPoint);
     }
 
+    const editAccount = (payload: any) => {
+        const url = '/register-bank/account/';
+        return axiosInstance.patch(url, payload);
+    }
+
+    const editCard = (payload: any) => {
+        const url = '/register-bank/card/';
+        return axiosInstance.patch(url, payload);
+    }
+
     return {
         getRegisterBank,
         saveRegisterBank,
         getRegisterBankById,
         exclusion,
         exclusionAccount,
-        exclusionCard
+        exclusionCard,
+        editAccount,
+        editCard
     }
 }

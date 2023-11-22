@@ -11,6 +11,7 @@ import {ValidateError} from "../../../validate-error/validate-error";
 import {accordionActionsClasses} from "@mui/material";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {MembersManagementService} from "../../members/service";
+import {GlobalService} from "../../global-informtions/service";
 
 export const RegisterBankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -23,15 +24,18 @@ export const RegisterBankData: FunctionComponent = () => {
     const navigate = useNavigate();
     const globalStore = useGlobalStore();
     const membersManagementService = MembersManagementService();
+    const service = GlobalService();
 
     useEffect(() => {
         const fetchData = async () => {
             const memberResponse = await membersManagementService.getMembersDropdown(loginStore.userId);
             globalStore.setMember(memberResponse.data.data);
+
+            const programResponse = await service.getProgram(loginStore.userId);
+            globalStore.setProgram(programResponse.data.data);
         };
         fetchData();
     }, []);
-
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -43,17 +47,20 @@ export const RegisterBankData: FunctionComponent = () => {
     const save = async () => {
         setIsLoading(true);
 
+
         formStore.formList.userAuthId = loginStore.userId;
 
 
         formStore.formList.accounts.forEach(account => {
             account.cards.forEach(card => {
-                let program = globalStore.program.filter(pro => pro.description === card.program)[0];
                 let owner = globalStore.members.filter(mem => mem.name === card.owner)[0]
+                let program = globalStore.program.filter(pro => pro.description === card.program)[0];
                 card.program = program ? program.id : null;
                 card.owner = owner ? owner.id.toString() : null;
             })
-        })
+        });
+
+        console.log(formStore.formList)
 
         try {
             const response = await registerBankService.saveRegisterBank(formStore.formList);

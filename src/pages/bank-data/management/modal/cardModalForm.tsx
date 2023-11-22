@@ -10,9 +10,10 @@ import {GlobalService} from "../../../global-informtions/service";
 
 interface IModal {
     currentForm: any;
+    updateCardValue: (field: string, value: any) => void
 }
 
-export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
+export const CardModalForm: FunctionComponent<IModal> = ({currentForm, updateCardValue}) => {
     const globalStore = UseGlobalStore();
     const loginStore = useLoginStore();
     const service = GlobalService();
@@ -25,7 +26,6 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
     }
 
     useEffect(() => {
-        console.log("current", currentForm);
         const fetchData = async () => {
             setProgramData(await getProgram(currentForm.owner.id));
         }
@@ -41,74 +41,70 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
     return (
         <div>
             <div className="register-member">
-                {currentForm.name &&
-                    <Input
-                        label={Messages.titles.cardName}
-                        disabled={false}
-                        width="200px"
-                        getValue={(value) => console.log(value)}
-                        inputValue={currentForm.name}
-                        maskNumeric={true}
-                    />
-                }
+                <Input
+                    label={Messages.titles.cardName}
+                    disabled={false}
+                    width="200px"
+                    getValue={(value) => updateCardValue("name", value)}
+                    inputValue={currentForm.name}
+                />
 
-                {currentForm.status &&
-                    <DropdownSingleSelect
-                        label={Messages.titles.status}
-                        data={globalStore.status}
-                        disabled={false}
-                        width={"200px"}
-                        idProperty={"id"}
-                        descriptionProperty={"description"}
-                        getValue={(value) => console.log(value)}
-                        value={currentForm.status}
-                    />
-                }
+
+                <DropdownSingleSelect
+                    label={Messages.titles.status}
+                    data={globalStore.status}
+                    disabled={false}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
+                    getValue={(value) => updateCardValue("status", value)}
+                    value={currentForm.status}
+                />
+
             </div>
             <div className="register-member">
 
-                {currentForm.owner &&
-                    <DropdownSingleSelect
-                        label={Messages.titles.owner}
-                        data={globalStore.members}
-                        disabled={true}
-                        width={"200px"}
-                        idProperty={"id"}
-                        descriptionProperty={"name"}
-                        getValue={(value) => console.log(value)}
-                        value={currentForm.owner.id}
-                    />
-                }
 
-                {currentForm.finalNumber &&
-                    <Input
-                        label={Messages.titles.finalCard}
-                        disabled={true}
-                        width="200px"
-                        getValue={(value) => console.log(value)}
-                        inputValue={currentForm.finalNumber}
-                        maskNumeric={true}
-                        numericLimit={4}
-                    />
-                }
+                <DropdownSingleSelect
+                    label={Messages.titles.owner}
+                    data={globalStore.members}
+                    disabled={true}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"name"}
+                    getValue={(value) => updateCardValue("owner", value)}
+                    value={currentForm.owner.id}
+                />
+
+
+                <Input
+                    label={Messages.titles.finalCard}
+                    disabled={true}
+                    width="200px"
+                    getValue={(value) => updateCardValue("finalNumber", value)}
+                    inputValue={currentForm.finalNumber}
+                    maskNumeric={true}
+                    numericLimit={4}
+                />
+
 
             </div>
 
             <div className="register-member">
-                {currentForm.modality &&
-                    <DropdownSingleSelect
-                        label={Messages.titles.modality}
-                        data={globalStore.modality}
-                        disabled={true}
-                        width={"200px"}
-                        idProperty={"id"}
-                        descriptionProperty={"name"}
-                        getValue={(value) => console.log(value)}
-                        value={globalStore.modality.filter(modality => modality.name === currentForm.modality)[0].id}
-                    />
-                }
 
-                {currentForm.dueDate &&
+                <DropdownSingleSelect
+                    label={Messages.titles.modality}
+                    data={globalStore.modality}
+                    disabled={true}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"name"}
+                    getValue={(value) => updateCardValue("modality", value)}
+                    value={currentForm.modality}
+                />
+
+
+                {currentForm.modality && (currentForm.modality === "Crédito" || currentForm.modality && currentForm.modality) === "Crédito/Débito" &&
                     <DropdownSingleSelect
                         label={Messages.titles.dueDate}
                         data={days}
@@ -116,13 +112,13 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"name"}
-                        getValue={(value) => console.log(value)}
+                        getValue={(value) => updateCardValue("dueDate", value)}
                         value={currentForm.dueDate}
                     />
                 }
             </div>
             <div className="register-member">
-                {currentForm.closingDate &&
+                {currentForm.modality && (currentForm.modality === "Crédito" || currentForm.modality && currentForm.modality === "Crédito/Débito") &&
                     <DropdownSingleSelect
                         label={Messages.titles.closingDate}
                         data={days}
@@ -130,7 +126,7 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"name"}
-                        getValue={(value) => console.log(value)}
+                        getValue={(value) => updateCardValue("closingDate", value)}
                         value={currentForm.closingDate}
                     />
                 }
@@ -143,19 +139,19 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
-                        getValue={(value) => console.log(value)}
+                        getValue={(value) => updateCardValue("program", value)}
                         value={currentForm.program.id}
                     />
                 }
             </div>
 
             <div className="register-member">
-                {currentForm.point &&
+                {currentForm.program &&
                     <Input
                         label={Messages.titles.point}
                         disabled={false}
                         width="200px"
-                        getValue={(value) => console.log(value)}
+                        getValue={(value) => updateCardValue("point", value)}
                         inputValue={currentForm.point}
                         maskNumeric={true}
 
@@ -170,7 +166,7 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm}) => {
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
-                        getValue={(value) => console.log(value)}
+                        getValue={(value) => updateCardValue("currency", value)}
                         value={globalStore.currency.filter(currency => currency.description === currentForm.currency)[0].id}
                     />
                 }

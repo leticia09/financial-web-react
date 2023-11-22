@@ -21,6 +21,8 @@ type Actions = {
     addCard: (card: ICard, index: number) => void;
     setFormType: (type: string) => void;
     setCurrentBankIndex: (index: number) => void;
+    updateAccountField: (bankIndex: number, accountIndex: number, field: string, value: any) => void;
+    updateCardField: (bankIndex: number, accountIndex: number, cardIndex: number,field: string, value: any) => void;
 };
 
 const initialState: State = {
@@ -93,6 +95,30 @@ const useFormBankStore = create<State & Actions>((set) => ({
     },
     setFormType: (type) => set({formType: type}),
     setCurrentBankIndex: (index) => set({currentBankIndex: index}),
+    updateAccountField: (bankIndex, accountIndex, field, value) => {
+        set((state) => {
+            const updatedForms = [...state.forms];
+            const updatedAccounts = [...updatedForms[bankIndex].accounts];
+
+            updatedAccounts[accountIndex][field] = value;
+            updatedForms[bankIndex].accounts = updatedAccounts;
+
+            return { forms: updatedForms };
+        });
+    },
+    updateCardField: (bankIndex, accountIndex, cardIndex, field, value) => {
+        set((state) => {
+            const updatedForms = [...state.forms];
+            const updatedAccounts = [...updatedForms[bankIndex].accounts];
+            const updatedCars = [...updatedAccounts[accountIndex].cards];
+
+            updatedCars[cardIndex][field] = value;
+
+            updatedForms[bankIndex].accounts[accountIndex].cards = updatedAccounts;
+
+            return { forms: updatedForms };
+        });
+    },
 
 }));
 

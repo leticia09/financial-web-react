@@ -24,7 +24,7 @@ export const BulletComponent: FunctionComponent <IBullet> = ({
         height: '20px',
         borderRadius: '20px',
     };
-    return <div className="bullet-content">
+    return <div className={ label === "Inativo" ? "bullet-content-inactive" : "bullet-content"}>
         <div style={bulletStyle}></div>
 
         {showLabel && label &&  <span>{label}</span>}

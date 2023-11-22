@@ -166,6 +166,7 @@ export const BankDataForm: FunctionComponent = () => {
 
     const getProgram = async (id: number) => {
         const response = await service.getProgramById(id);
+        globalStore.setProgram(response.data.data);
         return response.data.data;
     };
 
@@ -210,8 +211,6 @@ export const BankDataForm: FunctionComponent = () => {
     }
 
     const addCard = () => {
-        //TEM UM ERRO AQUI MANE
-        console.log('aa', programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,)
         if (account !== null) {
             const newCard = {
                 name: cardName,

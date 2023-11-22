@@ -120,6 +120,7 @@ export const Management: FunctionComponent<IManagement> = ({
                             label={accordion.label}
                             Component={accordion.Component}
                             actions={accordion.actions}
+                            status={accordion.status}
                             getValue={(value) => handleAccordion(value)}
                             index={index}
                             expanded={expandedAccordion === index}

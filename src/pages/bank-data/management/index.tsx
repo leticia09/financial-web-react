@@ -168,14 +168,16 @@ export const BankData: FunctionComponent = () => {
     function createAccordion(user, index) {
         const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account, index));
         let accordions = [];
+        console.log(accordionAccount)
         accordionAccount.map((accordion, index) => {
             accordions.push(<AccordionComponent
                 key={index}
                 label={accordion.label}
                 Component={accordion.Component}
+                status={accordion.status}
                 actions={actionsAccount(index)}
                 index={index}
-                getValue={(value) =>  setCurrentAccountIndex(value)}
+                getValue={(value) => setCurrentAccountIndex(value)}
             />)
         })
         return {
@@ -187,6 +189,12 @@ export const BankData: FunctionComponent = () => {
 
     function createAccount(account, index) {
         const transformedRows = account.cards.map((user: any, index: number) => createData(user, actionsCard(index)));
+        const statusBullet = account.status === 'ACTIVE' ? (
+            <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
+        ) : account.status === 'INACTIVE' ? (
+            <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
+        ) : null;
+        console.log(account.status)
         return {
             label: account.accountNumber,
             Component: <TableComponent
@@ -195,7 +203,7 @@ export const BankData: FunctionComponent = () => {
                 pagination={true}
                 width={"100%"}
             />,
-
+            status: statusBullet,
         }
     }
 
@@ -225,6 +233,7 @@ export const BankData: FunctionComponent = () => {
     const handleAccountOpenModalEdit = (index: number, mode) => {
         setCurrentAccountIndex(index);
         useBankStore.setFormType(mode);
+        getData();
         setOpenAccountModalEdit(true);
     }
 
@@ -270,8 +279,6 @@ export const BankData: FunctionComponent = () => {
             const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index));
             useBankStore.setForms(response.data.data);
             setAccordionData(accordion);
-
-            console.log(accordion)
 
         } catch (error) {
             console.log('Error', error);
@@ -352,8 +359,58 @@ export const BankData: FunctionComponent = () => {
     }
 
     const editAccount = async () => {
+        setIsLoading(true);
+        try {
+            const response = await bankDataManagementService.editAccount(useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex]);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setOpenToast(true);
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenAccountModalEdit(false);
+                    setIsLoading(false);
+                    getData();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
     };
     const editCard = async () => {
+        setIsLoading(true);
+        try {
+            const response = await bankDataManagementService.editCard(
+                useBankStore.forms[useBankStore.currentBankIndex]
+                    .accounts[currentAccountIndex]
+                    .cards[currentCardIndex]
+            );
+            setToastMessage(ValidateError(response.data.message));
+            setSeverity(response.data.severity);
+            setOpenToast(true);
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenAccountModalEdit(false);
+                    setIsLoading(false);
+                    getData();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    };
+
+    const teste = () => {
+        console.log()
     };
 
     return (
@@ -367,7 +424,8 @@ export const BankData: FunctionComponent = () => {
                 getValue={(value) => useBankStore.setCurrentBankIndex(value)}
 
             />
-            { (useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts ) &&
+            <button onClick={teste}>TESTE</button>
+            {(useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts) &&
                 <ModalComponent
                     openModal={openAccountModalEdit}
                     setOpenModal={handleAccountCloseEdit}
@@ -376,7 +434,11 @@ export const BankData: FunctionComponent = () => {
                     Form={
                         <AccountModalForm
                             currentForm={useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex]}
-                            mode={useBankStore.formType}/>
+                            mode={useBankStore.formType}
+                            updateAccountValue={(field, value) => {
+                                useBankStore.updateAccountField(useBankStore.currentBankIndex, currentAccountIndex, field, value);
+                            }}
+                        />
                     }
                     disabledSave={false}
                     toastMessage={toastMessage}
@@ -392,7 +454,11 @@ export const BankData: FunctionComponent = () => {
                     getValue={editCard}
                     Form={
                         <CardModalForm
-                            currentForm={useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex].cards[currentCardIndex]}/>
+                            currentForm={useBankStore.forms[useBankStore.currentBankIndex].accounts[currentAccountIndex].cards[currentCardIndex]}
+                            updateCardValue={(field, value) => {
+                                useBankStore.updateCardField(useBankStore.currentBankIndex, currentAccountIndex, currentCardIndex, field, value);
+                            }}
+                        />
                     }
                     disabledSave={false}
                     toastMessage={toastMessage}
