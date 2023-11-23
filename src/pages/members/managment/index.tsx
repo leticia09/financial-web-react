@@ -48,7 +48,7 @@ const columns: IColumns[] = [
 function createData(user, actions, index) {
     const {id, name, color, status} = user;
     const statusBullet = status === 1 ? (
-        <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
+        <BulletComponent color="#50ef6c" showLabel={true} label={'Ativo'}/>
     ) : status === 2 ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;

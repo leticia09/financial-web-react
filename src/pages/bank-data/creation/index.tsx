@@ -47,9 +47,7 @@ export const RegisterBankData: FunctionComponent = () => {
     const save = async () => {
         setIsLoading(true);
 
-
         formStore.formList.userAuthId = loginStore.userId;
-
 
         formStore.formList.accounts.forEach(account => {
             account.cards.forEach(card => {
@@ -60,10 +58,15 @@ export const RegisterBankData: FunctionComponent = () => {
             })
         });
 
-        console.log(formStore.formList)
-
         try {
-            const response = await registerBankService.saveRegisterBank(formStore.formList);
+            let response: { data: { message: string; severity: string; }; };
+            if(formStore.formType === "CREATE") {
+                response = await registerBankService.saveRegisterBank(formStore.formList);
+            }
+            if(formStore.formType === "EDIT") {
+                response = await registerBankService.editBank(formStore.formList);
+            }
+
             if (response.data.message === "success") {
                 setOpen(true);
                 setSeverity("success");

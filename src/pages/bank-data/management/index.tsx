@@ -16,6 +16,7 @@ import {BulletComponent} from "../../../components/bullet";
 import {AccountModalForm} from "./modal/accountModalForm";
 import {CardModalForm} from "./modal/cardModalForm";
 import {ValidateError} from "../../../validate-error/validate-error";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 
 const columns: IColumns[] = [
     {
@@ -95,7 +96,7 @@ const columns: IColumns[] = [
 function createData(user, actions) {
     const {name, finalNumber, owner, closingDate, dueDate, point, program, currency, status} = user;
     const statusBullet = status === 'ACTIVE' ? (
-        <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
+        <BulletComponent color="#50ef6c" showLabel={true} label={'Ativo'}/>
     ) : status === 'INACTIVE' ? (
         <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
     ) : null;
@@ -106,11 +107,11 @@ function createData(user, actions) {
     }
     return {
         name,
-        finalNumber,
-        owner: owner.name,
-        closingDate,
-        dueDate,
-        point,
+        finalNumber: finalNumber.toString(),
+        owner: owner && owner.name ? owner.name : "",
+        closingDate: closingDate ? closingDate.toString() : closingDate,
+        dueDate: dueDate ? dueDate.toString() : dueDate,
+        point: point ? point.toString() : point,
         program: programName,
         currency,
         status: statusBullet,
@@ -122,6 +123,7 @@ function createData(user, actions) {
 export const BankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const useBankStore = useFormBankStore();
+    const globalStore = useGlobalStore();
     const bankDataManagementService = BankDataManagementService();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
     const navigate = useNavigate();
@@ -137,10 +139,30 @@ export const BankData: FunctionComponent = () => {
     const [openCardModalEdit, setOpenCardModalEdit] = useState(false);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-    const actionsBank = (index: number) => [
+    useEffect(() => {
+        const fetchData = async () => {
+            getData();
+        }
+        fetchData().then();
+    }, []);
+
+    const getData = async () => {
+        try {
+            const response = await bankDataManagementService.getRegisterBank(loginStore.userId);
+            const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index, user.id));
+            useBankStore.setForms(response.data.data);
+            setAccordionData(accordion);
+
+        } catch (error) {
+            console.log('Error', error);
+        }
+    }
+
+
+    const actionsBank = (index: number, id: number) => [
         <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
-            <AiIcons.AiOutlineEye onClick={() => handleBankOpenView(index)} className="icon_space" size={18}/>
-            <AiIcons.AiOutlineEdit onClick={() => handleBankOpenEdit(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineEye onClick={() => handleBankOpenView(id)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineEdit onClick={() => handleBankOpenEdit(id)} className="icon_space" size={18}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18}
                                      onClick={() => handleBankOpenModalExclusion()}/>
         </div>
@@ -165,10 +187,9 @@ export const BankData: FunctionComponent = () => {
         </div>
     ];
 
-    function createAccordion(user, index) {
+    function createAccordion(user, index, id) {
         const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account, index));
         let accordions = [];
-        console.log(accordionAccount)
         accordionAccount.map((accordion, index) => {
             accordions.push(<AccordionComponent
                 key={index}
@@ -183,18 +204,17 @@ export const BankData: FunctionComponent = () => {
         return {
             label: user.name,
             Component: accordions,
-            actions: actionsBank(index)
+            actions: actionsBank(index, id)
         }
     }
 
     function createAccount(account, index) {
         const transformedRows = account.cards.map((user: any, index: number) => createData(user, actionsCard(index)));
         const statusBullet = account.status === 'ACTIVE' ? (
-            <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
+            <BulletComponent color="#50ef6c" showLabel={true} label={'Ativo'}/>
         ) : account.status === 'INACTIVE' ? (
             <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
         ) : null;
-        console.log(account.status)
         return {
             label: account.accountNumber,
             Component: <TableComponent
@@ -207,19 +227,13 @@ export const BankData: FunctionComponent = () => {
         }
     }
 
-    const handleBankOpenView = (index) => {
-        if (useBankStore.forms[index]) {
-            let id = useBankStore.forms[index].id;
-            useBankStore.setFormType("VIEW");
-            navigate(`/grupos/dados-bancarios/${id}`);
-        }
+    const handleBankOpenView = (id) => {
+        useBankStore.setFormType("VIEW");
+        navigate(`/grupos/dados-bancarios/${id}`);
     };
-    const handleBankOpenEdit = (index) => {
-        if (useBankStore.forms[index]) {
-            let id = useBankStore.forms[index].id;
-            useBankStore.setFormType("EDIT");
-            navigate(`/grupos/dados-bancarios/${id}`);
-        }
+    const handleBankOpenEdit = (id) => {
+        useBankStore.setFormType("EDIT");
+        navigate(`/grupos/dados-bancarios/${id}`);
     };
 
     const handleBankOpenModalExclusion = () => {
@@ -250,6 +264,7 @@ export const BankData: FunctionComponent = () => {
     }
     const handleCardOpenModalEdit = (index: number) => {
         setCurrentCardIndex(index);
+        getData();
         setOpenCardModalEdit(true);
 
     }
@@ -266,24 +281,6 @@ export const BankData: FunctionComponent = () => {
         setOpenCardModalExclusion(false);
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            getData();
-        }
-        fetchData().then();
-    }, []);
-
-    const getData = async () => {
-        try {
-            const response = await bankDataManagementService.getRegisterBank(loginStore.userId);
-            const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index));
-            useBankStore.setForms(response.data.data);
-            setAccordionData(accordion);
-
-        } catch (error) {
-            console.log('Error', error);
-        }
-    }
 
     const exclusionBank = async () => {
         setIsLoading(true);
@@ -383,6 +380,7 @@ export const BankData: FunctionComponent = () => {
     };
     const editCard = async () => {
         setIsLoading(true);
+
         try {
             const response = await bankDataManagementService.editCard(
                 useBankStore.forms[useBankStore.currentBankIndex]
@@ -395,7 +393,7 @@ export const BankData: FunctionComponent = () => {
             setTimeout(() => {
                 if (response.data.severity === "success") {
                     setOpenToast(false);
-                    setOpenAccountModalEdit(false);
+                    setOpenCardModalEdit(false);
                     setIsLoading(false);
                     getData();
                 }
@@ -409,10 +407,6 @@ export const BankData: FunctionComponent = () => {
         }
     };
 
-    const teste = () => {
-        console.log()
-    };
-
     return (
         <>
             <Management
@@ -424,7 +418,7 @@ export const BankData: FunctionComponent = () => {
                 getValue={(value) => useBankStore.setCurrentBankIndex(value)}
 
             />
-            <button onClick={teste}>TESTE</button>
+
             {(useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts) &&
                 <ModalComponent
                     openModal={openAccountModalEdit}

@@ -34,7 +34,6 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm, updateCar
 
     const getProgram = async (id: number) => {
         const response = await service.getProgramById(id);
-        console.log(response.data.data)
         return response.data.data;
     };
 
@@ -100,7 +99,7 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm, updateCar
                     idProperty={"id"}
                     descriptionProperty={"name"}
                     getValue={(value) => updateCardValue("modality", value)}
-                    value={currentForm.modality}
+                    value={globalStore.modality.filter(mod => mod.description = currentForm.modality)[0].id}
                 />
 
 
@@ -139,7 +138,7 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm, updateCar
                         width={"200px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
-                        getValue={(value) => updateCardValue("program", value)}
+                        getValue={(value) => updateCardValue("program", globalStore.program.filter(pro => pro.id === value)[0]) }
                         value={currentForm.program.id}
                     />
                 }

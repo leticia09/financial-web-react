@@ -24,7 +24,7 @@ export const BankDataForm: FunctionComponent = () => {
     const [accountOwner, setAccountOwner] = useState('');
     const [showComment, setShowComment] = useState(false);
     const [account, setAccount] = useState(null);
-    const [cardName, setCardName] = useState(null);
+    const [cardName, setCardName] = useState('');
     const [cardOwner, setCardOwner] = useState(null);
     const [finalCard, setFinalCard] = useState(null);
     const [cardModality, setCardModality] = useState(null);
@@ -35,7 +35,7 @@ export const BankDataForm: FunctionComponent = () => {
     const [bankName, setBankName] = useState(null);
     const [hasScore, setScore] = useState(false);
     const [program, setProgram] = useState(null);
-    const [points, setPoints] = useState(null);
+    const [points, setPoints] = useState('');
     const [currency, setCurrency] = useState(null);
     const [accountValue, setAccountValue] = useState(null);
     const [accountCurrency, setAccountCurrency] = useState(null);
@@ -55,6 +55,7 @@ export const BankDataForm: FunctionComponent = () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
                     fillForm(response.data.data);
+                    formStore.setBankId(id);
 
                 } catch (error) {
                     console.log('Error', error);
@@ -63,6 +64,8 @@ export const BankDataForm: FunctionComponent = () => {
             fetchData().then();
         } else {
             formStore.setFormType("CREATE");
+            formStore.setBankNameFormList('');
+            setBankName("")
         }
     }, []);
 
@@ -105,10 +108,14 @@ export const BankDataForm: FunctionComponent = () => {
     };
 
     const resetFields = () => {
-        setNumberAccount('');
-        setAccountOwner('');
-        setAccountValue('');
-        setAccountCurrency('');
+        if(formStore.formType === "CREATE") {
+            formStore.setBankNameFormList('');
+            setBankName('')
+            setNumberAccount('');
+            setAccountOwner('');
+            setAccountValue('');
+            setAccountCurrency('');
+        }
     };
 
     const handleCardName = (value: any) => {

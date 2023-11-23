@@ -18,6 +18,7 @@ type Actions = {
     addAccount: (account: IAccount) => void;
     resetAccounts: () => void;
     setBankNameFormList: (bankName: string) => void;
+    setBankId: (bankId: string) => void;
     addCard: (card: ICard, index: number) => void;
     setFormType: (type: string) => void;
     setCurrentBankIndex: (index: number) => void;
@@ -81,6 +82,14 @@ const useFormBankStore = create<State & Actions>((set) => ({
             },
         }));
     },
+    setBankId: (bankId) => {
+        set((state) => ({
+            formList: {
+                ...state.formList,
+                id: bankId,
+            },
+        }));
+    },
     addCard: (newCard, index) => {
         set((state) => {
             const updatedAccounts: IAccount[] = state.formList.accounts.slice();
@@ -109,12 +118,11 @@ const useFormBankStore = create<State & Actions>((set) => ({
     updateCardField: (bankIndex, accountIndex, cardIndex, field, value) => {
         set((state) => {
             const updatedForms = [...state.forms];
-            const updatedAccounts = [...updatedForms[bankIndex].accounts];
-            const updatedCars = [...updatedAccounts[accountIndex].cards];
+            const updatedCars = [...updatedForms[bankIndex].accounts[accountIndex].cards];
 
             updatedCars[cardIndex][field] = value;
 
-            updatedForms[bankIndex].accounts[accountIndex].cards = updatedAccounts;
+            updatedForms[bankIndex].accounts[accountIndex].cards = updatedCars;
 
             return { forms: updatedForms };
         });

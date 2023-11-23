@@ -1,4 +1,5 @@
 export interface IBankData {
+    id?: string;
     name: string,
     accounts: IAccount[],
     userAuthId: number

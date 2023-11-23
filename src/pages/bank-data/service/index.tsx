@@ -32,6 +32,11 @@ export const BankDataManagementService = (axiosInstance: any = instance) => {
         return axiosInstance.delete(endPoint);
     }
 
+    const editBank = (payload: any) => {
+        const url = '/register-bank/bank/';
+        return axiosInstance.patch(url, payload);
+    }
+
     const editAccount = (payload: any) => {
         const url = '/register-bank/account/';
         return axiosInstance.patch(url, payload);
@@ -50,6 +55,7 @@ export const BankDataManagementService = (axiosInstance: any = instance) => {
         exclusionAccount,
         exclusionCard,
         editAccount,
-        editCard
+        editCard,
+        editBank
     }
 }
