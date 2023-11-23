@@ -112,7 +112,7 @@ export const Management: FunctionComponent<IManagement> = ({
                 </div>
             </div>
 
-            {hasAccordion && accordionData.length > 1 ? (
+            {hasAccordion && accordionData.length > 0 ? (
                 accordionData.map((accordion, index) => (
                     <div key={index} className="content-accordion">
                         <AccordionComponent
