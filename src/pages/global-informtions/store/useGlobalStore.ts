@@ -10,6 +10,7 @@ type State = {
     program: any[];
     status: any[];
     currency: any[];
+    typeSalary: any[];
 };
 
 type Actions = {
@@ -19,6 +20,7 @@ type Actions = {
     setTypeOfScore: (type: any[]) => void;
     setProgram: (program: any[]) => void;
     setStatus: (program: any[]) => void;
+    setTypeSalary: (typeSalary: any[]) => void;
 };
 
 const initialState: State = {
@@ -28,7 +30,8 @@ const initialState: State = {
     typeOfScore: [],
     program: [],
     status: [],
-    currency: [{id: 1, description: "Real (R$)"}, {id: 2, description: "Dólar ($)"}]
+    currency: [{id: 1, description: "Real (R$)"}, {id: 2, description: "Dólar ($)"}],
+    typeSalary: []
 };
 
 const useGlobalStore = create<State & Actions>((set) => ({
@@ -39,6 +42,7 @@ const useGlobalStore = create<State & Actions>((set) => ({
     setTypeOfScore: (typeOfScore) => set({ typeOfScore }),
     setProgram: (program) => set({ program }),
     setStatus: (status) => set({ status }),
+    setTypeSalary: (typeSalary) => set({ typeSalary }),
 }));
 
 export default useGlobalStore;

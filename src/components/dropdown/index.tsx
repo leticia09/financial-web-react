@@ -4,6 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import "./dropdown.css"
 
 interface IDropdownSingleSelect {
     label: string;
@@ -14,6 +15,8 @@ interface IDropdownSingleSelect {
     descriptionProperty: string,
     getValue: (value: any) => void;
     value?: {};
+    getAction?: () => void;
+    labelAction?: string
 }
 
 const ITEM_HEIGHT = 48;
@@ -34,7 +37,9 @@ export const DropdownSingleSelect: FunctionComponent<IDropdownSingleSelect> = ({
                                                                                    getValue,
                                                                                    idProperty,
                                                                                    descriptionProperty,
-                                                                                   value
+                                                                                   value,
+                                                                                   labelAction,
+                                                                                   getAction
                                                                                }: IDropdownSingleSelect) => {
     const [selectedValue, setSelectedValue] = useState(value);
     useEffect(() => {
@@ -52,16 +57,21 @@ export const DropdownSingleSelect: FunctionComponent<IDropdownSingleSelect> = ({
         } else if (value === "INACTIVE") {
             setSelectedValue(2);
         } else {
-            setSelectedValue(value || "" );
+            setSelectedValue(value || "");
         }
 
     }, [value]);
 
 
-
     function handleChange(event) {
-        setSelectedValue(event.target.value);
-        getValue(event.target.value);
+        if (event.target.value !== 0) {
+            setSelectedValue(event.target.value);
+            getValue(event.target.value);
+        }
+    }
+
+    function handleChangeAction() {
+        getAction();
     }
 
     return (
@@ -84,7 +94,17 @@ export const DropdownSingleSelect: FunctionComponent<IDropdownSingleSelect> = ({
                     input={<OutlinedInput label={label}
                     />}
                 >
-                    {data.map((item) => (
+                    {labelAction &&
+                        <MenuItem
+                            value={0}
+                            key={0}
+                        >
+                            <div className="link-content-dropdown" onClick={handleChangeAction}>
+                                <span className="link-name">{labelAction}</span>
+                            </div>
+                        </MenuItem>
+                    }
+                    {data.length > 0 && data.map((item) => (
                         <MenuItem
                             value={item[idProperty]}
                             key={item[idProperty]}

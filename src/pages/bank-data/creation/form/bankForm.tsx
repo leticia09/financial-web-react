@@ -55,6 +55,7 @@ export const BankDataForm: FunctionComponent = () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
                     fillForm(response.data.data);
+                    console.log(response.data.data)
                     formStore.setBankId(id);
 
                 } catch (error) {
@@ -109,8 +110,6 @@ export const BankDataForm: FunctionComponent = () => {
 
     const resetFields = () => {
         if(formStore.formType === "CREATE") {
-            formStore.setBankNameFormList('');
-            setBankName('')
             setNumberAccount('');
             setAccountOwner('');
             setAccountValue('');

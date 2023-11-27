@@ -1,0 +1,10 @@
+.link-content-dropdown {
+    color: #0195f5;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+
+.link-name {
+    border-bottom: 1px solid #0195f5;
+}

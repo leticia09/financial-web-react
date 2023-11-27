@@ -40,7 +40,7 @@ export const SidebarData = [
 
     {
         title: 'Receitas',
-        path: '/entrada',
+        path: '/receitas',
         icon: <FcIcons.FcBullish size={20}/>,
         iconClosed: <RiIcons.RiArrowDownSFill/>,
         iconOpened: <RiIcons.RiArrowUpSFill/>,

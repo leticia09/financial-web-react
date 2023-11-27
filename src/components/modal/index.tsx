@@ -79,7 +79,7 @@ export const ModalComponent: FunctionComponent<IModal> = ({
                                  style={{textAlign: "end", marginBottom: "-16px", cursor: "pointer"}}>
                                 <AiOutlineClose size={20}/></div>
                             <Typography id="transition-modal-title" variant="h5" component="h2"
-                                        sx={{borderBottom: "1px solid rgb(0, 0, 0, 0.2)"}}>
+                                        sx={{borderBottom: "1px solid rgb(0, 0, 0, 0.2)", fontSize: "20px"}}>
                                 {label}
                             </Typography>
                             <Typography id="transition-modal-description" sx={{mt: 2}}>

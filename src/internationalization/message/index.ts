@@ -76,7 +76,7 @@ const Messages = {
         registerGroups: 'Cadastro de Grupos',
         macroGroup: 'Grupo Macro',
         specificGroup: 'Grupo Específico',
-        addGroup: 'Adicionar G.Específico',
+        addGroup: '+ Adicionar G.Específico',
         exclusion: 'Excluir',
         score: 'Pontua',
         ownerOrigin: 'Titular Origem',
@@ -89,7 +89,14 @@ const Messages = {
         totalMoney: "Total Acumulado",
         totalAvailable: "Total Disponível",
         totalGoal: 'Total Meta',
-        totalDollar: 'Total em Dólar'
+        totalDollar: 'Total em Dólar',
+        entrance: 'Receitas',
+        registerEntrance: 'Cadastro de Receitas',
+        addEntrance: '+ Adicionar Receita',
+        source: 'Fonte',
+        typeOfEntrance: 'Tipo',
+        managementTypes: 'Gerenciamento - Tipos',
+        description: 'Descrição'
 
     },
     buttons: {},

@@ -14,6 +14,7 @@ import {UsePoint} from "../../pages/points-programs/creation/use";
 import {GroupsCreation} from "../../pages/groups/creation";
 import {Groups} from "../../pages/groups/management";
 import {BankMovementData} from "../../pages/bank-movement/management";
+import {EntranceCreation} from "../../pages/entrance/creation";
 
 export const Home: FunctionComponent = () => {
 
@@ -42,8 +43,10 @@ export const Home: FunctionComponent = () => {
                 />
                 <Route path="/grupos/dados-bancarios/:id"
                        element={<RegisterBankData />}/>
-                <Route path="/entrada"
+                <Route path="/receitas"
                        element={<EntranceData />}/>
+                <Route path="/receitas/cadastro"
+                       element={<EntranceCreation />}/>
                 <Route path="/grupos/programa-pontos"
                        element={<PointProgramData />}/>
                 <Route path="/grupos/programa-pontos/programa/cadastro"
