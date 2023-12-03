@@ -1,7 +1,8 @@
 export interface IRow {
-    id: number;
-    name: string;
-    status: string;
+    id?: number;
+    index?: number;
+    name?: string;
+    status?: string;
     actions: React.ReactNode[];
 }
 

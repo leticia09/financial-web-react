@@ -3,37 +3,48 @@ import {IEntrance, ITypeSalary} from "../../../interfaces/entrance";
 
 type State = {
     formList: IEntrance[];
+    form: IEntrance;
     typeSalary: ITypeSalary[];
 };
 
 type Actions = {
     setFormList: (formList: IEntrance[]) => void;
     setFormListValue: (index: number, field: keyof IEntrance, value: string, authId?: number) => void;
-    deleteItemFormList: (index: number) => void;
+    deleteItemFormList: (index: number) => any;
     resetFormStore: () => void;
+    setSource: (source: string) => void;
+    setType: (type: string) => void;
+    setOwnerId: (ownerId: number) => void;
+    setSalary: (salary: number) => void;
+    setBankId: (bankId: number) => void;
+    setAccountNumber: (accountNumber: number) => void;
+    setUserAuthId: (userAuthId: number) => void;
+    resetForm: () => void;
 
     setTypeSalary: (index: number, field: keyof ITypeSalary, value: string, authId?: number) => void;
+    setTypeSalaryList: (typeSalary: ITypeSalary[]) => void;
+    deleteSalaryType: (index: number) => void;
 };
 
 const initialState: State = {
-    formList: [
+    formList: [],
+    form:
         {
             id: 0,
             source: "",
             type: "",
             ownerId: 0,
-            salary: 0,
+            salary: null,
             bankId: 0,
             accountNumber: 0,
-            userAuthId: 0
-        }
-    ],
+            userAuthId: 0,
+            index: 0
+        },
     typeSalary: [
         {
             id: null,
             description: "",
             deleted: false,
-            status: "",
             userAuthId: 0
         }
     ]
@@ -42,8 +53,13 @@ const initialState: State = {
 const useEntranceStore = create<State & Actions>((set) => {
     return ({
         ...initialState,
+
         setFormList: (formList: IEntrance[]) => {
-            set({formList: formList})
+            set({formList: formList});
+        },
+
+        setTypeSalaryList: (typeSalary: ITypeSalary[]) => {
+            set({typeSalary: typeSalary});
         },
 
         setFormListValue: (index: number, field: keyof IEntrance, value: string, authId?: number) => {
@@ -59,6 +75,7 @@ const useEntranceStore = create<State & Actions>((set) => {
                         salary: 0,
                         bankId: 0,
                         accountNumber: 0,
+                        index: 0,
                         userAuthId: authId
                     };
                 }
@@ -78,7 +95,6 @@ const useEntranceStore = create<State & Actions>((set) => {
                         id: null,
                         description: "",
                         deleted: false,
-                        status: "",
                         userAuthId: authId || 0
                     };
                 }
@@ -86,20 +102,106 @@ const useEntranceStore = create<State & Actions>((set) => {
                 // @ts-ignore
                 updatedTypeSalary[index][field] = value;
 
-                return { typeSalary: updatedTypeSalary };
+                return {typeSalary: updatedTypeSalary};
             });
         },
         deleteItemFormList: (index: number) => {
+            let updatedFormList = [];
             set((state) => {
-                const updatedFormList = [...state.formList];
+                updatedFormList = [...state.formList];
                 if (index >= 0 && index < updatedFormList.length) {
                     updatedFormList.splice(index, 1);
                 }
                 return {formList: updatedFormList};
             });
+            return updatedFormList;
         },
+        setSource: (source: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    source: source,
+                },
+            }));
+        },
+        setType: (type: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    type: type,
+                },
+            }));
+        },
+        setOwnerId: (ownerId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    ownerId: ownerId,
+                },
+            }));
+        },
+        setSalary: (salary: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    salary: salary,
+                },
+            }));
+        },
+        setBankId: (bankId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    bankId: bankId,
+                },
+            }));
+        },
+        setAccountNumber: (accountNumber: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    accountNumber: accountNumber,
+                },
+            }));
+        },
+        setUserAuthId: (userAuthId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    userAuthId: userAuthId,
+                },
+            }));
+        },
+
+        deleteSalaryType: (index: number) => {
+            set((state) => {
+                const updatedFormList = [...state.typeSalary];
+                if (index >= 0 && index < updatedFormList.length) {
+                    updatedFormList.splice(index, 1);
+                }
+                return {typeSalary: updatedFormList};
+            });
+        },
+
         resetFormStore: () => {
             set(initialState);
+        },
+
+        resetForm: () => {
+
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    id: 0,
+                    source: "",
+                    type: "",
+                    salary: 0,
+                    ownerId: 0,
+                    bankId: 0,
+                    accountNumber: 0,
+                    userAuthId: 0
+                },
+            }));
         },
     });
 });

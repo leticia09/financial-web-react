@@ -123,6 +123,7 @@ export const Management: FunctionComponent<IManagement> = ({
                             status={accordion.status}
                             getValue={(value) => handleAccordion(value)}
                             index={index}
+                            icon={accordion.icon}
                             expanded={expandedAccordion === index}
                         />
                     </div>

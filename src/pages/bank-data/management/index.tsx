@@ -17,6 +17,8 @@ import {AccountModalForm} from "./modal/accountModalForm";
 import {CardModalForm} from "./modal/cardModalForm";
 import {ValidateError} from "../../../validate-error/validate-error";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {getIcon} from "../../../icons";
+
 
 const columns: IColumns[] = [
     {
@@ -149,7 +151,7 @@ export const BankData: FunctionComponent = () => {
     const getData = async () => {
         try {
             const response = await bankDataManagementService.getRegisterBank(loginStore.userId);
-            const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index, user.id));
+            const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index, user.id, getIcon(user.name, "34", "34")));
             useBankStore.setForms(response.data.data);
             setAccordionData(accordion);
 
@@ -187,7 +189,7 @@ export const BankData: FunctionComponent = () => {
         </div>
     ];
 
-    function createAccordion(user, index, id) {
+    function createAccordion(user, index, id, icon?) {
         const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account, index));
         let accordions = [];
         accordionAccount.map((accordion, index) => {
@@ -204,7 +206,8 @@ export const BankData: FunctionComponent = () => {
         return {
             label: user.name,
             Component: accordions,
-            actions: actionsBank(index, id)
+            actions: actionsBank(index, id),
+            icon: icon
         }
     }
 
@@ -409,6 +412,7 @@ export const BankData: FunctionComponent = () => {
 
     return (
         <>
+
             <Management
                 title="Dados Bancários"
                 path="/grupos/dados-bancarios/cadastro"

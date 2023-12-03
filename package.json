@@ -57,6 +57,8 @@
     ]
   },
   "devDependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/webpack": "^8.1.0",
     "@types/react-color": "^3.0.10",
     "@types/react-datepicker": "^4.19.1"
   }

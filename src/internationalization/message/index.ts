@@ -96,7 +96,13 @@ const Messages = {
         source: 'Fonte',
         typeOfEntrance: 'Tipo',
         managementTypes: 'Gerenciamento - Tipos',
-        description: 'Descrição'
+        description: 'Descrição',
+        addTypeOfEntrance: '+ Tipo',
+        salaryValue: 'Salário Líquido',
+        frequency: 'Periodicidade',
+        dayOf: 'Dia da Semana',
+        dayOfMonth: 'Dia do mês',
+        dayOfQui: 'Quinzena'
 
     },
     buttons: {},

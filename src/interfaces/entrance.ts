@@ -7,13 +7,13 @@ export interface IEntrance {
     bankId: number;
     accountNumber: number;
     userAuthId: number;
+    index: number;
 }
 
 export interface ITypeSalary {
     id?: number;
     description: string;
     deleted: boolean;
-    status: string;
     userAuthId: number;
 
 }

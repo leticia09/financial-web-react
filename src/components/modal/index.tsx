@@ -29,6 +29,8 @@ const style = {
     width: 500,
     bgcolor: 'background.paper',
     borderRadius: '2px',
+    maxHeight:'430px',
+    overflowY: 'auto',
 };
 
 export const ModalComponent: FunctionComponent<IModal> = ({

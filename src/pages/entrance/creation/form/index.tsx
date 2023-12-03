@@ -11,13 +11,94 @@ import {ModalComponent} from "../../../../components/modal";
 import {EntranceService} from "../../service";
 import {TypeSalaryForm} from "./typeSalaryForm";
 import {ValidateError} from "../../../../validate-error/validate-error";
+import {TableComponent} from "../../../../components/table";
+import {IColumns} from "../../../../interfaces/table";
+import * as AiIcons from "react-icons/ai";
 
 interface IForm {
     i: number;
     hasDelete: boolean;
 }
 
-export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) => {
+const columns: IColumns[] = [
+    {
+        id: "source",
+        label: "Fonte",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "type",
+        label: "Tipo",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+
+    {
+        id: "ownerId",
+        label: "Titular",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "bankId",
+        label: "Banco",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "accountNumber",
+        label: "Conta",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "salary",
+        label: "Salário Líquido",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "actions",
+        label: "Ações",
+        minWidth: 70,
+        width: 100,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+];
+
+function createData(source, type, ownerId, bankId, accountNumber, salary, actions, index) {
+    return {
+        source,
+        type,
+        ownerId,
+        bankId,
+        accountNumber: accountNumber.toString(),
+        salary: salary.toString(),
+        actions,
+        index
+    };
+}
+
+type RowType = {
+    source: string;
+    type: string;
+    ownerId: number;
+    salary: number;
+    bankId: number;
+    accountNumber: number;
+    actions: React.ReactNode[];
+    index: number;
+};
+
+export const EntranceForm: FunctionComponent = () => {
 
     const formStore = useEntranceStore();
     const loginStore = useLoginStore();
@@ -28,57 +109,119 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
     const [openToast, setOpenToast] = useState(false);
     const [typeSalaryData, setTypeSalaryData] = useState([]);
     const service = EntranceService();
+    const [rows, setRows] = useState<RowType[]>([]);
+    const [accountData, setAccountData] = useState([]);
     const [open, setOpen] = useState(false);
+
+    const actions = (index) => (
+        <div style={{width: "50%", display: "flex"}}>
+            <AiIcons.AiOutlineDelete style={{marginLeft: "6px"}} className="icon_delete" size={18}
+                                     onClick={() => deleteItemFormList(index)}/>
+        </div>
+    );
 
     useEffect(() => {
         const fetchData = async () => {
-            const typeSalaryResponse = await service.getTypeSalary(loginStore.userId);
-            console.log(typeSalaryResponse.data)
-            setTypeSalaryData(typeSalaryResponse.data);
+            await getSalary();
         };
         fetchData();
 
+        formStore.resetFormStore();
+
     }, []);
 
+    const getSalary = async () => {
+        const typeSalaryResponse = await service.getTypeSalary(loginStore.userId);
+        setTypeSalaryData(typeSalaryResponse.data);
+    }
+
     const handleAdd = () => {
-        // const updateList = [...formStore.formList.specificGroups];
-        // updateList.push(
-        //     {
-        //         name: '',
-        //         index: updateList.length,
-        //         userAuthId: loginStore.userId,
-        //     }
-        // )
-        // formStore.setSpecificList(updateList);
+        const updateList = [...formStore.formList];
+        updateList.push(
+            {
+                id: null,
+                source: formStore.form.source,
+                type: formStore.form.type,
+                ownerId: formStore.form.ownerId,
+                salary: formStore.form.salary,
+                bankId: formStore.form.bankId,
+                accountNumber: formStore.form.accountNumber,
+                userAuthId: loginStore.userId,
+                index: updateList.length
+            }
+        )
+        formStore.setFormList(updateList);
+        const transformedRows = updateList.map((data: any, index: number) => createData(
+            data.source,
+            typeSalaryData.filter(ts => ts.id === data.type)[0].description,
+            globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
+            data.bankId,
+            data.accountNumber,
+            data.salary,
+            actions(index),
+            index
+        ));
+        setRows(transformedRows);
+        formStore.resetForm();
     }
     const handleAction = () => {
         setOpenModal(true);
     }
 
-    const handleClose = () => {
+    const handleClose = async () => {
         setOpenModal(false);
     };
-    const handleDeleteMember = (i) => {
-        // formStore.deleteItemFormList(i);
+    const deleteItemFormList = async (i) => {
+        let list = formStore.deleteItemFormList(i);
+
+        const transformedRows = list.map((data: any, index: number) => createData(
+            data.source,
+            typeSalaryData.filter(ts => ts.id === data.type)[0].description,
+            globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
+            globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
+            data.accountNumber,
+            data.salary,
+            actions(index),
+            index
+        ));
+        setRows(transformedRows);
     }
 
-    const save = async () => {
+
+    const createPayload = (form: any[]) => {
+        let response = [];
+
+        form.forEach(fo => {
+            const res = {
+                description: fo.description,
+                userAuthId: loginStore.userId,
+                deleted: false,
+            }
+            response.push(res);
+        })
+
+        return response;
+    }
+
+    const editType = async () => {
         try {
-            let response = await service.edit(formStore.typeSalary);
+            let response = await service.edit(createPayload(formStore.typeSalary));
 
             if (response.data.message === "success") {
-                setOpen(true);
+                setOpenToast(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
 
-                setTimeout(() => {
-                    if (response.data.severity === "success")
-                        setOpen(false);
+                setTimeout(async () => {
+                    if (response.data.severity === "success") {
+                        setOpenToast(false);
                         setOpenModal(false);
+                        await getSalary();
+                    }
                 }, 2000);
 
             } else {
-                setOpen(true);
+                setOpenToast(true);
                 setOpenModal(false);
                 setSeverity("error");
                 setToastMessage(ValidateError(response.data.message));
@@ -91,6 +234,11 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
         }
     };
 
+    const handleBank = (value) => {
+        formStore.setBankId(value);
+        setAccountData(globalStore.bank.filter(ba => ba.id === value)[0].accounts);
+    }
+
 
     return (
         <>
@@ -99,8 +247,8 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
                     label={Messages.titles.source}
                     disabled={false}
                     width="200px"
-                    getValue={(value) => formStore.setFormListValue(i, "source", value, loginStore.userId)}
-                    inputValue={formStore.formList[i].source}
+                    getValue={(value) => formStore.setSource(value)}
+                    inputValue={formStore.form.source}
                 />
                 <DropdownSingleSelect
                     label={Messages.titles.typeOfEntrance}
@@ -109,8 +257,8 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"description"}
-                    getValue={(value) => formStore.setFormListValue(i, "type", value, loginStore.userId)}
-                    value={formStore.formList[i].ownerId}
+                    getValue={(value) => formStore.setType(value)}
+                    value={formStore.form.type}
                     labelAction={"Gerenciar Tipos"}
                     getAction={handleAction}
                 />
@@ -121,16 +269,60 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"name"}
-                    getValue={(value) => formStore.setFormListValue(i, "ownerId", value, loginStore.userId)}
-                    value={formStore.formList[i].ownerId}
+                    getValue={(value) => formStore.setOwnerId(value)}
+                    value={formStore.form.ownerId}
+                />
+
+                <DropdownSingleSelect
+                    label={Messages.titles.bank}
+                    data={globalStore.bank}
+                    disabled={false}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"name"}
+                    getValue={(value) => handleBank(value)}
+                    value={formStore.form.bankId}
+                />
+
+            </div>
+            <div className="register-member">
+                <DropdownSingleSelect
+                    label={Messages.titles.account}
+                    data={accountData}
+                    disabled={!formStore.form.bankId}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"accountNumber"}
+                    getValue={(value) => formStore.setAccountNumber(value)}
+                    value={formStore.form.accountNumber}
+                />
+                <Input
+                    label={Messages.titles.salaryValue}
+                    disabled={false}
+                    width="200px"
+                    maskNumeric={true}
+                    getValue={(value) => formStore.setSalary(value)}
+                    inputValue={formStore.form.salary}
+                />
+
+                <DropdownSingleSelect
+                    label={Messages.titles.frequency}
+                    data={[ {id: 2, description: "Única"}, {id: 3, description: "mensal"}, {id: 4, description: "anual"}]}
+                    disabled={false}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
+                    getValue={(value) => formStore.setAccountNumber(value)}
+                    value={formStore.form.accountNumber}
                 />
 
             </div>
 
+
             <div className="add-button-member">
                 <ButtonComponent
                     label={Messages.titles.addEntrance}
-                    disabled={false}
+                    disabled={!formStore.form.bankId || !formStore.form.salary || !formStore.form.accountNumber || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId}
                     width="160px"
                     height="30px"
                     cursor="pointer"
@@ -149,20 +341,10 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
                     openModal={openModal}
                     setOpenModal={handleClose}
                     label={Messages.titles.managementTypes}
-                    getValue={save}
+                    getValue={editType}
                     Form={
                         <>
-                            {typeSalaryData.length > 0 ? (
-                                typeSalaryData.map((type, index) => (
-                                    <TypeSalaryForm
-                                        key={index}
-                                        currentForm={formStore.typeSalary[index]}
-                                        index={index}
-                                    />
-                                ))
-                            ) : (
-                                <TypeSalaryForm/>
-                            )}
+                            <TypeSalaryForm/>
                         </>
                     }
                     disabledSave={false}
@@ -171,6 +353,18 @@ export const EntranceForm: FunctionComponent<IForm> = ({i, hasDelete}: IForm) =>
                     openToast={openToast}
                 />
             }
+
+            {rows.length > 0 &&
+                <div className="register-member" style={{marginLeft: "18px"}}>
+                    <TableComponent
+                        columns={columns}
+                        rows={rows}
+                        pagination={false}
+                        width={"55%"}
+                    />
+                </div>
+            }
+
         </>
     );
 }

@@ -15,7 +15,8 @@ export const AccordionComponent: FunctionComponent<IAccordion> = ({
                                                                       getValue,
                                                                       index,
                                                                       expanded = false,
-                                                                      status
+                                                                      status,
+                                                                      icon
                                                                   }: IAccordion) => {
     const [isExpanded, setIsExpanded] = useState(expanded);
 
@@ -37,12 +38,14 @@ export const AccordionComponent: FunctionComponent<IAccordion> = ({
                     id="panel1a-header"
                 >
                     <div className={expanded ? "accordion-summary-border" : "accordion-summary"}>
-                        <div style={{display: 'flex', justifyContent: "space-between"}}>
-                            <Typography style={{marginRight:"18px"}}>{label}</Typography>
+                        <div style={{display: 'flex', justifyContent: "space-between", alignItems:"center"}}>
+                            {icon &&
+                                <Typography style={{marginRight: "10px", display:"flex", alignItems:"center"}} >{icon}</Typography>
+                            }
+                            <Typography style={{marginRight: "18px"}}>{label}</Typography>
                             {status &&
                                 <Typography>{status}</Typography>
                             }
-
                         </div>
 
                         <div>

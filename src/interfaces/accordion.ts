@@ -6,5 +6,6 @@ export interface IAccordion {
     index: number;
     expanded?: boolean;
     status: JSX.Element;
+    icon?: JSX.Element;
 }
 

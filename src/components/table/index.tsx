@@ -59,14 +59,14 @@ export const TableComponent: FunctionComponent <ITableComponent> = ({columns, ro
                                         hover
                                         role="checkbox"
                                         tabIndex={-1}
-                                        key={row.id}
+                                        key={row.index}
                                         sx={{ height: "10px", border: "1px solid red", lineHeight: "1" }}
                                     >
                                         {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
                                                 <TableCell
-                                                    key={`${row.id}-${column.id}`}
+                                                    key={`${row.index}-${column.id}`}
                                                     align={column.align}
                                                     sx={{ textAlign: "start" }}
                                                 >

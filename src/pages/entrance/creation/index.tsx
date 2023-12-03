@@ -93,18 +93,12 @@ export const EntranceCreation: FunctionComponent = () => {
     return (
         <Creation
             titles={Messages.titles.registerEntrance}
-            Form={
-                formStore.formList.map((program, i) => (
-                    <EntranceForm
-                        key={i}
-                        i={i}
-                        hasDelete={i > 0}
-                    />
-                ))
-            }
+            Form={[
+                <EntranceForm/>
+            ]}
             titlesButton={Messages.titles.addCard}
             save={save}
-            disabledSaveButton={false}
+            disabledSaveButton={formStore.formList.length === 0}
             pathBack="/receitas"
             toastMessage={toastMessage}
             severityType={severity}
