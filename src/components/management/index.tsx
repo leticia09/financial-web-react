@@ -54,7 +54,7 @@ export const Management: FunctionComponent<IManagement> = ({
     }
 
     return (
-        <>
+        <div className="management-content">
             {showLineProgress &&
                 <Box sx={{marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px"}}>
                     <LinearProgress/>
@@ -152,7 +152,7 @@ export const Management: FunctionComponent<IManagement> = ({
                     </div>
                 )
             )}
-        </>
+        </div>
     )
         ;
 }

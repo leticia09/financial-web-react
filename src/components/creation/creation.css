@@ -1,3 +1,20 @@
+.testando {
+    opacity: 0;
+    transform: translateY(-100%);
+    animation: slideIn 2s forwards;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .content-member{
     font-size: 0.85rem;
     border-radius: 4px;

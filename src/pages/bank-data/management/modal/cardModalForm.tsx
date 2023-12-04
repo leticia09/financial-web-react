@@ -26,6 +26,7 @@ export const CardModalForm: FunctionComponent<IModal> = ({currentForm, updateCar
     }
 
     useEffect(() => {
+        console.log(currentForm)
         const fetchData = async () => {
             setProgramData(await getProgram(currentForm.owner.id));
         }

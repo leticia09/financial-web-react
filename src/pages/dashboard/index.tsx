@@ -207,7 +207,7 @@ export const tiposDespesas = [
 
 export const Dashboard: FunctionComponent = () => {
     return (
-        <div>
+        <div className="content-dash">
             <div className="page">
                 <div className="painel">
                     <div className="labels_dash">

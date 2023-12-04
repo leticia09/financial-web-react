@@ -9,6 +9,7 @@ import "./dashboard-component.css"
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import {IDataSet} from "../../interfaces/points-program";
+import { ClassNames } from "@emotion/react";
 
 interface IDashboard {
     title: string;
@@ -93,7 +94,7 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
 
 
     return (
-        <>
+        <div className="dash-content">
             {showLineProgress &&
                 <Box sx={{ marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px" }}>
                     <LinearProgress />
@@ -214,6 +215,6 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 </div>
             )
             }
-        </>
+        </div>
     );
 }
