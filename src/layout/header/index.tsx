@@ -4,7 +4,7 @@ import * as AiIcons from "react-icons/ai";
 import * as FcIcons from "react-icons/fc";
 import {useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
-import {ILoginInformation} from "../../interfaces/loginInformation";
+import { LogoIcon } from "icons/assets/iconLogo";
 
 interface IInput {
     prop: any;
@@ -51,7 +51,7 @@ export const Header: FunctionComponent <IInput> = ({showSidebar, prop, getValue}
                         <AiIcons.AiOutlineBars size={35} onClick={() => change()}/>
                     </div>
                 </div>
-
+               <LogoIcon width="60" height="60"/>
                 <div className="options">
                     {prop.loginInformation.sex === 1 && (
                         <div className="icon_user">

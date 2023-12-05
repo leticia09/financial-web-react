@@ -1,16 +1,18 @@
-import {FunctionComponent, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { FunctionComponent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import './login.css'
-import {LoginService} from "./service";
+import { LoginService } from "./service";
 import useLoginStore from "./store/useLoginStore";
 import useGlobalStore from "../global-informtions/store/useGlobalStore";
-import {GlobalService} from "../global-informtions/service";
-import {Messages} from "../../internationalization/message";
-import {Input} from "../../components/input";
-import {InputPassword} from "../../components/password";
-import {ButtonComponent} from "../../components/button";
-import {Toast} from "../../components/toast";
-import {MembersManagementService} from "../members/service";
+import { GlobalService } from "../global-informtions/service";
+import { Messages } from "../../internationalization/message";
+import { Input } from "../../components/input";
+import { InputPassword } from "../../components/password";
+import { ButtonComponent } from "../../components/button";
+import { Toast } from "../../components/toast";
+import { MembersManagementService } from "../members/service";
+import { LogoIcon } from "icons/assets/iconLogo";
+import { motion } from "framer-motion";
 
 
 export const Login: FunctionComponent = () => {
@@ -19,7 +21,7 @@ export const Login: FunctionComponent = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
-    const {setAuth, setUser, setUserId, setSex} = useLoginStore();
+    const { setAuth, setUser, setUserId, setSex } = useLoginStore();
     const globalStore = useGlobalStore();
     const membersManagementService = MembersManagementService();
     const globalService = GlobalService();
@@ -84,15 +86,26 @@ export const Login: FunctionComponent = () => {
     }
     return (
         <div className="login">
-            <div className="content-info">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="content-info">
                 <div className="info-title">
                     {Messages.titles.infoTitleLogin}
                 </div>
                 <div className="info-text">
                     {Messages.titles.infoTextLogin}
                 </div>
-            </div>
-            <div className="content-login">
+            </motion.div>
+            <motion.div className="content-login"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+            >
+                <div className="logo-content">
+                    <LogoIcon width="150" height="150" />
+                </div>
                 <div className="login-img">
                     <div>{Messages.titles.financial}</div>
                 </div>
@@ -146,7 +159,7 @@ export const Login: FunctionComponent = () => {
                     open={open}
                     onClose={handleClose}
                 />
-            </div>
-        </div>
+            </motion.div>
+        </div >
     );
 }
