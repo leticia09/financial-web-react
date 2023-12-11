@@ -15,6 +15,7 @@ import {GroupsCreation} from "../../pages/groups/creation";
 import {Groups} from "../../pages/groups/management";
 import {BankMovementData} from "../../pages/bank-movement/management";
 import {EntranceCreation} from "../../pages/entrance/creation";
+import {Receive} from "../../pages/bank-movement/creation/receive";
 
 export const Home: FunctionComponent = () => {
 
@@ -61,6 +62,8 @@ export const Home: FunctionComponent = () => {
                        element={<GroupsCreation />}/>
                 <Route path="/movimentacao-bancaria"
                        element={<BankMovementData/>} />
+                <Route path="/movimentacao-bancaria/receber"
+                       element={<Receive/>} />
 
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>

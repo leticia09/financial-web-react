@@ -279,7 +279,7 @@ export const BankMovementData: FunctionComponent = () => {
                 cards={cards}
                 hasAuxButton1={true}
                 auxTitle1={Messages.titles.receive}
-                auxPath1="/grupos/programa-pontos/programa/utilizar"
+                auxPath1="/movimentacao-bancaria/receber"
                 showLineProgress={isLoading}
             />
 

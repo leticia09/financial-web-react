@@ -88,7 +88,7 @@ const initialState: State = {
         {id: 29, description: 29},
         {id: 30, description: 30},
         {id: 31, description: 31},
-    ]
+    ],
 };
 
 const useGlobalStore = create<State & Actions>((set) => ({

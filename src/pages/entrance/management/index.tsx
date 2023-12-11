@@ -10,6 +10,8 @@ import {EntranceService} from "../service";
 import {format, parseISO} from "date-fns";
 import {DropdownSingleSelect} from "../../../components/dropdown";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {BulletComponent} from "../../../components/bullet";
+import {ButtonComponent} from "../../../components/button";
 
 const columns: IColumns[] = [
     {
@@ -35,19 +37,13 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
-        id: "bankId",
+        id: "bankName",
         label: "Banco",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
-    {
-        id: "accountNumber",
-        label: "Conta",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
+
     {
         id: "salary",
         label: "Salário Líquido",
@@ -63,37 +59,37 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
-        id: "frequency",
-        label: "Periodicidade",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-    {
         id: "initialDate",
-        label: "Data Inicial",
+        label: "Início",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "finalDate",
-        label: "Data Final",
+        label: "Fim",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "dayReceive",
-        label: "Dia de Receber",
-        minWidth: 70,
+        label: "Dia ",
+        minWidth: 30,
         align: "center",
         format: (value) => value.toFixed(2),
     },
     {
         id: "mouthReceive",
-        label: "Mês de Receber",
-        minWidth: 70,
+        label: "Mês",
+        minWidth: 30,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "status",
+        label: "Pagamento",
+        minWidth: 30,
         align: "center",
         format: (value) => value.toFixed(2),
     },
@@ -116,23 +112,53 @@ type RowType = {
     actions: React.ReactNode[];
     index: number;
 };
-function createData(source, type, ownerId, bankId, accountNumber, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, actions, index) {
-     return {
+
+function createData(source, type, ownerId, bankName, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index) {
+    let color = "";
+    let border= "";
+    if(status === "Aguardando") {
+        color = "#ead337";
+        border = "0.5px solid #ead337"
+    } else if( status === "Confirmado") {
+        color = "#46ba52";
+        border = "0.5px solid #46ba52"
+    } else {
+        color = "red";
+        border = "0.5px solid red"
+    }
+    const statusCard =
+        <ButtonComponent
+            label={status}
+            disabled={false}
+            width="90px"
+            height="22px"
+            cursor="pointer"
+            borderRadius="4px"
+            color={color}
+            background="white"
+            border={border}
+            padding="2px"
+            marginBottom="0px"
+            fontWeight="200"
+            />
+
+    return {
         source,
         type,
         ownerId,
-        bankId,
-        accountNumber: accountNumber.toString(),
-        salary: salary.toString(),
+        bankName,
+        salary:  "R$ " + salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
         frequency,
         initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
-        finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : null ,
-        monthReceive: monthReceive ? monthReceive.toString() : null,
-        dayReceive: dayReceive ? dayReceive.toString() : null,
+        finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : "--",
+        monthReceive: monthReceive ? monthReceive.toString() : "--",
+        dayReceive: dayReceive ? dayReceive.toString() : "--",
+        status: statusCard,
         actions,
         index
     };
 }
+
 export const EntranceData: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const loginStore = useLoginStore();
@@ -141,7 +167,7 @@ export const EntranceData: FunctionComponent = () => {
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
-    const [filterDay, setSetFilterDay] = useState([]);
+    const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
     const [filterMonth, setSetFilterMonth] = useState([]);
     const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
@@ -169,14 +195,14 @@ export const EntranceData: FunctionComponent = () => {
             data.source,
             data.type,
             data.owner.name,
-            data.bankId,
-            data.accountNumber,
+            data.bankName,
             data.salary,
             data.frequency,
             data.initialDate,
             data.finalDate,
             data.monthReceive,
             data.dayReceive,
+            data.status,
             actions(index),
             index
         ));
@@ -222,6 +248,12 @@ export const EntranceData: FunctionComponent = () => {
 
         setCards(cards);
     }
+
+    const handleGetWithFilter = (value) => {
+        console.log(value)
+        setSetFilterMonth(value);
+    }
+
     return (
         <>
             <DashboardComponent
@@ -239,13 +271,13 @@ export const EntranceData: FunctionComponent = () => {
                     <div className="register-member">
                         <DropdownSingleSelect
                             label={Messages.titles.year}
-                            data={globalStore.monthOfYear}
-                            disabled={false}
+                            data={filterYear}
+                            disabled={true}
                             width={"100px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
                             getValue={(value) => console.log(value)}
-                            value={filterMonth}
+                            value={1}
                         />
                         <DropdownSingleSelect
                             label={Messages.titles.month}
@@ -254,7 +286,7 @@ export const EntranceData: FunctionComponent = () => {
                             width={"130px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
-                            getValue={(value) => console.log(value)}
+                            getValue={(value) => handleGetWithFilter(value)}
                             value={filterMonth}
                         />
                     </div>

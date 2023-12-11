@@ -16,7 +16,7 @@ interface ILoginButton {
     backgroundImage?: string;
     border?: string;
     icon?: React.ReactNode;
-    action: (value: boolean, path?:any) => void;
+    action?: (value: boolean, path?:any) => void;
     haveMenu?: boolean;
     menuOptions?: any[];
 
