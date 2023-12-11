@@ -3,16 +3,18 @@ import * as React from 'react';
 import "./input-data.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
+import {format, isAfter} from "date-fns";
 interface IInputDataComponent {
     label: string;
     disabled?: boolean;
     width?: string;
-    getValue: (value: Date) => void;
+    getValue: (value: string) => void;
     inputValue?: string;
     viewMode?: boolean;
+    disabledDates?: Date[];
 }
 
-export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue, viewMode }: IInputDataComponent) => {
+export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue, viewMode,disabledDates }: IInputDataComponent) => {
     const [selectedDate, setSelectedDate] = useState(null);
 
     useEffect(() => {
@@ -20,8 +22,14 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
     }, []);
     const handleChange = (date: Date) => {
         setSelectedDate(date);
-        getValue(date);
+        const formattedDate = format(date, "dd/MM/yyyy");
+        getValue(formattedDate);
     };
+
+    const isDateDisabled = (date) => {
+        return disabledDates && disabledDates.some((disabledDate) => isAfter(date, disabledDate));
+    };
+
     return (
         <div style={{width: width}}>
             <DatePicker
@@ -30,7 +38,9 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
                 dateFormat="dd/MM/yyyy"
                 className="form-field"
                 id={label}
-                placeholderText={label}/>
+                placeholderText={label}
+                filterDate={isDateDisabled}
+            />
         </div>
     );
 }

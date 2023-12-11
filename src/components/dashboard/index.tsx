@@ -9,7 +9,7 @@ import "./dashboard-component.css"
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import {IDataSet} from "../../interfaces/points-program";
-import { ClassNames } from "@emotion/react";
+import {ClassNames} from "@emotion/react";
 
 interface IDashboard {
     title: string;
@@ -33,6 +33,7 @@ interface IDashboard {
     showLineProgress?: boolean;
     dataSets?: IDataSet[];
     titleButton: string;
+    filters?: JSX.Element;
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -56,7 +57,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       auxTitle1,
                                                                       showLineProgress,
                                                                       dataSets,
-                                                                      titleButton
+                                                                      titleButton,
+                                                                      filters
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -96,8 +98,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
     return (
         <div className="dash-content">
             {showLineProgress &&
-                <Box sx={{ marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px" }}>
-                    <LinearProgress />
+                <Box sx={{marginTop: "58px", marginLeft: "-5px", width: '100.6%', marginBottom: "-50px"}}>
+                    <LinearProgress/>
                 </Box>
             }
             <div className="content">
@@ -186,6 +188,12 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
 
             {dataSets.length > 0 &&
                 <div className="dash_content">
+                    { filters &&
+                        <div className="filters-content-dash">
+                            {filters}
+                        </div>
+                    }
+
                     <div className="dash_item_content">
                         <Bar data={data} options={option} width={chartWidth} height={300}/>
                     </div>

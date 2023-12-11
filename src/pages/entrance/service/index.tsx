@@ -11,7 +11,22 @@ export const EntranceService = (axiosInstance: any = instance) => {
         return axiosInstance.post(endPoint, payload);
     }
 
+    const create = (payload) => {
+        const endPoint = '/entrance';
+        return axiosInstance.post(endPoint, payload);
+    }
+
+    const list = (authId: number) => {
+        const endPoint = '/entrance/' + authId;
+        return axiosInstance.get(endPoint);
+    }
+
+    const getData = (userId) => {
+        const url = '/entrance/data/' + userId;
+        return axiosInstance.get(url);
+    }
+
     return {
-        getTypeSalary, edit
+        getTypeSalary, edit, create, list, getData
     }
 }

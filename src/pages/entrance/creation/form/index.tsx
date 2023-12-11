@@ -14,6 +14,7 @@ import {ValidateError} from "../../../../validate-error/validate-error";
 import {TableComponent} from "../../../../components/table";
 import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
+import {InputDataComponent} from "../../../../components/input-data";
 
 interface IForm {
     i: number;
@@ -65,6 +66,48 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
+        id: "frequency",
+        label: "Periodicidade",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "frequency",
+        label: "Periodicidade",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "initialDate",
+        label: "Data Inicial",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "finalDate",
+        label: "Data Final",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "dayReceive",
+        label: "Dia de Receber",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "mouthReceive",
+        label: "Mês de Receber",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
         id: "actions",
         label: "Ações",
         minWidth: 70,
@@ -74,7 +117,7 @@ const columns: IColumns[] = [
     },
 ];
 
-function createData(source, type, ownerId, bankId, accountNumber, salary, actions, index) {
+function createData(source, type, ownerId, bankId, accountNumber, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, actions, index) {
     return {
         source,
         type,
@@ -82,6 +125,11 @@ function createData(source, type, ownerId, bankId, accountNumber, salary, action
         bankId,
         accountNumber: accountNumber.toString(),
         salary: salary.toString(),
+        frequency,
+        initialDate,
+        finalDate,
+        monthReceive: monthReceive ? monthReceive.toString() : null,
+        dayReceive: dayReceive ? dayReceive.toString() : null,
         actions,
         index
     };
@@ -139,25 +187,34 @@ export const EntranceForm: FunctionComponent = () => {
         const updateList = [...formStore.formList];
         updateList.push(
             {
-                id: null,
                 source: formStore.form.source,
-                type: formStore.form.type,
+                type: typeSalaryData.filter(ts => ts.id === formStore.form.type)[0].description,
                 ownerId: formStore.form.ownerId,
                 salary: formStore.form.salary,
                 bankId: formStore.form.bankId,
                 accountNumber: formStore.form.accountNumber,
                 userAuthId: loginStore.userId,
-                index: updateList.length
+                index: updateList.length,
+                frequency: globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0].description,
+                initialDate: formStore.form.initialDate ? formStore.form.initialDate: null,
+                finalDate: formStore.form.finalDate ? formStore.form.finalDate : null,
+                monthReceive: formStore.form.monthReceive && formStore.form.monthReceive !== 0 ? formStore.form.monthReceive : null,
+                dayReceive: formStore.form.dayReceive && formStore.form.dayReceive !== 0 ? formStore.form.dayReceive: null,
             }
         )
         formStore.setFormList(updateList);
         const transformedRows = updateList.map((data: any, index: number) => createData(
             data.source,
-            typeSalaryData.filter(ts => ts.id === data.type)[0].description,
+            data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             data.bankId,
             data.accountNumber,
             data.salary,
+            data.frequency,
+            data.initialDate,
+            data.finalDate,
+            data.monthReceive,
+            data.dayReceive,
             actions(index),
             index
         ));
@@ -181,6 +238,11 @@ export const EntranceForm: FunctionComponent = () => {
             globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
             data.accountNumber,
             data.salary,
+            data.frequency,
+            data.initialDate,
+            data.finalDate,
+            data.monthReceive,
+            data.dayReceive,
             actions(index),
             index
         ));
@@ -238,7 +300,6 @@ export const EntranceForm: FunctionComponent = () => {
         formStore.setBankId(value);
         setAccountData(globalStore.bank.filter(ba => ba.id === value)[0].accounts);
     }
-
 
     return (
         <>
@@ -307,14 +368,86 @@ export const EntranceForm: FunctionComponent = () => {
 
                 <DropdownSingleSelect
                     label={Messages.titles.frequency}
-                    data={[ {id: 2, description: "Única"}, {id: 3, description: "mensal"}, {id: 4, description: "anual"}]}
+                    data={globalStore.frequency}
                     disabled={false}
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"description"}
-                    getValue={(value) => formStore.setAccountNumber(value)}
-                    value={formStore.form.accountNumber}
+                    getValue={(value) => formStore.setFrequency(value)}
+                    value={formStore.form.frequency}
                 />
+
+                {(formStore.form.frequency.toString() === "2") &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.dayReceive}
+                        data={globalStore.days}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"description"}
+                        getValue={(value) => formStore.setDayReceive(value)}
+                        value={formStore.form.dayReceive}
+                    />
+                }
+                {formStore.form.frequency.toString() === "1" &&
+                    <InputDataComponent
+                        label={Messages.titles.date}
+                        disabled={false}
+                        width="200px"
+                        getValue={(value) => formStore.setInitialDate(value)}
+                        viewMode={false}
+                        disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                    />
+                }
+            </div>
+
+            <div className="register-member">
+                {(formStore.form.frequency.toString() !== "1" && formStore.form.frequency.toString() !== "2") && formStore.form.frequency !== "" &&
+                    <>
+                        <DropdownSingleSelect
+                            label={Messages.titles.dayReceive}
+                            data={globalStore.days}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"id"}
+                            descriptionProperty={"description"}
+                            getValue={(value) => formStore.setDayReceive(value)}
+                            value={formStore.form.dayReceive}
+                        />
+                        <DropdownSingleSelect
+                            label={Messages.titles.monthReceive}
+                            data={globalStore.monthOfYear}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"id"}
+                            descriptionProperty={"description"}
+                            getValue={(value) => formStore.setMonthReceive(value)}
+                            value={formStore.form.monthReceive}
+                        />
+                    </>
+                }
+
+                {(formStore.form.frequency.toString() !== "1") && formStore.form.frequency !== "" &&
+                    <>
+                        <InputDataComponent
+                            label={Messages.titles.initialDate}
+                            disabled={false}
+                            width="200px"
+                            getValue={(value) => formStore.setInitialDate(value)}
+                            viewMode={false}
+                            disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                        />
+
+                        <InputDataComponent
+                            label={Messages.titles.finalDate}
+                            disabled={false}
+                            width="200px"
+                            getValue={(value) => formStore.setFinalDate(value)}
+                            viewMode={false}
+                            disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                        />
+                    </>
+                }
 
             </div>
 
@@ -322,7 +455,7 @@ export const EntranceForm: FunctionComponent = () => {
             <div className="add-button-member">
                 <ButtonComponent
                     label={Messages.titles.addEntrance}
-                    disabled={!formStore.form.bankId || !formStore.form.salary || !formStore.form.accountNumber || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId}
+                    disabled={!formStore.form.bankId || !formStore.form.salary || !formStore.form.accountNumber || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId || !formStore.form.frequency || !formStore.form.initialDate}
                     width="160px"
                     height="30px"
                     cursor="pointer"
@@ -360,7 +493,7 @@ export const EntranceForm: FunctionComponent = () => {
                         columns={columns}
                         rows={rows}
                         pagination={false}
-                        width={"55%"}
+                        width={"100%"}
                     />
                 </div>
             }

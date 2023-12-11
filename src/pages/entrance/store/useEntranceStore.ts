@@ -19,6 +19,11 @@ type Actions = {
     setBankId: (bankId: number) => void;
     setAccountNumber: (accountNumber: number) => void;
     setUserAuthId: (userAuthId: number) => void;
+    setFrequency: (frequency: string) => void;
+    setFinalDate: (finalDate: string) => void;
+    setInitialDate: (initialDate: string) => void;
+    setMonthReceive: (monthReceive: number) => void;
+    setDayReceive: (dayReceive: number) => void;
     resetForm: () => void;
 
     setTypeSalary: (index: number, field: keyof ITypeSalary, value: string, authId?: number) => void;
@@ -30,7 +35,6 @@ const initialState: State = {
     formList: [],
     form:
         {
-            id: 0,
             source: "",
             type: "",
             ownerId: 0,
@@ -38,7 +42,12 @@ const initialState: State = {
             bankId: 0,
             accountNumber: 0,
             userAuthId: 0,
-            index: 0
+            index: 0,
+            frequency: '',
+            initialDate: null,
+            finalDate: null,
+            monthReceive: 0,
+            dayReceive: 0,
         },
     typeSalary: [
         {
@@ -68,7 +77,6 @@ const useEntranceStore = create<State & Actions>((set) => {
 
                 if (!updatedFormList[index]) {
                     updatedFormList[index] = {
-                        id: null,
                         source: "",
                         type: "",
                         ownerId: 0,
@@ -76,7 +84,12 @@ const useEntranceStore = create<State & Actions>((set) => {
                         bankId: 0,
                         accountNumber: 0,
                         index: 0,
-                        userAuthId: authId
+                        userAuthId: authId,
+                        frequency: '',
+                        initialDate: null,
+                        finalDate: null,
+                        monthReceive: 0,
+                        dayReceive: 0,
                     };
                 }
 
@@ -156,6 +169,51 @@ const useEntranceStore = create<State & Actions>((set) => {
                 },
             }));
         },
+        setFrequency: (frequency: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    frequency: frequency,
+                },
+            }));
+        },
+
+        setDayReceive: (dayReceive: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    dayReceive: dayReceive,
+                },
+            }));
+        },
+
+        setMonthReceive: (monthReceive: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    monthReceive: monthReceive,
+                },
+            }));
+        },
+
+        setInitialDate: (initialDate: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    initialDate: initialDate,
+                },
+            }));
+        },
+
+        setFinalDate: (finalDate: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    finalDate: finalDate,
+                },
+            }));
+        },
+
         setAccountNumber: (accountNumber: number) => {
             set((state) => ({
                 form: {
@@ -192,14 +250,14 @@ const useEntranceStore = create<State & Actions>((set) => {
             set((state) => ({
                 form: {
                     ...state.form,
-                    id: 0,
                     source: "",
                     type: "",
                     salary: 0,
                     ownerId: 0,
                     bankId: 0,
                     accountNumber: 0,
-                    userAuthId: 0
+                    userAuthId: 0,
+                    frequency: ""
                 },
             }));
         },

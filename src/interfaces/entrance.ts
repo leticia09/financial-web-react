@@ -1,5 +1,5 @@
 export interface IEntrance {
-    id: number;
+    id?: number;
     source: string;
     type: string;
     ownerId: number;
@@ -8,6 +8,11 @@ export interface IEntrance {
     accountNumber: number;
     userAuthId: number;
     index: number;
+    frequency: string;
+    initialDate: string;
+    finalDate?: string;
+    monthReceive: number;
+    dayReceive: number;
 }
 
 export interface ITypeSalary {
