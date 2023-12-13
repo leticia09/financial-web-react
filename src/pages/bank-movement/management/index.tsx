@@ -13,21 +13,7 @@ import movementBankStore from "../store";
 
 const columns: IColumns[] = [
     {
-        id: "owner",
-        label: "Titular",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-        id: "program",
-        label: "Programa",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-        id: "typeOfScore",
+        id: "type",
         label: "Tipo",
         minWidth: 70,
         align: "right",
@@ -41,15 +27,52 @@ const columns: IColumns[] = [
         format: (value) => value.toLocaleString("en-US"),
     },
     {
-        id: "pointsExpirationDate",
-        label: "Data de Expiração",
+        id: "referencePeriod",
+        label: "Período de Rerência",
         minWidth: 70,
         align: "right",
         format: (value) => value.toLocaleString("en-US"),
     },
     {
-        id: "status",
-        label: "Status",
+        id: "ownerId",
+        label: "Titular",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "expenseId",
+        label: "Despesa",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "entranceId",
+        label: "Receita",
+        minWidth: 70,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+
+    {
+        id: "dateMovement",
+        label: "Data Movimentação",
+        minWidth: 70,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+
+    {
+        id: "bankId",
+        label: "Banco",
+        minWidth: 70,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "obs",
+        label: "Observação",
         minWidth: 70,
         align: "center",
         format: (value) => value.toFixed(2),
@@ -66,26 +89,21 @@ const columns: IColumns[] = [
 
 
 function createData(user, actions, index) {
-    const {id, owner, program, value, typeOfScore, pointsExpirationDate, status} = user;
-    const statusBullet = status === 1 ? (
-        <BulletComponent color="green" showLabel={true} label={'Ativo'}/>
-    ) : status === 2 ? (
-        <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
-    ) : null;
-    let date = pointsExpirationDate;
-    if (pointsExpirationDate) {
-        date = formatData(pointsExpirationDate);
+    const {value, bankId, dateMovement, entranceId, expenseId, obs, ownerId, referencePeriod, type, currency} = user;
+    let date = dateMovement;
+    if (dateMovement) {
+        date = formatData(dateMovement);
     }
-
     return {
-        id,
-        owner: owner.name,
-        ownerID: owner.id,
-        program,
-        typeOfScore,
-        value: value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-        pointsExpirationDate: date,
-        status: statusBullet,
+        value: currency + " " + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        bankId,
+        dateMovement: date,
+        entranceId: entranceId ? entranceId.toString() : "--",
+        expenseId: expenseId ? expenseId.toString() : "--",
+        obs: obs ? obs : "--",
+        ownerId,
+        referencePeriod,
+        type,
         actions,
         key: index
     };
@@ -139,7 +157,7 @@ export const BankMovementData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-               // await getData();
+                await getData();
                 await getGraphic();
 
                 // const programResponse = await globalService.getProgram(loginStore.userId);
@@ -153,11 +171,11 @@ export const BankMovementData: FunctionComponent = () => {
     }, []);
 
     const getData = async () => {
-        // const response = await pointsService.get(loginStore.userId);
-        // setResponses(response.data.data);
-        // const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
-        // setRows(transformedRows);
-        // setCurrentForm(response.data.data);
+        const response = await service.get(loginStore.userId);
+        setResponses(response.data.data);
+        const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
+        setRows(transformedRows);
+        setCurrentForm(response.data.data);
 
     }
 

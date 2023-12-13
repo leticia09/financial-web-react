@@ -86,7 +86,7 @@ export const CreateProgramPoint: FunctionComponent = () => {
                 setOpen(false);
                 setIsLoading(false);
                 navigate("/grupos/programa-pontos");
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);

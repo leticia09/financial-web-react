@@ -103,7 +103,7 @@ export const ModalComponent: FunctionComponent<IModal> = ({
             <Toast
                 severity={severityType}
                 width="100%"
-                duration={2000}
+                duration={3000}
                 message={toastMessage}
                 open={openToast}
                 onClose={handleCloseToast}

@@ -17,7 +17,7 @@ export const MovementBankService = (axiosInstance: any = instance) => {
     }
 
     const get = (userId) => {
-        const url = '/points/' + userId;
+        const url = '/movement-bank/' + userId;
         return axiosInstance.get(url);
     }
     const getData = (userId) => {

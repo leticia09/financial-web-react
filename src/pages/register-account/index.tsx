@@ -64,7 +64,7 @@ export const RegisterAccount: FunctionComponent = () => {
                     setOpen(false);
                     if(response.data.severity === "success")
                         navigate("/login");
-                }, 2000);
+                }, 3000);
 
 
             } catch (e) {

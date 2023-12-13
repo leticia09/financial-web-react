@@ -13,7 +13,7 @@ const SplashScreen: React.FC = () => {
         preLoaderAnim();
 
         const redirectTimeout = setTimeout(() => {
-            navigate('/login');
+            navigate('/dashboard');
         }, 5000);
         return () => clearTimeout(redirectTimeout);
     }, [navigate]);

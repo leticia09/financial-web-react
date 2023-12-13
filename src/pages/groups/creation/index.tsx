@@ -51,7 +51,7 @@ export const GroupsCreation: FunctionComponent = () => {
                 setIsLoading(false);
                 if (response.data.severity === "success")
                     navigate("/grupos/grupos");
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);

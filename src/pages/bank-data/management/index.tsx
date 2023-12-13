@@ -301,7 +301,7 @@ export const BankData: FunctionComponent = () => {
                     setIsLoading(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");
@@ -325,7 +325,7 @@ export const BankData: FunctionComponent = () => {
                     setIsLoading(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");
@@ -350,7 +350,7 @@ export const BankData: FunctionComponent = () => {
                     setIsLoading(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");
@@ -374,7 +374,7 @@ export const BankData: FunctionComponent = () => {
                     setIsLoading(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");
@@ -402,7 +402,7 @@ export const BankData: FunctionComponent = () => {
                     setIsLoading(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");

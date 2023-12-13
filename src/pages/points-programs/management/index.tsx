@@ -263,7 +263,7 @@ export const PointProgramData: FunctionComponent = () => {
                     getData();
                     getGraphic();
                 }
-            }, 2000);
+            }, 3000);
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);

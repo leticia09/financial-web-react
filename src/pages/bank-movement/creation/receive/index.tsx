@@ -55,7 +55,7 @@ export const Receive: FunctionComponent = () => {
                 setIsLoading(false);
                 if(response.data.severity === "success")
                     navigate("/movimentacao-bancaria");
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);

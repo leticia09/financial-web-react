@@ -203,7 +203,7 @@ export const TransferForm: FunctionComponent = () => {
             <Toast
                 severity={severityType}
                 width="100%"
-                duration={2000}
+                duration={3000}
                 message={toastMessage}
                 open={open}
                 onClose={handleCloseToast}

@@ -86,10 +86,10 @@ const Messages = {
         movementBank: "Movimentação Bancária",
         pay: "Pagar",
         receive: "Receber",
-        receivedYear: "Recebidos Anual",
-        receivedMonth: "Recebidos Mensal",
-        quantityNotOk: "Quantidade Pendente",
-        quantityOk: "Quantidade Confirmada",
+        receivedYear: "Receita Prevista Total",
+        receivedMonth: "Receita Confirmada",
+        quantityNotOk: "Receita Pendente",
+        quantityOk: "Receita Aguardando",
         totalMoney: "Total Acumulado",
         totalAvailable: "Total Disponível",
         totalGoal: 'Total Meta',
@@ -147,7 +147,8 @@ const Messages = {
         duplicateNames: "Não é permitido nomes duplicados!",
         exclusionBank: "Ao excluir este banco, todas as contas e cartões associados também serão permanentemente removidos.",
         exclusionAccount: "Ao excluir esta conta, todos os cartões associados também serão permanentemente removidos.",
-        ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco."
+        ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco.",
+        entranceNotStarted: "Não foi possível completar a operação. Receita não iniciada."
     },
     modals: {},
     toasts: {}

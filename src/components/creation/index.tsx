@@ -123,7 +123,7 @@ export const Creation: FunctionComponent<ICreation> = ({
                 <Toast
                     severity={severityType}
                     width="100%"
-                    duration={2000}
+                    duration={3000}
                     message={toastMessage}
                     open={open}
                     onClose={handleCloseToast}

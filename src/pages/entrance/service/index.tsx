@@ -26,8 +26,8 @@ export const EntranceService = (axiosInstance: any = instance) => {
         return axiosInstance.get(endPoint);
     }
 
-    const getData = (userId) => {
-        const url = '/entrance/data/' + userId;
+    const getData = (userId, month, year) => {
+        const url = '/entrance/data/' + userId + '/' + month + '/' + year;
         return axiosInstance.get(url);
     }
 

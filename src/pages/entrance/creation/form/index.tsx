@@ -276,7 +276,7 @@ export const EntranceForm: FunctionComponent = () => {
                         setOpenModal(false);
                         await getSalary();
                     }
-                }, 2000);
+                }, 3000);
 
             } else {
                 setOpenToast(true);
@@ -415,6 +415,7 @@ export const EntranceForm: FunctionComponent = () => {
                         getValue={(value) => formStore.setInitialDate(value)}
                         viewMode={false}
                         disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                        after={true}
                     />
                 }
             </div>

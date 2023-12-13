@@ -1,13 +1,16 @@
 import {create} from "zustand";
 import {IEntrance, ITypeSalary} from "../../../interfaces/entrance";
+import {IGraphic} from "../../../interfaces/points-program";
 
 type State = {
     formList: IEntrance[];
     form: IEntrance;
     typeSalary: ITypeSalary[];
+    graphicData: IGraphic;
 };
 
 type Actions = {
+    setGraphicData: (value: any, value1: any, value2: any, value3: any, value4: any, value5: any,) => void;
     setFormList: (formList: IEntrance[]) => void;
     setFormListValue: (index: number, field: keyof IEntrance, value: string, authId?: number) => void;
     deleteItemFormList: (index: number) => any;
@@ -56,13 +59,33 @@ const initialState: State = {
             deleted: false,
             userAuthId: 0
         }
-    ]
+    ],
+    graphicData: {
+        dataSet: [],
+        labels: [],
+        total1: 0,
+        total2: 0,
+        total3: 0,
+        total4: 0,
+    },
+
 };
 
 const useEntranceStore = create<State & Actions>((set) => {
     return ({
         ...initialState,
-
+        setGraphicData: (labels: [], dataSet: [], total1: number, total2: number, total3: number, total4: number) => {
+            set((state) => ({
+                graphicData: {
+                    labels: labels,
+                    dataSet: dataSet,
+                    total1: total1,
+                    total2: total2,
+                    total3: total3,
+                    total4: total4
+                },
+            }));
+        },
         setFormList: (formList: IEntrance[]) => {
             set({formList: formList});
         },

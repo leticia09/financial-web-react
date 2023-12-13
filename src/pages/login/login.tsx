@@ -54,7 +54,7 @@ export const Login: FunctionComponent = () => {
                     setUser(response.data.data.name);
                     setUserId(response.data.data.id);
                     setSex(response.data.data.sex);
-                    navigate("/dashboard");
+                    navigate("/splash");
 
                     const memberResponse = await membersManagementService.getMembersDropdown(response.data.data.id);
                     globalStore.setMember(memberResponse.data.data);

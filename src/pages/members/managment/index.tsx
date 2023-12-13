@@ -162,7 +162,7 @@ export const Members: FunctionComponent = () => {
                     setOpenModalEdit(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setOpenModalEdit(false);
@@ -187,7 +187,7 @@ export const Members: FunctionComponent = () => {
                     getData();
                     setOpenModalExclusion(false);
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setOpenModalExclusion(false);

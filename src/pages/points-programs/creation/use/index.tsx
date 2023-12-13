@@ -61,7 +61,7 @@ export const UsePoint: FunctionComponent = () => {
                 setIsLoading(false);
                 if(response.data.severity === "success")
                 navigate("/grupos/programa-pontos");
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);

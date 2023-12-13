@@ -4,14 +4,13 @@ import {Messages} from "../../../internationalization/message";
 import {DashboardComponent} from "../../../components/dashboard";
 import {IColumns} from "../../../interfaces/table";
 import useLoginStore from "../../login/store/useLoginStore";
-import movementBankStore from "../../bank-movement/store";
 import * as AiIcons from "react-icons/ai";
 import {EntranceService} from "../service";
 import {format, parseISO} from "date-fns";
 import {DropdownSingleSelect} from "../../../components/dropdown";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
-import {BulletComponent} from "../../../components/bullet";
 import {ButtonComponent} from "../../../components/button";
+import useEntranceStore from "../store/useEntranceStore";
 
 const columns: IColumns[] = [
     {
@@ -46,6 +45,13 @@ const columns: IColumns[] = [
 
     {
         id: "salary",
+        label: "Salário Líquido Previsto",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "valueReceived",
         label: "Salário Líquido",
         minWidth: 70,
         align: "right",
@@ -113,7 +119,7 @@ type RowType = {
     index: number;
 };
 
-function createData(source, type, ownerId, bankName, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index, currency) {
+function createData(source, type, ownerId, bankName, salary, valueReceived,frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index, currency) {
     let color = "";
     let border= "";
     if(status === "Aguardando") {
@@ -122,9 +128,12 @@ function createData(source, type, ownerId, bankName, salary, frequency, initialD
     } else if( status === "Confirmado") {
         color = "#46ba52";
         border = "0.5px solid #46ba52"
-    } else {
+    } else if(status === "Pendente"){
         color = "red";
         border = "0.5px solid red"
+    } else {
+        color = "blue";
+        border = "0.5px solid blue"
     }
     const statusCard =
         <ButtonComponent
@@ -148,6 +157,7 @@ function createData(source, type, ownerId, bankName, salary, frequency, initialD
         ownerId,
         bankName,
         salary:  currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        valueReceived: valueReceived?  currency + " "+ valueReceived.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : "--",
         frequency,
         initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
         finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : "--",
@@ -162,7 +172,7 @@ function createData(source, type, ownerId, bankName, salary, frequency, initialD
 export const EntranceData: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const loginStore = useLoginStore();
-    const store = movementBankStore();
+    const store = useEntranceStore();
     const service = EntranceService();
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
@@ -179,10 +189,9 @@ export const EntranceData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const a = new Date().getMonth()
                 await getData(new Date().getMonth() + 1, filterYear[0].description);
                 setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id)
-                await getGraphic();
+                await getGraphic(new Date().getMonth() + 1, filterYear[0].description);
 
             } catch (error) {
                 console.log('Error', error);
@@ -199,6 +208,7 @@ export const EntranceData: FunctionComponent = () => {
             data.owner.name,
             data.bankName,
             data.salary,
+            data.valueReceived,
             data.frequency,
             data.initialDate,
             data.finalDate,
@@ -212,8 +222,8 @@ export const EntranceData: FunctionComponent = () => {
         setRows(transformedRows);
 
     }
-    const getGraphic = async () => {
-        const data = await service.getData(loginStore.userId);
+    const getGraphic = async (month, year) => {
+        const data = await service.getData(loginStore.userId, month, year);
         store.setGraphicData(
             data.data.data.labels,
             data.data.data.dataSet,
@@ -240,7 +250,7 @@ export const EntranceData: FunctionComponent = () => {
 
         let card3 = {
             label: Messages.titles.quantityNotOk,
-            value: "U$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            value: "R$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let cards = [];
@@ -255,6 +265,7 @@ export const EntranceData: FunctionComponent = () => {
     const handleGetWithFilter = (value) => {
         setFilterMonth(value);
         getData(value, filterYear[0].description);
+        getGraphic(value, filterYear[0].description);
     }
 
     return (

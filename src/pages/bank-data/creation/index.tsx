@@ -77,7 +77,7 @@ export const RegisterBankData: FunctionComponent = () => {
                     setIsLoading(false);
                     if (response.data.severity === "success")
                         navigate("/grupos/dados-bancarios");
-                }, 2000);
+                }, 3000);
 
             } else {
                 setOpen(true);

@@ -163,7 +163,7 @@ export const Groups: FunctionComponent = () => {
                     setOpenToast(false);
                     getData();
                 }
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setSeverity("error");
@@ -189,7 +189,7 @@ export const Groups: FunctionComponent = () => {
                     getData();
                 }
 
-            }, 2000);
+            }, 3000);
         } catch (e) {
             setSeverity("error");
             setToastMessage(Messages.titles.errorMessage);

@@ -9,7 +9,7 @@ import {ButtonComponent} from "../../../../components/button";
 import {TableComponent} from "../../../../components/table";
 import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
-import {getMonth, getYear} from "date-fns";
+import {getMonth, getYear, isAfter} from "date-fns";
 import {EntranceService} from "../../../entrance/service";
 import movementBankStore from "../../store";
 
@@ -104,6 +104,7 @@ export const ReceiveForm: FunctionComponent = () => {
         useEffect(() => {
             setPaymentRefer(getCurrentMonthYear());
             formStore.setFormList([]);
+            formStore.resetFormStore();
             formStore.setReferencePeriod(getCurrentMonthYear());
         }, []);
 
@@ -225,7 +226,7 @@ export const ReceiveForm: FunctionComponent = () => {
                         <DropdownSingleSelect
                             label={Messages.titles.entrance}
                             data={entranceData}
-                            disabled={false}
+                            disabled={!formStore.form.ownerId}
                             width={"200px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
@@ -235,7 +236,7 @@ export const ReceiveForm: FunctionComponent = () => {
 
                         <Input
                             label={Messages.titles.salaryValue}
-                            disabled={false}
+                            disabled={!formStore.form.entrance}
                             width="200px"
                             getValue={(value) => handleSalary(value)}
                             inputValue={salary}
@@ -250,7 +251,8 @@ export const ReceiveForm: FunctionComponent = () => {
                             getValue={(value) => formStore.setReceiveDate(value)}
                             viewMode={false}
                             inputValue={formStore.form.receiveDate}
-                            disabledDates={null}
+                            disabledDates={[new Date()]}
+                            before={true}
                         />
 
                     </div>

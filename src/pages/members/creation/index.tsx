@@ -79,7 +79,7 @@ export const RegisterMember: FunctionComponent = () => {
                 if (response.data.severity === "success")
                 navigate("/grupos/membros");
                 setIsLoading(false);
-            }, 2000);
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);

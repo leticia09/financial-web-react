@@ -3,7 +3,7 @@ import * as React from 'react';
 import "./input-data.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
-import {format, isAfter} from "date-fns";
+import {format, isAfter, isBefore} from "date-fns";
 interface IInputDataComponent {
     label: string;
     disabled?: boolean;
@@ -12,9 +12,11 @@ interface IInputDataComponent {
     inputValue?: any;
     viewMode?: boolean;
     disabledDates?: Date[];
+    after?: boolean,
+    before?: boolean
 }
 
-export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue = null, viewMode,disabledDates }: IInputDataComponent) => {
+export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue = null, viewMode,disabledDates,after, before }: IInputDataComponent) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [isDateSelected, setIsDateSelected] = useState(false);
 
@@ -34,10 +36,11 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
     };
 
     const isDateDisabled = (date) => {
-        if(disabledDates) {
+        if(disabledDates && after) {
             return disabledDates && disabledDates.some((disabledDate) => isAfter(date, disabledDate));
+        } else if (disabledDates && before) {
+            return disabledDates && disabledDates.some((disabledDate) => isBefore(date, disabledDate));
         } else return date;
-
     };
 
     return (
