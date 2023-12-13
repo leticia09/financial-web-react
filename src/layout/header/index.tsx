@@ -17,7 +17,7 @@ export const Header: FunctionComponent <IInput> = ({showSidebar, prop, getValue}
     const navigate = useNavigate();
 
     function out() {
-        navigate("/");
+        navigate("/login");
     }
 
     function change() {

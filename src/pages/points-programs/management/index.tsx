@@ -57,7 +57,8 @@ const columns: IColumns[] = [
     {
         id: "status",
         label: "Status",
-        minWidth: 70,
+        minWidth: 80,
+        width: 90,
         align: "center",
         format: (value) => value.toFixed(2),
     },
@@ -65,8 +66,8 @@ const columns: IColumns[] = [
         id: "actions",
         label: "Ações",
         minWidth: 70,
-        width: 100,
-        align: "right",
+        width: 70,
+        align: "center",
         format: (value) => value.toFixed(2),
     },
 ];

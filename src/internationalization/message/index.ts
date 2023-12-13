@@ -116,7 +116,8 @@ const Messages = {
         date: 'Data',
         dateReceive: 'Data Recebimento *',
         paymentRefer: 'Período Referente',
-        obs: 'Observação'
+        obs: 'Observação',
+        copy: 'Copiar formulário anterior ?'
     },
     buttons: {},
     labels: {},

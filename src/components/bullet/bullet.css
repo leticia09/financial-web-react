@@ -2,11 +2,20 @@
     display: flex;
     width: 65px;
     justify-content: space-between;
+    margin-right: 5px;
     align-items: center;
 }
 .bullet-content-inactive {
     display: flex;
     width: 75px;
     justify-content: space-between;
+    align-items: center;
+}
+
+.bullet-content-not-label {
+    display: flex;
+    width: 65px;
+    justify-content: center;
+    margin-right: 5px;
     align-items: center;
 }

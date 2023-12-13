@@ -4,11 +4,12 @@ import {Messages} from "../../../internationalization/message";
 import {IColumns} from "../../../interfaces/table";
 import useLoginStore from "../../login/store/useLoginStore";
 import * as AiIcons from "react-icons/ai";
-import {BulletComponent} from "../../../components/bullet";
 import {DashboardComponent} from "../../../components/dashboard";
 import {format} from "date-fns";
 import {MovementBankService} from "../service";
 import movementBankStore from "../store";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {GlobalService} from "../../global-informtions/service";
 
 
 const columns: IColumns[] = [
@@ -80,16 +81,15 @@ const columns: IColumns[] = [
     {
         id: "actions",
         label: "Ações",
-        minWidth: 70,
-        width: 100,
+        minWidth: 50,
+        width: 50,
         align: "right",
         format: (value) => value.toFixed(2),
     },
 ];
 
 
-function createData(user, actions, index) {
-    const {value, bankId, dateMovement, entranceId, expenseId, obs, ownerId, referencePeriod, type, currency} = user;
+function createData(value, bankId, dateMovement, entranceId, expenseId, obs, ownerId, referencePeriod, type, currency, actions, index) {
     let date = dateMovement;
     if (dateMovement) {
         date = formatData(dateMovement);
@@ -125,7 +125,9 @@ function formatData(inputDate: string): string {
 export const BankMovementData: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const store = movementBankStore();
+    const globalStore = useGlobalStore();
     const service = MovementBankService();
+    const globalService = GlobalService();
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const [open, setOpen] = useState(false);
@@ -147,7 +149,7 @@ export const BankMovementData: FunctionComponent = () => {
     };
 
     const actions = (index) => (
-        <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
+        <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(index)}/>
         </div>
@@ -157,11 +159,9 @@ export const BankMovementData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                await getEntrance();
                 await getData();
                 await getGraphic();
-
-                // const programResponse = await globalService.getProgram(loginStore.userId);
-                // globalStore.setProgram(programResponse.data.data);
 
             } catch (error) {
                 console.log('Error', error);
@@ -173,10 +173,36 @@ export const BankMovementData: FunctionComponent = () => {
     const getData = async () => {
         const response = await service.get(loginStore.userId);
         setResponses(response.data.data);
-        const transformedRows = response.data.data.map((user: any, index: number) => createData(user, actions(index), index));
+        const transformedRows = response.data.data.map((data: any, index: number) => createData(
+            data.value,
+            globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
+            data.dateMovement,
+            globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description,
+            data.expenseId,
+            data.obs,
+            globalStore.members.filter(me=> me.id === data.ownerId)[0].name,
+            data.referencePeriod,
+            data.type,
+            data.currency,
+            actions(index),
+            index));
         setRows(transformedRows);
         setCurrentForm(response.data.data);
 
+    }
+
+    const getEntrance = async () => {
+        const entrance = await globalService.getEntrance(loginStore.userId);
+        let list = [];
+        entrance.data.data.forEach(res => {
+            list.push({
+                id: res.id,
+                description: res.source + " - " + res.type,
+                salary: res.currency + " " + res.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                ownerId: res.owner.id,
+            })
+        })
+        globalStore.setEntrance(list);
     }
 
     const getGraphic = async () => {
@@ -293,7 +319,7 @@ export const BankMovementData: FunctionComponent = () => {
                 auxPath="/grupos/programa-pontos/programa/tranferencia"
                 dataSets={store.graphicData.dataSet}
                 labelsData={store.graphicData.labels}
-                optionText={Messages.titles.pointsAndMiles}
+                optionText={Messages.titles.movementBank}
                 cards={cards}
                 hasAuxButton1={true}
                 auxTitle1={Messages.titles.receive}

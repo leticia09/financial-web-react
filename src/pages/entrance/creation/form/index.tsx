@@ -16,6 +16,8 @@ import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
 import {InputDataComponent} from "../../../../components/input-data";
 import {Toast} from "../../../../components/toast";
+import {GlobalService} from "../../../global-informtions/service";
+import {FormControlLabel, Switch} from "@mui/material";
 
 const columns: IColumns[] = [
     {
@@ -140,6 +142,7 @@ export const EntranceForm: FunctionComponent = () => {
     const formStore = useEntranceStore();
     const loginStore = useLoginStore();
     const globalStore = useGlobalStore();
+    const globalService = GlobalService();
     const [openModal, setOpenModal] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
@@ -151,6 +154,7 @@ export const EntranceForm: FunctionComponent = () => {
     const [accountData, setAccountData] = useState([]);
     const [open, setOpen] = useState(false);
     const [openWarningToast, setOpenWarningToast] = useState(false);
+    const [hasSwitch, setHasSwitch] = useState(false);
 
     const handleCloseToastWarning = () => {
         setOpenWarningToast(false);
@@ -165,6 +169,8 @@ export const EntranceForm: FunctionComponent = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const bankResponse = await globalService.getBank(loginStore.userId);
+            globalStore.setBank(bankResponse.data.data);
             await getSalary();
         };
         fetchData();
@@ -191,10 +197,10 @@ export const EntranceForm: FunctionComponent = () => {
                 userAuthId: loginStore.userId,
                 index: updateList.length,
                 frequency: globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0].description,
-                initialDate: formStore.form.initialDate ? formStore.form.initialDate: null,
+                initialDate: formStore.form.initialDate ? formStore.form.initialDate : null,
                 finalDate: formStore.form.finalDate ? formStore.form.finalDate : null,
                 monthReceive: formStore.form.monthReceive && formStore.form.monthReceive !== 0 ? formStore.form.monthReceive : null,
-                dayReceive: formStore.form.dayReceive && formStore.form.dayReceive !== 0 ? formStore.form.dayReceive: null,
+                dayReceive: formStore.form.dayReceive && formStore.form.dayReceive !== 0 ? formStore.form.dayReceive : null,
             }
         )
         formStore.setFormList(updateList);
@@ -216,6 +222,7 @@ export const EntranceForm: FunctionComponent = () => {
         setRows(transformedRows);
         setSalary("");
         formStore.resetForm();
+        setHasSwitch(false);
     }
     const handleAction = () => {
         setOpenModal(true);
@@ -293,7 +300,6 @@ export const EntranceForm: FunctionComponent = () => {
     };
 
 
-
     const handleSalary = (value) => {
         formStore.setSalary(value);
         setSalary(value);
@@ -301,7 +307,7 @@ export const EntranceForm: FunctionComponent = () => {
 
     const handleOwner = (value) => {
         formStore.setOwnerId(value);
-        if(formStore.form.bankId) {
+        if (formStore.form.bankId) {
             formStore.setBankId(0);
             formStore.setAccountNumber(null);
         }
@@ -313,11 +319,30 @@ export const EntranceForm: FunctionComponent = () => {
         const accounts = accountsFiltered.filter(ac => ac.owner.toString() === formStore.form.ownerId.toString());
         setAccountData(accounts);
 
-        if(accounts.length === 0) {
+        if (accounts.length === 0) {
             setOpenWarningToast(true);
         }
     }
 
+    const handleChangeSwitch = (event) => {
+        setHasSwitch(event.target.checked);
+        if(event.target.checked) {
+            let index = formStore.formList.length - 1;
+            formStore.setType(typeSalaryData.filter(fi=> fi.description === formStore.formList[index].type)[0].id);
+            formStore.setOwnerId(formStore.formList[index].ownerId);
+            formStore.setBankId(formStore.formList[index].bankId);
+            formStore.setAccountNumber(formStore.formList[index].accountNumber);
+            formStore.setUserAuthId(formStore.formList[index].userAuthId);
+            formStore.setFrequency(globalStore.frequency.filter(fr=> fr.description === formStore.formList[index].frequency)[0].id);
+            formStore.setInitialDate(formStore.formList[index].initialDate);
+            formStore.setFinalDate(formStore.formList[index].finalDate);
+            formStore.setMonthReceive(formStore.formList[index].monthReceive);
+            formStore.setDayReceive(formStore.formList[index].dayReceive);
+            formStore.setSalary(formStore.formList[index].salary);
+            setSalary(formStore.formList[index].salary.toString())
+        }
+        setHasSwitch(!hasSwitch);
+    }
 
     return (
         <>
@@ -414,7 +439,7 @@ export const EntranceForm: FunctionComponent = () => {
                         width="200px"
                         getValue={(value) => formStore.setInitialDate(value)}
                         viewMode={false}
-                        disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                        disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
                         after={true}
                     />
                 }
@@ -454,7 +479,8 @@ export const EntranceForm: FunctionComponent = () => {
                             width="200px"
                             getValue={(value) => formStore.setInitialDate(value)}
                             viewMode={false}
-                            disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                            disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
+                            after={true}
                         />
 
                         <InputDataComponent
@@ -463,7 +489,8 @@ export const EntranceForm: FunctionComponent = () => {
                             width="200px"
                             getValue={(value) => formStore.setFinalDate(value)}
                             viewMode={false}
-                            disabledDates={[new Date(new Date().getTime() - 24 * 60 * 60 * 1000)]}
+                            disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
+                            after={true}
                         />
                     </>
                 }
@@ -486,6 +513,17 @@ export const EntranceForm: FunctionComponent = () => {
                     marginBottom="20px"
                     fontWeight="400"
                     action={handleAdd}/>
+
+                <FormControlLabel style={{marginLeft: "12px"}}
+                                  control={
+                                      <Switch
+                                          disabled={formStore.formList.length === 0}
+                                          checked={hasSwitch}
+                                          onChange={handleChangeSwitch}
+                                          name="gilad"/>
+                                  }
+                                  label={Messages.titles.copy}
+                />
             </div>
 
             {openModal &&
@@ -523,7 +561,7 @@ export const EntranceForm: FunctionComponent = () => {
                 message={
                     <>
                         Não foram encontradas contas bancárias associadas
-                        <br />
+                        <br/>
                         ao titular e banco.
                     </>
                 }

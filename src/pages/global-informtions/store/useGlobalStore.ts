@@ -14,6 +14,7 @@ type State = {
     days: any [];
     frequency: any[];
     monthOfYear: any[];
+    entrance: any[];
 };
 
 type Actions = {
@@ -24,6 +25,7 @@ type Actions = {
     setProgram: (program: any[]) => void;
     setStatus: (program: any[]) => void;
     setTypeSalary: (typeSalary: any[]) => void;
+    setEntrance: (entrance: any[]) => void
 };
 
 const initialState: State = {
@@ -35,6 +37,7 @@ const initialState: State = {
     status: [],
     currency: [{id: 1, description: "R$"}, {id: 2, description: "US$"}, {id: 3, description: "€"}],
     typeSalary: [],
+    entrance: [],
     frequency: [
         {id: 1, description: "Única"},
         {id: 2, description: "Mensal"},
@@ -100,6 +103,7 @@ const useGlobalStore = create<State & Actions>((set) => ({
     setProgram: (program) => set({ program }),
     setStatus: (status) => set({ status }),
     setTypeSalary: (typeSalary) => set({ typeSalary }),
+    setEntrance: (entrance) => set({ entrance }),
 }));
 
 export default useGlobalStore;

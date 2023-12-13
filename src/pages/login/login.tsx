@@ -74,6 +74,18 @@ export const Login: FunctionComponent = () => {
                     const statusResponse = await globalService.getStatus();
                     globalStore.setStatus(statusResponse.data.data);
 
+                    const entrance = await globalService.getEntrance(response.data.data.id);
+                    let list = [];
+                    entrance.data.data.forEach(res => {
+                        list.push({
+                            id: res.id,
+                            description: res.source + " - " + res.type,
+                            salary: res.currency + " " + res.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                            ownerId: res.owner.id,
+                        })
+                    })
+                    globalStore.setEntrance(list)
+
                 } else {
                     setOpen(true);
                 }

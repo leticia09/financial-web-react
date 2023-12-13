@@ -102,8 +102,8 @@ const columns: IColumns[] = [
     {
         id: "actions",
         label: "Ações",
-        minWidth: 70,
-        width: 100,
+        minWidth: 60,
+        width: 60,
         align: "right",
         format: (value) => value.toFixed(2),
     },
@@ -141,7 +141,7 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
             disabled={false}
             width="90px"
             height="22px"
-            cursor="pointer"
+            cursor=""
             borderRadius="4px"
             color={color}
             background="white"
@@ -149,6 +149,7 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
             padding="2px"
             marginBottom="0px"
             fontWeight="200"
+            action={value => value}
             />
 
     return {
@@ -180,7 +181,7 @@ export const EntranceData: FunctionComponent = () => {
     const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
     const [filterMonth, setFilterMonth] = useState(0);
     const actions = (index) => (
-        <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
+        <div style={{width: "100%", display: "flex", justifyContent:"space-between",alignItems: "center", textAlign:"center"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => console.log(index)}/>
         </div>

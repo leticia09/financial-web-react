@@ -25,21 +25,21 @@ const columns: IColumns[] = [
         id: "color",
         label: "Cor",
         minWidth: 70,
-        align: "right",
+        align: "center",
         format: (value) => value.toFixed(2),
     },
     {
         id: "status",
         label: "Status",
         minWidth: 70,
-        align: "right",
+        align: "center",
         format: (value) => value.toFixed(2),
     },
     {
         id: "actions",
         label: "Ações",
-        minWidth: 70,
-        width: 100,
+        minWidth: 50,
+        width: 50,
         align: "right",
         format: (value) => value.toFixed(2),
     },
@@ -48,12 +48,19 @@ const columns: IColumns[] = [
 function createData(user, actions, index) {
     const {id, name, color, status} = user;
     const statusBullet = status === 1 ? (
-        <BulletComponent color="#50ef6c" showLabel={true} label={'Ativo'}/>
+        <div style={{display: "flex", justifyContent: "center"}}>
+            <BulletComponent color="#50ef6c" showLabel={true} label={'Ativo'}/>
+        </div>
+
     ) : status === 2 ? (
-        <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
+        <div style={{display: "flex", justifyContent: "center"}}>
+            <BulletComponent color="red" showLabel={true} label={'Inativo'}/>
+        </div>
     ) : null;
 
-    const colorBullet = <BulletComponent color={color} showLabel={false}/>
+    const colorBullet = <div style={{display: "flex", justifyContent: "center"}}>
+        <BulletComponent color={color} showLabel={false}/>
+    </div>
 
     return {id, name, color: colorBullet, status: statusBullet, actions, key: index};
 }
@@ -81,7 +88,7 @@ export const Members: FunctionComponent = () => {
     const [currentForm, setCurrentForm] = useState([]);
 
     const actions = (index) => (
-        <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
+        <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpenModalEdit(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(index)}/>
         </div>
