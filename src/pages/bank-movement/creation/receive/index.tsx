@@ -9,17 +9,19 @@ import {MembersManagementService} from "../../../members/service";
 import {ReceiveForm} from "./receiveForm";
 import usePointFormStore from "../../../points-programs/creation/store/usePointFormStore";
 import {PointsService} from "../../../points-programs/service";
+import movementBankStore from "../../store";
+import {MovementBankService} from "../../service";
 
 
 export const Receive: FunctionComponent = () => {
     const loginStore = useLoginStore();
-    const formStore = usePointFormStore();
+    const formStore = movementBankStore();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const pointsService = PointsService();
+    const service = MovementBankService();
     const membersManagementService = MembersManagementService();
     const globalStore = useGlobalStore();
 
@@ -42,17 +44,17 @@ export const Receive: FunctionComponent = () => {
         setIsLoading(true);
 
         try {
-            const response = await pointsService.transfer(formStore.formTransfer);
-            setOpen(true);
+            const response = await service.receive(formStore.formList, loginStore.userId);
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
+            setOpen(true);
             formStore.resetFormStore();
 
             setTimeout(() => {
                 setOpen(false);
                 setIsLoading(false);
                 if(response.data.severity === "success")
-                    navigate("/grupos/programa-pontos");
+                    navigate("/movimentacao-bancaria");
             }, 2000);
 
         } catch (e) {
@@ -64,7 +66,7 @@ export const Receive: FunctionComponent = () => {
     }
     return (
         <Creation
-            titles={Messages.titles.transfer_}
+            titles={Messages.titles.receive}
             Form={
                 [
                     <ReceiveForm/>
@@ -72,7 +74,7 @@ export const Receive: FunctionComponent = () => {
             }
             titlesButton={Messages.titles.addTransfer}
             save={save}
-            disabledSaveButton={false}
+            disabledSaveButton={formStore.formList.length === 0}
             pathBack="/movimentacao-bancaria"
             toastMessage={toastMessage}
             severityType={severity}

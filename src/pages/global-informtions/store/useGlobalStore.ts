@@ -33,7 +33,7 @@ const initialState: State = {
     typeOfScore: [],
     program: [],
     status: [],
-    currency: [{id: 1, description: "Real (R$)"}, {id: 2, description: "Dólar ($)"}],
+    currency: [{id: 1, description: "R$"}, {id: 2, description: "US$"}, {id: 3, description: "€"}],
     typeSalary: [],
     frequency: [
         {id: 1, description: "Única"},

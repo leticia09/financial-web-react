@@ -113,7 +113,7 @@ type RowType = {
     index: number;
 };
 
-function createData(source, type, ownerId, bankName, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index) {
+function createData(source, type, ownerId, bankName, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index, currency) {
     let color = "";
     let border= "";
     if(status === "Aguardando") {
@@ -147,7 +147,7 @@ function createData(source, type, ownerId, bankName, salary, frequency, initialD
         type,
         ownerId,
         bankName,
-        salary:  "R$ " + salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        salary:  currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
         frequency,
         initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
         finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : "--",
@@ -168,7 +168,7 @@ export const EntranceData: FunctionComponent = () => {
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
     const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
-    const [filterMonth, setSetFilterMonth] = useState([]);
+    const [filterMonth, setFilterMonth] = useState(0);
     const actions = (index) => (
         <div style={{width: "70%", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(index)}/>
@@ -179,7 +179,9 @@ export const EntranceData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await getData();
+                const a = new Date().getMonth()
+                await getData(new Date().getMonth() + 1, filterYear[0].description);
+                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id)
                 await getGraphic();
 
             } catch (error) {
@@ -189,8 +191,8 @@ export const EntranceData: FunctionComponent = () => {
         fetchData().then();
     }, []);
 
-    const getData = async () => {
-        const response = await service.list(loginStore.userId);
+    const getData = async (month, year) => {
+        const response = await service.listWithFilters(loginStore.userId, month, year);
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
             data.source,
             data.type,
@@ -204,7 +206,8 @@ export const EntranceData: FunctionComponent = () => {
             data.dayReceive,
             data.status,
             actions(index),
-            index
+            index,
+            data.currency
         ));
         setRows(transformedRows);
 
@@ -250,8 +253,8 @@ export const EntranceData: FunctionComponent = () => {
     }
 
     const handleGetWithFilter = (value) => {
-        console.log(value)
-        setSetFilterMonth(value);
+        setFilterMonth(value);
+        getData(value, filterYear[0].description);
     }
 
     return (
@@ -264,7 +267,7 @@ export const EntranceData: FunctionComponent = () => {
                 arrayHeader={columns}
                 dataSets={store.graphicData.dataSet}
                 labelsData={store.graphicData.labels}
-                optionText={Messages.titles.pointsAndMiles}
+                optionText={Messages.titles.entrance}
                 cards={cards}
                 showLineProgress={isLoading}
                 filters={

@@ -7,5 +7,6 @@ export interface IAccordion {
     expanded?: boolean;
     status: JSX.Element;
     icon?: JSX.Element;
+    info?: JSX.Element;
 }
 

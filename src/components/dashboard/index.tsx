@@ -186,14 +186,14 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 </div>
             }
 
+            { filters &&
+                <div className="filters-content-dash">
+                    {filters}
+                </div>
+            }
+
             {dataSets.length > 0 &&
                 <div className="dash_content">
-                    { filters &&
-                        <div className="filters-content-dash">
-                            {filters}
-                        </div>
-                    }
-
                     <div className="dash_item_content">
                         <Bar data={data} options={option} width={chartWidth} height={300}/>
                     </div>

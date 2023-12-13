@@ -51,7 +51,7 @@ export const EntranceCreation: FunctionComponent = () => {
         <Creation
             titles={Messages.titles.registerEntrance}
             Form={[
-                <EntranceForm/>
+                <EntranceForm key={0}/>
             ]}
             titlesButton={Messages.titles.addCard}
             save={save}

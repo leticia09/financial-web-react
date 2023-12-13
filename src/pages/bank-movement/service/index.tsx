@@ -6,8 +6,8 @@ export const MovementBankService = (axiosInstance: any = instance) => {
         return axiosInstance.post(url, payload);
     }
 
-    const receive = (payload) => {
-        const url = '/movement-bank'
+    const receive = (payload, userAuth) => {
+        const url = '/movement-bank/receive/' + userAuth
         return axiosInstance.post(url, payload);
     }
 

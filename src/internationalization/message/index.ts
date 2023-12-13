@@ -114,6 +114,9 @@ const Messages = {
         year: 'Ano',
         month: 'Mês',
         date: 'Data',
+        dateReceive: 'Data Recebimento *',
+        paymentRefer: 'Período Referente',
+        obs: 'Observação'
     },
     buttons: {},
     labels: {},
@@ -144,6 +147,7 @@ const Messages = {
         duplicateNames: "Não é permitido nomes duplicados!",
         exclusionBank: "Ao excluir este banco, todas as contas e cartões associados também serão permanentemente removidos.",
         exclusionAccount: "Ao excluir esta conta, todos os cartões associados também serão permanentemente removidos.",
+        ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco."
     },
     modals: {},
     toasts: {}

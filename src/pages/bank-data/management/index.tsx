@@ -125,7 +125,6 @@ function createData(user, actions) {
 export const BankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const useBankStore = useFormBankStore();
-    const globalStore = useGlobalStore();
     const bankDataManagementService = BankDataManagementService();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
     const navigate = useNavigate();
@@ -192,11 +191,13 @@ export const BankData: FunctionComponent = () => {
     function createAccordion(user, index, id, icon?) {
         const accordionAccount = user.accounts.map((account: any, index: number) => createAccount(account, index));
         let accordions = [];
+
         accordionAccount.map((accordion, index) => {
             accordions.push(<AccordionComponent
                 key={index}
                 label={accordion.label}
                 Component={accordion.Component}
+                info={<div>{accordion.currency}</div>}
                 status={accordion.status}
                 actions={actionsAccount(index)}
                 index={index}
@@ -227,6 +228,7 @@ export const BankData: FunctionComponent = () => {
                 width={"100%"}
             />,
             status: statusBullet,
+            currency: account.currency
         }
     }
 

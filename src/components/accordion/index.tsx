@@ -16,7 +16,8 @@ export const AccordionComponent: FunctionComponent<IAccordion> = ({
                                                                       index,
                                                                       expanded = false,
                                                                       status,
-                                                                      icon
+                                                                      icon,
+                                                                      info
                                                                   }: IAccordion) => {
     const [isExpanded, setIsExpanded] = useState(expanded);
 
@@ -43,9 +44,13 @@ export const AccordionComponent: FunctionComponent<IAccordion> = ({
                                 <Typography style={{marginRight: "10px", display:"flex", alignItems:"center"}} >{icon}</Typography>
                             }
                             <Typography style={{marginRight: "18px"}}>{label}</Typography>
+                            {info &&
+                                <Typography style={{marginRight: "18px", display:"flex", alignItems:"center"}} >{info}</Typography>
+                            }
                             {status &&
                                 <Typography>{status}</Typography>
                             }
+
                         </div>
 
                         <div>

@@ -9,29 +9,39 @@ interface IInputDataComponent {
     disabled?: boolean;
     width?: string;
     getValue: (value: string) => void;
-    inputValue?: string;
+    inputValue?: any;
     viewMode?: boolean;
     disabledDates?: Date[];
 }
 
-export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue, viewMode,disabledDates }: IInputDataComponent) => {
+export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue = null, viewMode,disabledDates }: IInputDataComponent) => {
     const [selectedDate, setSelectedDate] = useState(null);
+    const [isDateSelected, setIsDateSelected] = useState(false);
 
     useEffect(() => {
-        setSelectedDate(null);
-    }, []);
+        if(inputValue === null) {
+            setSelectedDate(null);
+        }
+
+        setIsDateSelected(false);
+    }, [inputValue]);
+
     const handleChange = (date: Date) => {
         setSelectedDate(date);
         const formattedDate = format(date, "dd/MM/yyyy");
         getValue(formattedDate);
+        setIsDateSelected(true);
     };
 
     const isDateDisabled = (date) => {
-        return disabledDates && disabledDates.some((disabledDate) => isAfter(date, disabledDate));
+        if(disabledDates) {
+            return disabledDates && disabledDates.some((disabledDate) => isAfter(date, disabledDate));
+        } else return date;
+
     };
 
     return (
-        <div style={{width: width}}>
+        <div style={{width: width, position: 'relative', zIndex: 999, marginLeft: "8px", marginRight: "8px"}}>
             <DatePicker
                 selected={selectedDate}
                 onChange={handleChange}
@@ -41,6 +51,12 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
                 placeholderText={label}
                 filterDate={isDateDisabled}
             />
+            { isDateSelected &&
+                <label className={`input-label ${isDateSelected ? "active" : ""}`} htmlFor={label}>
+                    {label}
+                </label>
+            }
+
         </div>
     );
 }

@@ -38,7 +38,7 @@ const initialState: State = {
             source: "",
             type: "",
             ownerId: 0,
-            salary: null,
+            salary: 0,
             bankId: 0,
             accountNumber: 0,
             userAuthId: 0,
@@ -257,7 +257,11 @@ const useEntranceStore = create<State & Actions>((set) => {
                     bankId: 0,
                     accountNumber: 0,
                     userAuthId: 0,
-                    frequency: ""
+                    frequency: "",
+                    initialDate: null,
+                    finalDate: null,
+                    monthReceive: 0,
+                    dayReceive: 0
                 },
             }));
         },

@@ -15,11 +15,7 @@ import {TableComponent} from "../../../../components/table";
 import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
 import {InputDataComponent} from "../../../../components/input-data";
-
-interface IForm {
-    i: number;
-    hasDelete: boolean;
-}
+import {Toast} from "../../../../components/toast";
 
 const columns: IColumns[] = [
     {
@@ -61,13 +57,6 @@ const columns: IColumns[] = [
     {
         id: "salary",
         label: "Salário Líquido",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "frequency",
-        label: "Periodicidade",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -158,8 +147,14 @@ export const EntranceForm: FunctionComponent = () => {
     const [typeSalaryData, setTypeSalaryData] = useState([]);
     const service = EntranceService();
     const [rows, setRows] = useState<RowType[]>([]);
+    const [salary, setSalary] = useState("");
     const [accountData, setAccountData] = useState([]);
     const [open, setOpen] = useState(false);
+    const [openWarningToast, setOpenWarningToast] = useState(false);
+
+    const handleCloseToastWarning = () => {
+        setOpenWarningToast(false);
+    };
 
     const actions = (index) => (
         <div style={{width: "50%", display: "flex"}}>
@@ -219,6 +214,7 @@ export const EntranceForm: FunctionComponent = () => {
             index
         ));
         setRows(transformedRows);
+        setSalary("");
         formStore.resetForm();
     }
     const handleAction = () => {
@@ -233,7 +229,7 @@ export const EntranceForm: FunctionComponent = () => {
 
         const transformedRows = list.map((data: any, index: number) => createData(
             data.source,
-            typeSalaryData.filter(ts => ts.id === data.type)[0].description,
+            data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
             data.accountNumber,
@@ -296,10 +292,32 @@ export const EntranceForm: FunctionComponent = () => {
         }
     };
 
+
+
+    const handleSalary = (value) => {
+        formStore.setSalary(value);
+        setSalary(value);
+    }
+
+    const handleOwner = (value) => {
+        formStore.setOwnerId(value);
+        if(formStore.form.bankId) {
+            formStore.setBankId(0);
+            formStore.setAccountNumber(null);
+        }
+    }
+
     const handleBank = (value) => {
         formStore.setBankId(value);
-        setAccountData(globalStore.bank.filter(ba => ba.id === value)[0].accounts);
+        const accountsFiltered = globalStore.bank.filter(ba => ba.id === value)[0].accounts;
+        const accounts = accountsFiltered.filter(ac => ac.owner.toString() === formStore.form.ownerId.toString());
+        setAccountData(accounts);
+
+        if(accounts.length === 0) {
+            setOpenWarningToast(true);
+        }
     }
+
 
     return (
         <>
@@ -330,14 +348,14 @@ export const EntranceForm: FunctionComponent = () => {
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"name"}
-                    getValue={(value) => formStore.setOwnerId(value)}
+                    getValue={(value) => handleOwner(value)}
                     value={formStore.form.ownerId}
                 />
 
                 <DropdownSingleSelect
                     label={Messages.titles.bank}
                     data={globalStore.bank}
-                    disabled={false}
+                    disabled={!formStore.form.ownerId}
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"name"}
@@ -350,7 +368,7 @@ export const EntranceForm: FunctionComponent = () => {
                 <DropdownSingleSelect
                     label={Messages.titles.account}
                     data={accountData}
-                    disabled={!formStore.form.bankId}
+                    disabled={accountData.length === 0 || formStore.form.bankId === 0}
                     width={"200px"}
                     idProperty={"id"}
                     descriptionProperty={"accountNumber"}
@@ -362,8 +380,8 @@ export const EntranceForm: FunctionComponent = () => {
                     disabled={false}
                     width="200px"
                     maskNumeric={true}
-                    getValue={(value) => formStore.setSalary(value)}
-                    inputValue={formStore.form.salary}
+                    getValue={(value) => handleSalary(value)}
+                    inputValue={salary}
                 />
 
                 <DropdownSingleSelect
@@ -497,7 +515,20 @@ export const EntranceForm: FunctionComponent = () => {
                     />
                 </div>
             }
-
+            <Toast
+                severity={"warning"}
+                width="100%"
+                duration={4000}
+                message={
+                    <>
+                        Não foram encontradas contas bancárias associadas
+                        <br />
+                        ao titular e banco.
+                    </>
+                }
+                open={openWarningToast}
+                onClose={handleCloseToastWarning}
+            />
         </>
     );
 }

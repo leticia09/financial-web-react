@@ -7,9 +7,9 @@ interface IToast {
     severity: 'success' | 'info' | 'warning' | 'error';
     duration: number;
     width: string;
-    message?: string;
+    message?: any;
     open: boolean;
-    onClose: (reason: string) => void;
+    onClose: (reason?: string) => void;
 }
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {

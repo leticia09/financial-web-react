@@ -22,3 +22,12 @@ export interface ITypeSalary {
     userAuthId: number;
 
 }
+
+export interface IReceive {
+    entrance: string;
+    salary: string;
+    receiveDate: string;
+    referencePeriod: string;
+    ownerId: number;
+    obs: string;
+}
