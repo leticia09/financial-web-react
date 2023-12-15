@@ -15,6 +15,8 @@ type State = {
     frequency: any[];
     monthOfYear: any[];
     entrance: any[];
+    paymentForm: any[];
+    macroGroup: any[];
 };
 
 type Actions = {
@@ -25,7 +27,9 @@ type Actions = {
     setProgram: (program: any[]) => void;
     setStatus: (program: any[]) => void;
     setTypeSalary: (typeSalary: any[]) => void;
-    setEntrance: (entrance: any[]) => void
+    setEntrance: (entrance: any[]) => void;
+    setPaymentForm: (entrance: any[]) => void;
+    setMacroGroup: (macroGroup) => void;
 };
 
 const initialState: State = {
@@ -38,6 +42,7 @@ const initialState: State = {
     currency: [{id: 1, description: "R$"}, {id: 2, description: "US$"}, {id: 3, description: "€"}],
     typeSalary: [],
     entrance: [],
+    macroGroup: [],
     frequency: [
         {id: 1, description: "Única"},
         {id: 2, description: "Mensal"},
@@ -92,6 +97,11 @@ const initialState: State = {
         {id: 30, description: 30},
         {id: 31, description: 31},
     ],
+    paymentForm: [
+        {id: 1, description: "Dinheiro"},
+        {id: 2, description: "Débito"},
+        {id: 3, description: "Crédito"},
+    ],
 };
 
 const useGlobalStore = create<State & Actions>((set) => ({
@@ -104,6 +114,8 @@ const useGlobalStore = create<State & Actions>((set) => ({
     setStatus: (status) => set({ status }),
     setTypeSalary: (typeSalary) => set({ typeSalary }),
     setEntrance: (entrance) => set({ entrance }),
+    setPaymentForm: (entrance) => set({ entrance }),
+    setMacroGroup: (macroGroup) => set({ macroGroup }),
 }));
 
 export default useGlobalStore;

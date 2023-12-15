@@ -54,7 +54,7 @@ export const SidebarData = [
     },
     {
         title: 'Despesas',
-        path: '/despesas/graficos',
+        path: '/despesas',
         icon: <FcIcons.FcBearish size={20}/>,
         iconClosed: <RiIcons.RiArrowDownSFill/>,
         iconOpened: <RiIcons.RiArrowUpSFill/>,

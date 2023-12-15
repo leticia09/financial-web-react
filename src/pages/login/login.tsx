@@ -13,6 +13,7 @@ import { Toast } from "../../components/toast";
 import { MembersManagementService } from "../members/service";
 import { LogoIcon } from "icons/assets/iconLogo";
 import { motion } from "framer-motion";
+import {getDefaultLocale} from "react-datepicker";
 
 
 export const Login: FunctionComponent = () => {
@@ -73,6 +74,9 @@ export const Login: FunctionComponent = () => {
 
                     const statusResponse = await globalService.getStatus();
                     globalStore.setStatus(statusResponse.data.data);
+
+                    const groupResponse = await globalService.getGroups(response.data.data.id);
+                    globalStore.setMacroGroup(groupResponse.data.data);
 
                     const entrance = await globalService.getEntrance(response.data.data.id);
                     let list = [];

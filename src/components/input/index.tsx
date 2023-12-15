@@ -42,7 +42,7 @@ export const Input: FunctionComponent<IInput> = ({
         let newValue = event.target.value;
 
         if (maskNumeric) {
-            newValue = newValue.replace(/[^0-9]/g, "");
+            newValue = newValue.replace(/[^0-9.,]/g, "");
         }
 
         if (numericLimit && newValue.length > numericLimit) {

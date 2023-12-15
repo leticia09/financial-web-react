@@ -117,7 +117,15 @@ const Messages = {
         dateReceive: 'Data Recebimento *',
         paymentRefer: 'Período Referente',
         obs: 'Observação',
-        copy: 'Copiar formulário anterior ?'
+        copy: 'Copiar formulário anterior ?',
+        registerExpense: 'Cadastro Despesa',
+        expense: 'Despesas',
+        local: 'Local',
+        paymentForm: 'Forma de Pagamento',
+        quantityPart: 'Quantidade de Parcelas',
+        dateBuy: 'Data da Compra',
+        addExpense: '+ Adicionar Despesa',
+        hasFixed: 'Despesa Fixa'
     },
     buttons: {},
     labels: {},
@@ -149,7 +157,8 @@ const Messages = {
         exclusionBank: "Ao excluir este banco, todas as contas e cartões associados também serão permanentemente removidos.",
         exclusionAccount: "Ao excluir esta conta, todos os cartões associados também serão permanentemente removidos.",
         ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco.",
-        entranceNotStarted: "Não foi possível completar a operação. Receita não iniciada."
+        entranceNotStarted: "Não foi possível completar a operação. Receita não iniciada.",
+        expenseInfo: 'Despesa fixa: irá se repetir todos os meses. Ex: Contas de água, luz, telefone.'
     },
     modals: {},
     toasts: {}
