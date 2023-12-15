@@ -117,7 +117,7 @@ const Messages = {
         dateReceive: 'Data Recebimento *',
         paymentRefer: 'Período Referente',
         obs: 'Observação',
-        copy: 'Copiar formulário anterior ?',
+        copy: 'Copiar formulário anterior',
         registerExpense: 'Cadastro Despesa',
         expense: 'Despesas',
         local: 'Local',

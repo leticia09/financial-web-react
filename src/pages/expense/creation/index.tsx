@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {ExpenseForm} from "./form";
 import useExpenseStore from "../store/useExpenseStore";
 import {ValidateError} from "../../../validate-error/validate-error";
-import {EntranceService} from "../service";
+import {ExpenseService} from "../service";
 
 export const ExpenseCreation: FunctionComponent = () => {
     const formStore = useExpenseStore();
@@ -14,7 +14,7 @@ export const ExpenseCreation: FunctionComponent = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const entranceService = EntranceService();
+    const entranceService = ExpenseService();
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {

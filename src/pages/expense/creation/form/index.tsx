@@ -6,7 +6,6 @@ import {ButtonComponent} from "../../../../components/button";
 import useLoginStore from "../../../login/store/useLoginStore";
 import {DropdownSingleSelect} from "../../../../components/dropdown";
 import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
-import {EntranceService} from "../../service";
 import {TableComponent} from "../../../../components/table";
 import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
@@ -16,6 +15,7 @@ import {Checkbox, FormControlLabel, Switch} from "@mui/material";
 import useExpenseStore from "../../store/useExpenseStore";
 import {InformationComponent} from "../../../../components/information";
 import _default from "chart.js/dist/plugins/plugin.tooltip";
+import {ExpenseService} from "../../service";
 
 const columns: IColumns[] = [
     {
@@ -150,12 +150,13 @@ export const ExpenseForm: FunctionComponent = () => {
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [openToast, setOpenToast] = useState(false);
-    const service = EntranceService();
+    const service = ExpenseService();
     const [rows, setRows] = useState<RowType[]>([]);
-    const [openWarningToast, setOpenWarningToast] = useState(false);
+    const [value, setValue] = useState('');
     const [hasSwitch, setHasSwitch] = useState(false);
     const [checked, setChecked] = useState(false);
     const [specificGroupData, setSpecificGroupData] = useState([]);
+    const [cardData, setCardData] = useState([])
 
     const actions = (index) => (
         <div style={{width: "50%", display: "flex"}}>
@@ -186,8 +187,8 @@ export const ExpenseForm: FunctionComponent = () => {
                 macroGroup: formStore.form.macroGroup,
                 specificGroup: formStore.form.specificGroup ? formStore.form.specificGroup : null,
                 ownerId: formStore.form.ownerId,
-                paymentForm: formStore.form.paymentForm,
-                finalCard: formStore.form.finalCard ? formStore.form.finalCard : null,
+                paymentForm: formStore.form.paymentForm ? globalStore.paymentForm.filter(p => p.id === formStore.form.paymentForm)[0].description : null,
+                finalCard: formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
                 quantityPart: formStore.form.quantityPart ? formStore.form.quantityPart : null,
                 hasFixed: formStore.form.hasFixed,
                 dateBuy: formStore.form.dateBuy,
@@ -198,13 +199,14 @@ export const ExpenseForm: FunctionComponent = () => {
             }
         )
         formStore.setFormList(updateList);
+
         const transformedRows = updateList.map((data: any, index: number) => createData(
             data.local,
             globalStore.macroGroup.filter((mg=> mg.id === data.macroGroup))[0].name,
-            data.specificGroup ? specificGroupData.filter(sp=> sp.id === data.specificGroup)[0].name : null,
+            data.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === data.macroGroup)[0].specificGroups.filter(sp=> sp.id === data.specificGroup)[0].name : null,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-            data.paymentForm,
-            data.finalCard,
+            data.paymentForm ? globalStore.paymentForm.filter(p => p.id === data.paymentForm)[0].description : null,
+            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
             data.quantityPart,
             data.hasFixed,
             data.dateBuy,
@@ -215,6 +217,7 @@ export const ExpenseForm: FunctionComponent = () => {
         ));
         setRows(transformedRows);
         formStore.resetForm();
+        setValue('');
         setHasSwitch(false);
     }
 
@@ -222,44 +225,62 @@ export const ExpenseForm: FunctionComponent = () => {
         let list = formStore.deleteItemFormList(i);
 
         const transformedRows = list.map((data: any, index: number) => createData(
-            data.source,
-            data.type,
+            data.local,
+            globalStore.macroGroup.filter((mg=> mg.id === data.macroGroup))[0].name,
+            data.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === data.macroGroup)[0].specificGroups.filter(sp=> sp.id === data.specificGroup)[0].name : null,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-            globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
-            data.accountNumber,
-            data.salary,
-            data.frequency,
-            data.initialDate,
-            data.finalDate,
-            data.monthReceive,
-            data.dayReceive,
+            data.paymentForm ? globalStore.paymentForm.filter(p => p.id === data.paymentForm)[0].description : null,
+            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
+            data.quantityPart,
+            data.hasFixed,
+            data.dateBuy,
+            data.obs,
+            data.value,
             actions(index),
             index
         ));
         setRows(transformedRows);
+        formStore.resetForm();
+        setValue('');
+        setHasSwitch(false);
     }
 
     const handleOwner = (value) => {
         formStore.setOwnerId(value);
+        setCardData(getCards(value));
     }
 
+    const getCards = (value) => {
+        let cardList = [];
+        globalStore.bank.filter(ba => {
+            ba.accounts.filter(ac => {
+                if(ac.owner === value) {
+                    ac.cards.forEach(ca => {
+                        cardList.push(ca);
+                    })
+                }
+            })
+        });
+        return cardList;
+    }
 
     const handleChangeSwitch = (event) => {
         setHasSwitch(event.target.checked);
         if (event.target.checked) {
-            // let index = formStore.formList.length - 1;
-            // formStore.setType(typeSalaryData.filter(fi=> fi.description === formStore.formList[index].type)[0].id);
-            // formStore.setOwnerId(formStore.formList[index].ownerId);
-            // formStore.setBankId(formStore.formList[index].bankId);
-            // formStore.setAccountNumber(formStore.formList[index].accountNumber);
-            // formStore.setUserAuthId(formStore.formList[index].userAuthId);
-            // formStore.setFrequency(globalStore.frequency.filter(fr=> fr.description === formStore.formList[index].frequency)[0].id);
-            // formStore.setInitialDate(formStore.formList[index].initialDate);
-            // formStore.setFinalDate(formStore.formList[index].finalDate);
-            // formStore.setMonthReceive(formStore.formList[index].monthReceive);
-            // formStore.setDayReceive(formStore.formList[index].dayReceive);
-            // formStore.setSalary(formStore.formList[index].salary);
-            // setSalary(formStore.formList[index].salary.toString())
+             let index = formStore.formList.length - 1;
+            formStore.setLocal(formStore.formList[index].local);
+            formStore.setMacroGroup(formStore.formList[index].macroGroup);
+            formStore.setSpecificGroup(formStore.formList[index].specificGroup);
+            formStore.setOwnerId(formStore.formList[index].ownerId);
+            formStore.setPaymentForm(formStore.formList[index].paymentForm);
+            formStore.setFinalCard(formStore.formList[index].finalCard);
+            formStore.setQuantityPart(formStore.formList[index].quantityPart);
+            formStore.setHasFixed(formStore.formList[index].hasFixed);
+            formStore.setDateBuy(formStore.formList[index].dateBuy);
+            formStore.setObs(formStore.formList[index].obs);
+            formStore.setValue(formStore.formList[index].value);
+            formStore.setUserAuthId(loginStore.userId);
+            setValue(formStore.formList[index].value.toString());
         }
         setHasSwitch(!hasSwitch);
     }
@@ -273,6 +294,19 @@ export const ExpenseForm: FunctionComponent = () => {
         formStore.setMacroGroup(event);
         const specific = globalStore.macroGroup.filter(mg => mg.id === event)[0].specificGroups
         setSpecificGroupData(specific);
+    }
+
+    const handleValue = (value) => {
+        setValue(value);
+        formStore.setValue(value);
+    }
+
+    const handlePayment = (value) => {
+        formStore.setPaymentForm(value);
+        const payment = globalStore.paymentForm.filter(p => p.id === value)[0].description;
+        const card = getCards(formStore.form.ownerId);
+        const cardFiltered = card.filter(ca => ca.modality.includes(payment));
+        setCardData(cardFiltered);
     }
 
     return (
@@ -324,29 +358,29 @@ export const ExpenseForm: FunctionComponent = () => {
                 <DropdownSingleSelect
                     label={Messages.titles.paymentForm}
                     data={globalStore.paymentForm}
-                    disabled={false}
+                    disabled={!formStore.form.ownerId}
                     width={"210px"}
                     idProperty={"id"}
                     descriptionProperty={"description"}
-                    getValue={(value) => formStore.setPaymentForm(value)}
+                    getValue={(value) => handlePayment(value)}
                     value={formStore.form.paymentForm}
                 />
 
                 {(formStore.form.paymentForm.toString() === "2" || formStore.form.paymentForm.toString() === "3") &&
                     <DropdownSingleSelect
                         label={Messages.titles.finalCard}
-                        data={[]}
-                        disabled={false}
+                        data={cardData}
+                        disabled={!formStore.form.paymentForm}
                         width={"210px"}
                         idProperty={"id"}
-                        descriptionProperty={"name"}
+                        descriptionProperty={"finalNumber"}
                         getValue={(value) => formStore.setFinalCard(value)}
                         value={formStore.form.finalCard}
                     />
 
                 }
 
-                {(formStore.form.paymentForm.toString() === "2" || formStore.form.paymentForm.toString() === "3") &&
+                {(formStore.form.paymentForm.toString() === "3") &&
                     <Input
                         label={Messages.titles.quantityPart}
                         disabled={false}
@@ -361,8 +395,8 @@ export const ExpenseForm: FunctionComponent = () => {
                     disabled={false}
                     width="210px"
                     maskNumeric={true}
-                    getValue={(value) => formStore.setValue(value)}
-                    inputValue={formStore.form.value}
+                    getValue={(value) => handleValue(value)}
+                    inputValue={value}
                 />
             </div>
 
@@ -396,7 +430,6 @@ export const ExpenseForm: FunctionComponent = () => {
                     label={Messages.titles.obs}
                     disabled={false}
                     width="426px"
-                    maskNumeric={true}
                     getValue={(value) => formStore.setObs(value)}
                     inputValue={formStore.form.obs}
                 />

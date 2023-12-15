@@ -5,12 +5,12 @@ import {DashboardComponent} from "../../../components/dashboard";
 import {IColumns} from "../../../interfaces/table";
 import useLoginStore from "../../login/store/useLoginStore";
 import * as AiIcons from "react-icons/ai";
-import {EntranceService} from "../service";
 import {format, parseISO} from "date-fns";
 import {DropdownSingleSelect} from "../../../components/dropdown";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {ButtonComponent} from "../../../components/button";
 import useExpenseStore from "../store/useExpenseStore";
+import {ExpenseService} from "../service";
 
 const columns: IColumns[] = [
     {
@@ -174,7 +174,7 @@ export const ExpenseData: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const loginStore = useLoginStore();
     const store = useExpenseStore();
-    const service = EntranceService();
+    const service = ExpenseService();
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
