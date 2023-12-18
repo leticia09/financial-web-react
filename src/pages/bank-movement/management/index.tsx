@@ -334,7 +334,6 @@ export const BankMovementData: FunctionComponent = () => {
                 showLineProgress={isLoading}
                 tooltipLabel={store.graphicData.tooltipLabel}
             />
-
         </>
     );
 }

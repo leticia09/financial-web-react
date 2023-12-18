@@ -18,6 +18,7 @@ import {EntranceCreation} from "../../pages/entrance/creation";
 import {Receive} from "../../pages/bank-movement/creation/receive";
 import {ExpenseData} from "../../pages/expense/management";
 import {ExpenseCreation} from "../../pages/expense/creation";
+import {MoneyCreation} from "../../pages/moneyRegister/creation";
 
 export const Home: FunctionComponent = () => {
 
@@ -62,6 +63,8 @@ export const Home: FunctionComponent = () => {
                        element={<Groups />}/>
                 <Route path="/grupos/grupos/cadastro"
                        element={<GroupsCreation />}/>
+                <Route path="/grupos/dinheiro/cadastro"
+                       element={<MoneyCreation/>} />
                 <Route path="/movimentacao-bancaria"
                        element={<BankMovementData/>} />
                 <Route path="/movimentacao-bancaria/receber"

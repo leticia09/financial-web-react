@@ -16,8 +16,9 @@ import {BulletComponent} from "../../../components/bullet";
 import {AccountModalForm} from "./modal/accountModalForm";
 import {CardModalForm} from "./modal/cardModalForm";
 import {ValidateError} from "../../../validate-error/validate-error";
-import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {getIcon} from "../../../icons";
+import {MoneyService} from "../../moneyRegister/service";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 
 
 const columns: IColumns[] = [
@@ -94,6 +95,41 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
 ];
+const columnsMoney: IColumns[] = [
+    {
+        id: "ownerId",
+        label: "Titular",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "currency",
+        label: "Moeda",
+        minWidth: 70,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "value",
+        label: "Valor",
+        minWidth: 70,
+        align: "center",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "actions",
+        label: "Ações",
+        minWidth: 50,
+        width: 50,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+];
+
+function createDataMoney(ownerId, currency, value, actions, index) {
+    return {ownerId, currency, value: currency + ' ' + value, actions, index};
+}
 
 function createData(user, actions) {
     const {name, finalNumber, owner, closingDate, dueDate, point, program, currency, status} = user;
@@ -126,6 +162,7 @@ export const BankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const useBankStore = useFormBankStore();
     const bankDataManagementService = BankDataManagementService();
+    const moneyService = MoneyService();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
     const navigate = useNavigate();
     const [openToast, setOpenToast] = useState(false);
@@ -139,10 +176,16 @@ export const BankData: FunctionComponent = () => {
     const [openAccountModalEdit, setOpenAccountModalEdit] = useState(false);
     const [openCardModalEdit, setOpenCardModalEdit] = useState(false);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
+    const [rowsMoney, setRowsMoney] = useState([]);
+    const [showContetRegisterBank, setShowContetRegisterBank] = useState(false);
+    const [showContetTickets, setShowContetTickets] = useState(false);
+    const [showContetMoney, setShowContetMoney] = useState(false);
+    const globalStore = useGlobalStore();
 
     useEffect(() => {
         const fetchData = async () => {
             getData();
+            getMoney();
         }
         fetchData().then();
     }, []);
@@ -159,7 +202,25 @@ export const BankData: FunctionComponent = () => {
         }
     }
 
+    const getMoney = async () => {
+        try {
+            const response = await moneyService.getMoney(loginStore.userId);
+            const rows = response.data.data.map((data: any, index: number) => createDataMoney(
+                globalStore.members.filter(me => me.id === data.ownerId)[0].name, data.currency, data.value, actionsMoney(index), index));
+            setRowsMoney(rows);
 
+        } catch (error) {
+            console.log('Error', error);
+        }
+    }
+
+
+    const actionsMoney = (index: number) => [
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEdit onClick={() => console.log(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete onClick={() => console.log(index)} className="icon_delete" size={18}/>
+        </div>
+    ];
     const actionsBank = (index: number, id: number) => [
         <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEye onClick={() => handleBankOpenView(id)} className="icon_space" size={18}/>
@@ -168,7 +229,6 @@ export const BankData: FunctionComponent = () => {
                                      onClick={() => handleBankOpenModalExclusion()}/>
         </div>
     ];
-
     const actionsAccount = (index: number) => [
         <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEye onClick={() => handleAccountOpenModalEdit(index, "VIEW")} className="icon_space"
@@ -414,7 +474,6 @@ export const BankData: FunctionComponent = () => {
 
     return (
         <>
-
             <Management
                 title="Dados Bancários"
                 path="/grupos/dados-bancarios/cadastro"
@@ -422,7 +481,27 @@ export const BankData: FunctionComponent = () => {
                 hasAccordion={true}
                 accordionData={accordionData}
                 getValue={(value) => useBankStore.setCurrentBankIndex(value)}
+                changeShow={true}
+            />
 
+            <Management
+                title="Vales"
+                path="/grupos/dados-bancarios/cadastro"
+                showLineProgress={isLoading}
+                hasAccordion={true}
+                accordionData={accordionData}
+                getValue={(value) => useBankStore.setCurrentBankIndex(value)}
+                changeShow={true}
+
+            />
+
+            <Management
+                title="Dinheiro Físico"
+                path="/grupos/dinheiro/cadastro"
+                showLineProgress={isLoading}
+                rows={rowsMoney}
+                arrayHeader={columnsMoney}
+                changeShow={true}
             />
 
             {(useBankStore.forms[useBankStore.currentBankIndex] && useBankStore.forms[useBankStore.currentBankIndex].accounts) &&

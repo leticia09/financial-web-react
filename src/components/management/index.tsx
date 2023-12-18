@@ -1,4 +1,4 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import {FunctionComponent, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "./management.css";
 import {IColumns, IRow} from "../../interfaces/table";
@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import {AccordionComponent} from "../accordion";
 import {IAccordion} from "../../interfaces/accordion";
-import {getValue} from "@testing-library/user-event/dist/utils";
 
 interface IManagement {
     title: string;
@@ -26,6 +25,7 @@ interface IManagement {
     hasAccordion?: boolean;
     accordionData?: IAccordion[];
     getValue?: (value: any) => void;
+    changeShow?: boolean;
 }
 
 export const Management: FunctionComponent<IManagement> = ({
@@ -43,14 +43,20 @@ export const Management: FunctionComponent<IManagement> = ({
                                                                hasAccordion,
                                                                accordionData,
                                                                getValue,
+                                                               changeShow
                                                            }: IManagement) => {
     const navigate = useNavigate();
     const [expandedAccordion, setExpandedAccordion] = useState<number | null>(null);
+    const [open, setOpen] = useState(false);
 
 
     const handleAccordion = (index) => {
         setExpandedAccordion((prev) => (prev === index ? null : index));
         getValue(index);
+    }
+
+    const handleTable = () => {
+        setOpen(!open);
     }
 
     return (
@@ -60,8 +66,8 @@ export const Management: FunctionComponent<IManagement> = ({
                     <LinearProgress/>
                 </Box>
             }
-            <div className="content">
-                <div className="labels">
+            <div className="content-management">
+                <div className={changeShow ? 'labels-management-change': 'labels-management'} onClick={handleTable}>
                     <h3>{title}</h3>
 
                     <div className={`button-create ${hasAuxButton ? 'button-aux' : ''}`}>
@@ -112,7 +118,7 @@ export const Management: FunctionComponent<IManagement> = ({
                 </div>
             </div>
 
-            {hasAccordion && accordionData.length > 0 ? (
+            {hasAccordion && open && accordionData.length > 0 ? (
                 accordionData.map((accordion, index) => (
                     <div key={index} className="content-accordion">
                         <AccordionComponent
@@ -129,15 +135,15 @@ export const Management: FunctionComponent<IManagement> = ({
                     </div>
                 ))
             ) : (
-                !hasAccordion && rows && arrayHeader && rows.length > 0 ? (
-                    <div className={`content-grid ${hasMoreTable ? "two-columns" : ""}`}>
+                !hasAccordion && open && rows && arrayHeader && rows.length > 0 ? (
+                    <div className={`content-grid-management ${hasMoreTable ? "two-columns" : ""}`}>
                         <TableComponent
                             columns={arrayHeader}
                             rows={rows}
                             pagination={true}
                             width={hasMoreTable ? "49.5%" : "100%"}
                         />
-                        {hasMoreTable && moreTableArrayHeader && moreTableRows && moreTableRows.length > 0 && (
+                        {open && hasMoreTable && moreTableArrayHeader && moreTableRows && moreTableRows.length > 0 && (
                             <TableComponent
                                 columns={moreTableArrayHeader}
                                 rows={moreTableRows}
@@ -147,9 +153,14 @@ export const Management: FunctionComponent<IManagement> = ({
                         )}
                     </div>
                 ) : (
-                    <div className="content-not-grid">
-                        {Messages.titles.emptyList}
-                    </div>
+                    changeShow === false ? (
+                        <div className="content-not-grid">
+                            {Messages.titles.emptyList}
+                        </div>
+                        ) : (
+                        <div></div>
+                    )
+
                 )
             )}
         </div>

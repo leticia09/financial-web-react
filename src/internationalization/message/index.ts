@@ -126,7 +126,9 @@ const Messages = {
         dateBuy: 'Data da Compra',
         addExpense: '+ Adicionar Despesa',
         hasFixed: 'Despesa Fixa',
-        totalValue: 'Valor Total'
+        totalValue: 'Valor Total',
+        registerMoney: 'Cadastro de Dinheiro',
+        addMoney: '+ Dinheiro',
     },
     buttons: {},
     labels: {},
