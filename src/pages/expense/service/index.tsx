@@ -18,7 +18,7 @@ export const ExpenseService = (axiosInstance: any = instance) => {
     }
 
     const getData = (userId, month, year) => {
-        const url = '/entrance/data/' + userId + '/' + month + '/' + year;
+        const url = '/expense/data/' + userId + '/' + month + '/' + year;
         return axiosInstance.get(url);
     }
 

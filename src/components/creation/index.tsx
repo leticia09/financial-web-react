@@ -63,7 +63,7 @@ export const Creation: FunctionComponent<ICreation> = ({
     }
 
     return (
-        <div className='testando'>
+        <div className='creation-content'>
             {showLineProgress &&
                 <Box sx={{marginTop: "58px", marginLeft: "-5px", width: '100.6%'}}>
                     <LinearProgress/>

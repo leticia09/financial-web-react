@@ -29,6 +29,7 @@ export interface IGraphic {
     total2: number,
     total3: number,
     total4: number,
+    tooltipLabel?: [],
 }
 
 export interface IDataSet {

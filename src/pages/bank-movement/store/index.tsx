@@ -9,7 +9,7 @@ type State = {
 };
 
 type Actions = {
-    setGraphicData: (value: any, value1: any, value2: any, value3: any, value4: any, value5: any,) => void;
+    setGraphicData: (value: any, value1: any, value2: any, value3: any, value4: any, value5: any, value6?: any) => void;
     setFormList: (formList: IReceive[]) => void;
     setEntrance: (entrance: string) => void;
     setSalaryReceive: (salary: string) => void;
@@ -31,6 +31,7 @@ const initialState: State = {
         total2: 0,
         total3: 0,
         total4: 0,
+        tooltipLabel: []
     },
 
     formList: [],
@@ -48,7 +49,7 @@ const initialState: State = {
 const movementBankStore = create<State & Actions>((set) => ({
         ...initialState,
 
-        setGraphicData: (labels: [], dataSet: [], total1: number, total2: number, total3: number, total4: number) => {
+        setGraphicData: (labels: [], dataSet: [], total1: number, total2: number, total3: number, total4: number, tooltipLabel?: []) => {
             set((state) => ({
                 graphicData: {
                     labels: labels,
@@ -56,7 +57,8 @@ const movementBankStore = create<State & Actions>((set) => ({
                     total1: total1,
                     total2: total2,
                     total3: total3,
-                    total4: total4
+                    total4: total4,
+                    tooltipLabel: tooltipLabel
                 },
             }));
         },

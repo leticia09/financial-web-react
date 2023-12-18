@@ -16,6 +16,7 @@ export interface IAccount {
 }
 
 export interface ICard {
+    id?: number
     name: string,
     owner: string,
     finalNumber: number,

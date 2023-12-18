@@ -35,7 +35,7 @@ export const ExpenseCreation: FunctionComponent = () => {
             setTimeout(() => {
                 setOpen(false);
                 if (response.data.severity === "success")
-                    navigate("/receitas");
+                    navigate("/despesas");
                 setIsLoading(false);
             }, 3000);
 

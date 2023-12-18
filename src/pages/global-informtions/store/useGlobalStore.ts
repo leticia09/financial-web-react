@@ -17,6 +17,7 @@ type State = {
     entrance: any[];
     paymentForm: any[];
     macroGroup: any[];
+    expense: any[];
 };
 
 type Actions = {
@@ -30,6 +31,7 @@ type Actions = {
     setEntrance: (entrance: any[]) => void;
     setPaymentForm: (entrance: any[]) => void;
     setMacroGroup: (macroGroup) => void;
+    setExpense: (expense) => void;
 };
 
 const initialState: State = {
@@ -43,6 +45,7 @@ const initialState: State = {
     typeSalary: [],
     entrance: [],
     macroGroup: [],
+    expense: [],
     frequency: [
         {id: 1, description: "Única"},
         {id: 2, description: "Mensal"},
@@ -116,6 +119,7 @@ const useGlobalStore = create<State & Actions>((set) => ({
     setEntrance: (entrance) => set({ entrance }),
     setPaymentForm: (entrance) => set({ entrance }),
     setMacroGroup: (macroGroup) => set({ macroGroup }),
+    setExpense: (expense) => set({ expense }),
 }));
 
 export default useGlobalStore;

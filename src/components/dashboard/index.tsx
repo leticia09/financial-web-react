@@ -34,6 +34,7 @@ interface IDashboard {
     dataSets?: IDataSet[];
     titleButton: string;
     filters?: JSX.Element;
+    tooltipLabel?: any[];
 }
 
 export const DashboardComponent: FunctionComponent<IDashboard> = ({
@@ -58,7 +59,8 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                                                                       showLineProgress,
                                                                       dataSets,
                                                                       titleButton,
-                                                                      filters
+                                                                      filters,
+                                                                      tooltipLabel
                                                                   }: IDashboard) => {
     const navigate = useNavigate();
     const [chartWidth, setChartWidth] = useState(0);
@@ -78,6 +80,18 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 display: true,
                 text: optionText,
             },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        if(tooltipLabel) {
+                            return tooltipLabel[context.dataIndex];
+                        } else {
+                            const label = context.dataset.label + ": " || '';
+                            return label + context.parsed.y;
+                        }
+                    },
+                }
+            }
         },
         scales: {
             x: {
@@ -186,7 +200,7 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 </div>
             }
 
-            { filters &&
+            {filters &&
                 <div className="filters-content-dash">
                     {filters}
                 </div>

@@ -159,10 +159,10 @@ export const BankMovementData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                await getExpense();
                 await getEntrance();
                 await getData();
                 await getGraphic();
-
             } catch (error) {
                 console.log('Error', error);
             }
@@ -173,12 +173,13 @@ export const BankMovementData: FunctionComponent = () => {
     const getData = async () => {
         const response = await service.get(loginStore.userId);
         setResponses(response.data.data);
+
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
             data.value,
             globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
             data.dateMovement,
-            globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description,
-            data.expenseId,
+            data.entranceId ? globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description : null,
+            data.expenseId ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,
             data.obs,
             globalStore.members.filter(me=> me.id === data.ownerId)[0].name,
             data.referencePeriod,
@@ -205,6 +206,11 @@ export const BankMovementData: FunctionComponent = () => {
         globalStore.setEntrance(list);
     }
 
+    const getExpense = async () => {
+        const expense = await globalService.getExpense(loginStore.userId);
+        globalStore.setExpense(expense.data.data);
+    }
+
     const getGraphic = async () => {
         const data = await service.getData(loginStore.userId);
         store.setGraphicData(
@@ -213,7 +219,8 @@ export const BankMovementData: FunctionComponent = () => {
             data.data.data.total1,
             data.data.data.total2,
             data.data.data.total3,
-            data.data.data.total4
+            data.data.data.total4,
+            data.data.data.tooltipLabel,
         );
 
         let card = {
@@ -325,6 +332,7 @@ export const BankMovementData: FunctionComponent = () => {
                 auxTitle1={Messages.titles.receive}
                 auxPath1="/movimentacao-bancaria/receber"
                 showLineProgress={isLoading}
+                tooltipLabel={store.graphicData.tooltipLabel}
             />
 
         </>

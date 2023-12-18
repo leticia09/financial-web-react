@@ -14,8 +14,8 @@ import {GlobalService} from "../../../global-informtions/service";
 import {Checkbox, FormControlLabel, Switch} from "@mui/material";
 import useExpenseStore from "../../store/useExpenseStore";
 import {InformationComponent} from "../../../../components/information";
-import _default from "chart.js/dist/plugins/plugin.tooltip";
 import {ExpenseService} from "../../service";
+import {Toast} from "../../../../components/toast";
 
 const columns: IColumns[] = [
     {
@@ -110,14 +110,14 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
     return {
         local,
         macroGroup,
-        specificGroup : specificGroup? specificGroup : "--",
+        specificGroup: specificGroup ? specificGroup : "--",
         ownerId,
         paymentForm,
-        finalCard: finalCard? finalCard: "--",
-        quantityPart: quantityPart? quantityPart : "--",
+        finalCard: finalCard ? finalCard : "--",
+        quantityPart: quantityPart ? quantityPart : "--",
         hasFixed: hasFixed ? "Sim" : "Não",
         dateBuy,
-        obs: obs? obs : "--",
+        obs: obs ? obs : "--",
         value,
         actions,
         index
@@ -184,11 +184,11 @@ export const ExpenseForm: FunctionComponent = () => {
         updateList.push(
             {
                 local: formStore.form.local,
-                macroGroup: formStore.form.macroGroup,
-                specificGroup: formStore.form.specificGroup ? formStore.form.specificGroup : null,
+                macroGroup: globalStore.macroGroup.filter(mc => mc.id === formStore.form.macroGroup)[0].name,
+                specificGroup: formStore.form.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === formStore.form.macroGroup)[0].specificGroups.filter(sp => sp.id === formStore.form.specificGroup)[0].name : null,
                 ownerId: formStore.form.ownerId,
                 paymentForm: formStore.form.paymentForm ? globalStore.paymentForm.filter(p => p.id === formStore.form.paymentForm)[0].description : null,
-                finalCard: formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
+                finalCard: formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber.toString() : null,
                 quantityPart: formStore.form.quantityPart ? formStore.form.quantityPart : null,
                 hasFixed: formStore.form.hasFixed,
                 dateBuy: formStore.form.dateBuy,
@@ -202,11 +202,11 @@ export const ExpenseForm: FunctionComponent = () => {
 
         const transformedRows = updateList.map((data: any, index: number) => createData(
             data.local,
-            globalStore.macroGroup.filter((mg=> mg.id === data.macroGroup))[0].name,
-            data.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === data.macroGroup)[0].specificGroups.filter(sp=> sp.id === data.specificGroup)[0].name : null,
+            data.macroGroup,
+            data.specificGroup,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-            data.paymentForm ? globalStore.paymentForm.filter(p => p.id === data.paymentForm)[0].description : null,
-            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
+            data.paymentForm,
+            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber.toString() : null,
             data.quantityPart,
             data.hasFixed,
             data.dateBuy,
@@ -226,11 +226,11 @@ export const ExpenseForm: FunctionComponent = () => {
 
         const transformedRows = list.map((data: any, index: number) => createData(
             data.local,
-            globalStore.macroGroup.filter((mg=> mg.id === data.macroGroup))[0].name,
-            data.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === data.macroGroup)[0].specificGroups.filter(sp=> sp.id === data.specificGroup)[0].name : null,
+            globalStore.macroGroup.filter((mg => mg.id === data.macroGroup))[0].name,
+            data.specificGroup ? globalStore.macroGroup.filter(mg => mg.id === data.macroGroup)[0].specificGroups.filter(sp => sp.id === data.specificGroup)[0].name : null,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             data.paymentForm ? globalStore.paymentForm.filter(p => p.id === data.paymentForm)[0].description : null,
-            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber : null,
+            formStore.form.finalCard ? cardData.filter(c => c.id === formStore.form.finalCard)[0].finalNumber.toString() : null,
             data.quantityPart,
             data.hasFixed,
             data.dateBuy,
@@ -254,9 +254,14 @@ export const ExpenseForm: FunctionComponent = () => {
         let cardList = [];
         globalStore.bank.filter(ba => {
             ba.accounts.filter(ac => {
-                if(ac.owner === value) {
+                if (ac.owner === value) {
                     ac.cards.forEach(ca => {
-                        cardList.push(ca);
+                        cardList.push({
+                            id: ca.id,
+                            finalNumber: ca.finalNumber,
+                            description: ca.name + "/ " + ca.finalNumber,
+                            modality: ca.modality
+                        });
                     })
                 }
             })
@@ -267,7 +272,7 @@ export const ExpenseForm: FunctionComponent = () => {
     const handleChangeSwitch = (event) => {
         setHasSwitch(event.target.checked);
         if (event.target.checked) {
-             let index = formStore.formList.length - 1;
+            let index = formStore.formList.length - 1;
             formStore.setLocal(formStore.formList[index].local);
             formStore.setMacroGroup(formStore.formList[index].macroGroup);
             formStore.setSpecificGroup(formStore.formList[index].specificGroup);
@@ -307,6 +312,14 @@ export const ExpenseForm: FunctionComponent = () => {
         const card = getCards(formStore.form.ownerId);
         const cardFiltered = card.filter(ca => ca.modality.includes(payment));
         setCardData(cardFiltered);
+
+        if (value === 2) {
+            setOpenToast(true);
+        }
+    }
+
+    const handleCloseToast = () => {
+        setOpenToast(false);
     }
 
     return (
@@ -373,7 +386,7 @@ export const ExpenseForm: FunctionComponent = () => {
                         disabled={!formStore.form.paymentForm}
                         width={"210px"}
                         idProperty={"id"}
-                        descriptionProperty={"finalNumber"}
+                        descriptionProperty={"description"}
                         getValue={(value) => formStore.setFinalCard(value)}
                         value={formStore.form.finalCard}
                     />
@@ -391,7 +404,7 @@ export const ExpenseForm: FunctionComponent = () => {
                 }
 
                 <Input
-                    label={Messages.titles.currentValue}
+                    label={Messages.titles.totalValue}
                     disabled={false}
                     width="210px"
                     maskNumeric={true}
@@ -475,6 +488,21 @@ export const ExpenseForm: FunctionComponent = () => {
                     />
                 </div>
             }
+            <Toast
+                severity={"info"}
+                width="100%"
+                duration={4000}
+                message={
+                    <>
+                        Ao salvar uma despesa com a forma de pagamento Débito
+                        <br/>
+                        será debitado de sua conta o valor automaticamente.
+                    </>
+                }
+                open={openToast}
+                onClose={handleCloseToast}
+            />
+
         </>
     );
 }

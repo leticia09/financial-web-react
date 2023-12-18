@@ -14,89 +14,88 @@ import {ExpenseService} from "../service";
 
 const columns: IColumns[] = [
     {
-        id: "source",
-        label: "Fonte",
+        id: "ownerId",
+        label: "Responsável",
         minWidth: 70,
         align: "right",
         format: (value) => value.toLocaleString("en-US"),
     },
     {
-        id: "type",
-        label: "Tipo",
+        id: "local",
+        label: "Local",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
 
     {
-        id: "ownerId",
-        label: "Titular",
+        id: "macroGroup",
+        label: "G. Macro",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "bankName",
-        label: "Banco",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-
-    {
-        id: "salary",
-        label: "Salário Líquido Previsto",
+        id: "specificGroup",
+        label: "G. Específico",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "valueReceived",
-        label: "Salário Líquido",
+        id: "paymentForm",
+        label: "Forma Pagamento",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "frequency",
-        label: "Periodicidade",
+        id: "finalCard",
+        label: "Final Cartão",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "initialDate",
-        label: "Início",
+        id: "quantityPart",
+        label: "Qtdd. Parcelas",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "finalDate",
-        label: "Fim",
+        id: "hasFixed",
+        label: "Despesa Fixa",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "dayReceive",
-        label: "Dia ",
-        minWidth: 30,
-        align: "center",
+        id: "dateBuy",
+        label: "Data Compra",
+        minWidth: 70,
+        align: "right",
         format: (value) => value.toFixed(2),
     },
     {
-        id: "mouthReceive",
-        label: "Mês",
-        minWidth: 30,
-        align: "center",
+        id: "value",
+        label: "Valor",
+        minWidth: 70,
+        align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "status",
         label: "Pagamento",
-        minWidth: 30,
-        align: "center",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "obs",
+        label: "Observação",
+        minWidth: 70,
+        align: "right",
         format: (value) => value.toFixed(2),
     },
     {
@@ -108,27 +107,33 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
 ];
+
 type RowType = {
-    source: string;
-    type: string;
+    local: string;
+    macroGroup: string;
+    specificGroup?: string;
     ownerId: number;
-    salary: number;
-    bankId: number;
-    accountNumber: number;
+    paymentForm: string;
+    finalCard?: number;
+    quantityPart?: number;
+    hasFixed: string;
+    dateBuy: string;
+    obs?: string;
+    value: number;
     actions: React.ReactNode[];
     index: number;
 };
 
-function createData(source, type, ownerId, bankName, salary, valueReceived,frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index, currency) {
+function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, actions, index) {
     let color = "";
-    let border= "";
-    if(status === "Aguardando") {
+    let border = "";
+    if (status === "Aguardando") {
         color = "#ead337";
         border = "0.5px solid #ead337"
-    } else if( status === "Confirmado") {
+    } else if (status === "Confirmado") {
         color = "#46ba52";
         border = "0.5px solid #46ba52"
-    } else if(status === "Pendente"){
+    } else if (status === "Pendente") {
         color = "red";
         border = "0.5px solid red"
     } else {
@@ -150,20 +155,19 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
             marginBottom="0px"
             fontWeight="200"
             action={value => value}
-            />
-
+        />
     return {
-        source,
-        type,
+        local,
+        macroGroup,
+        specificGroup: specificGroup ? specificGroup : "--",
         ownerId,
-        bankName,
-        salary:  currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-        valueReceived: valueReceived?  currency + " "+ valueReceived.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : "--",
-        frequency,
-        initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
-        finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : "--",
-        monthReceive: monthReceive ? monthReceive.toString() : "--",
-        dayReceive: dayReceive ? dayReceive.toString() : "--",
+        paymentForm,
+        finalCard: finalCard ? finalCard.toString() : "--",
+        quantityPart: quantityPart ? quantityPart.toString() : "--",
+        hasFixed: hasFixed ? "Sim" : "Não",
+        dateBuy: format(parseISO(dateBuy), 'dd/MM/yyyy'),
+        obs: obs ? obs : "--",
+        value,
         status: statusCard,
         actions,
         index
@@ -191,7 +195,8 @@ export const ExpenseData: FunctionComponent = () => {
         const fetchData = async () => {
             try {
                 await getData(new Date().getMonth() + 1, filterYear[0].description);
-                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id)
+                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id);
+                console.log('Entrei aqui')
                 await getGraphic(new Date().getMonth() + 1, filterYear[0].description);
 
             } catch (error) {
@@ -204,21 +209,20 @@ export const ExpenseData: FunctionComponent = () => {
     const getData = async (month, year) => {
         const response = await service.listWithFilters(loginStore.userId, month, year);
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
-            data.source,
-            data.type,
-            data.owner.name,
-            data.bankName,
-            data.salary,
-            data.valueReceived,
-            data.frequency,
-            data.initialDate,
-            data.finalDate,
-            data.monthReceive,
-            data.dayReceive,
+            data.local,
+            data.macroGroup,
+            data.specificGroup,
+            globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
+            data.paymentForm,
+            data.finalCard,
+            data.quantityPart,
+            data.hasFixed,
+            data.dateBuy,
+            data.obs,
+            data.value,
             data.status,
             actions(index),
-            index,
-            data.currency
+            index
         ));
         setRows(transformedRows);
 

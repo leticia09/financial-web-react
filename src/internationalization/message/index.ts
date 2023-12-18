@@ -125,7 +125,8 @@ const Messages = {
         quantityPart: 'Quantidade de Parcelas',
         dateBuy: 'Data da Compra',
         addExpense: '+ Adicionar Despesa',
-        hasFixed: 'Despesa Fixa'
+        hasFixed: 'Despesa Fixa',
+        totalValue: 'Valor Total'
     },
     buttons: {},
     labels: {},
@@ -158,7 +159,8 @@ const Messages = {
         exclusionAccount: "Ao excluir esta conta, todos os cartões associados também serão permanentemente removidos.",
         ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco.",
         entranceNotStarted: "Não foi possível completar a operação. Receita não iniciada.",
-        expenseInfo: 'Despesa fixa: irá se repetir todos os meses. Ex: Contas de água, luz, telefone.'
+        expenseInfo: 'Despesa fixa: irá se repetir todos os meses. Ex: Contas de água, luz, telefone.',
+        paymentInfo: 'Ao salvar uma despesa com a forma de pagamento Débito, será debitado de sua conta o valor automaticamente.'
     },
     modals: {},
     toasts: {}

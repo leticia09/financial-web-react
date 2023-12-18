@@ -78,6 +78,9 @@ export const Login: FunctionComponent = () => {
                     const groupResponse = await globalService.getGroups(response.data.data.id);
                     globalStore.setMacroGroup(groupResponse.data.data);
 
+                    const expense = await globalService.getExpense(response.data.data.id);
+                    globalStore.setExpense(expense.data.data);
+
                     const entrance = await globalService.getEntrance(response.data.data.id);
                     let list = [];
                     entrance.data.data.forEach(res => {

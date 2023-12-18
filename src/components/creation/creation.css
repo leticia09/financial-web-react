@@ -1,4 +1,4 @@
-.testando {
+.creation-content {
     opacity: 0;
     transform: translateY(-100%);
     animation: slideIn 2s forwards;
