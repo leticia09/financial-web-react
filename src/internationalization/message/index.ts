@@ -129,6 +129,7 @@ const Messages = {
         totalValue: 'Valor Total',
         registerMoney: 'Cadastro de Dinheiro',
         addMoney: '+ Dinheiro',
+        money: 'Dinheiro'
     },
     buttons: {},
     labels: {},
@@ -162,7 +163,8 @@ const Messages = {
         ownerNotHaveAccount: "Não existem contas bancárias registradas com esta combinação titular x banco.",
         entranceNotStarted: "Não foi possível completar a operação. Receita não iniciada.",
         expenseInfo: 'Despesa fixa: irá se repetir todos os meses. Ex: Contas de água, luz, telefone.',
-        paymentInfo: 'Ao salvar uma despesa com a forma de pagamento Débito, será debitado de sua conta o valor automaticamente.'
+        paymentInfo: 'Ao salvar uma despesa com a forma de pagamento Débito, será debitado de sua conta o valor automaticamente.',
+        moneyExists: 'Moeda para este usuário já existe!'
     },
     modals: {},
     toasts: {}

@@ -19,6 +19,8 @@ import {ValidateError} from "../../../validate-error/validate-error";
 import {getIcon} from "../../../icons";
 import {MoneyService} from "../../moneyRegister/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {MoneyForm} from "../../moneyRegister/creation/form/moneyForm";
+import useMoneyStore from "../../moneyRegister/store/moneyStore";
 
 
 const columns: IColumns[] = [
@@ -128,7 +130,7 @@ const columnsMoney: IColumns[] = [
 ];
 
 function createDataMoney(ownerId, currency, value, actions, index) {
-    return {ownerId, currency, value: currency + ' ' + value, actions, index};
+    return {ownerId, currency, value, actions, index};
 }
 
 function createData(user, actions) {
@@ -163,6 +165,7 @@ export const BankData: FunctionComponent = () => {
     const useBankStore = useFormBankStore();
     const bankDataManagementService = BankDataManagementService();
     const moneyService = MoneyService();
+    const formStoreMoney = useMoneyStore();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
     const navigate = useNavigate();
     const [openToast, setOpenToast] = useState(false);
@@ -177,9 +180,10 @@ export const BankData: FunctionComponent = () => {
     const [openCardModalEdit, setOpenCardModalEdit] = useState(false);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [rowsMoney, setRowsMoney] = useState([]);
-    const [showContetRegisterBank, setShowContetRegisterBank] = useState(false);
-    const [showContetTickets, setShowContetTickets] = useState(false);
-    const [showContetMoney, setShowContetMoney] = useState(false);
+    const [openModalMoneyExclusion, setOpenModalMoneyExclusion] = useState(false);
+    const [currentId, setCurrentMoneyId] = useState();
+    const [currentMoneyIndex, setCurrentMoneyIndex] = useState(0);
+    const [openModalMoneyEdit, setOpenModalMoneyEdit] = useState(false);
     const globalStore = useGlobalStore();
 
     useEffect(() => {
@@ -205,9 +209,28 @@ export const BankData: FunctionComponent = () => {
     const getMoney = async () => {
         try {
             const response = await moneyService.getMoney(loginStore.userId);
+
             const rows = response.data.data.map((data: any, index: number) => createDataMoney(
-                globalStore.members.filter(me => me.id === data.ownerId)[0].name, data.currency, data.value, actionsMoney(index), index));
+                globalStore.members.filter(me => me.id === data.ownerId)[0].name,
+                data.currency,
+                data.value,
+                actionsMoney(data.id, index),
+                index));
             setRowsMoney(rows);
+
+            let list = [];
+            response.data.data.forEach(res => {
+                let currency =  globalStore.currency.filter(c => c.description === res.currency)[0] ? globalStore.currency.filter(c => c.description === res.currency)[0].id : res.currency
+                list.push({
+                    id: res.id,
+                    userAuthId: res.userAuthId,
+                    currency: currency,
+                    value: res.value,
+                    ownerId: res.ownerId
+                })
+            })
+            formStoreMoney.setFormList(list);
+
 
         } catch (error) {
             console.log('Error', error);
@@ -215,10 +238,10 @@ export const BankData: FunctionComponent = () => {
     }
 
 
-    const actionsMoney = (index: number) => [
+    const actionsMoney = (id: number, index: number) => [
         <div style={{display: "flex", justifyContent: "space-between"}}>
-            <AiIcons.AiOutlineEdit onClick={() => console.log(index)} className="icon_space" size={18}/>
-            <AiIcons.AiOutlineDelete onClick={() => console.log(index)} className="icon_delete" size={18}/>
+            <AiIcons.AiOutlineEdit onClick={() => handleOpenMoneyEdit(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete onClick={() => handleOpenMoneyExclusion(id)} className="icon_delete" size={18}/>
         </div>
     ];
     const actionsBank = (index: number, id: number) => [
@@ -301,6 +324,10 @@ export const BankData: FunctionComponent = () => {
         navigate(`/grupos/dados-bancarios/${id}`);
     };
 
+    const handleOpenMoneyEdit = (index) => {
+        setOpenModalMoneyEdit(true);
+        setCurrentMoneyIndex(index)
+    }
     const handleBankOpenModalExclusion = () => {
         setOpenBankModalExclusion(true);
     }
@@ -344,6 +371,20 @@ export const BankData: FunctionComponent = () => {
 
     const handleCardCloseExclusion = () => {
         setOpenCardModalExclusion(false);
+    }
+
+    const handleCloseMoneyExclusion = () => {
+        setOpenModalMoneyExclusion(false);
+    }
+
+    const handleOpenMoneyExclusion = (id) => {
+        setCurrentMoneyId(id);
+        setOpenModalMoneyExclusion(true);
+
+    }
+
+    const handleMoneyCloseEdit = () => {
+        setOpenModalMoneyEdit(false);
     }
 
 
@@ -420,6 +461,64 @@ export const BankData: FunctionComponent = () => {
         }
     }
 
+    const exclusionMoney = async () => {
+        setIsLoading(true);
+        try {
+            const response = await moneyService.exclusion(currentId);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenModalMoneyExclusion(false);
+                    setIsLoading(false);
+                    getMoney();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    }
+
+    const editMoney = async () => {
+        setIsLoading(true);
+            const payload = {
+                currency: globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0] ? globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0].description : formStoreMoney.formList[currentMoneyIndex].currency,
+                value: formStoreMoney.formList[currentMoneyIndex].value,
+                index: formStoreMoney.formList[currentMoneyIndex].index,
+                userAuthId: loginStore.userId,
+                ownerId: formStoreMoney.formList[currentMoneyIndex].ownerId,
+                id: formStoreMoney.formList[currentMoneyIndex].id
+            }
+        try {
+            const response = await moneyService.edit(payload);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenModalMoneyEdit(false);
+                    setIsLoading(false);
+                    getMoney();
+                } else {
+                    setIsLoading(false);
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    }
+
     const editAccount = async () => {
         setIsLoading(true);
         try {
@@ -487,7 +586,6 @@ export const BankData: FunctionComponent = () => {
             <Management
                 title="Vales"
                 path="/grupos/dados-bancarios/cadastro"
-                showLineProgress={isLoading}
                 hasAccordion={true}
                 accordionData={accordionData}
                 getValue={(value) => useBankStore.setCurrentBankIndex(value)}
@@ -498,7 +596,6 @@ export const BankData: FunctionComponent = () => {
             <Management
                 title="Dinheiro Físico"
                 path="/grupos/dinheiro/cadastro"
-                showLineProgress={isLoading}
                 rows={rowsMoney}
                 arrayHeader={columnsMoney}
                 changeShow={true}
@@ -601,6 +698,41 @@ export const BankData: FunctionComponent = () => {
                 severityType={severity}
                 openToast={openToast}
             />
+
+            <ModalComponent
+                openModal={openModalMoneyExclusion}
+                setOpenModal={handleCloseMoneyExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusionMoney}
+                Form={
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
+                    </div>
+                }
+                disabledSave={false}
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
+
+            {formStoreMoney.formList && formStoreMoney.formList.length > 0 &&
+                <ModalComponent
+                    openModal={openModalMoneyEdit}
+                    setOpenModal={handleMoneyCloseEdit}
+                    label={Messages.titles.money}
+                    getValue={editMoney}
+                    Form={
+                        <MoneyForm
+                            i={currentMoneyIndex}
+                            hasEdit={true}
+                        />
+                    }
+                    disabledSave={false}
+                    toastMessage={toastMessage}
+                    severityType={severity}
+                    openToast={openToast}
+                />
+            }
         </>
     );
 }

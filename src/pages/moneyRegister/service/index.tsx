@@ -18,7 +18,7 @@ export const MoneyService = (axiosInstance: any = instance) => {
     }
 
     const exclusion = (id: number) => {
-        const endPoint = '/register-bank/' + id;
+        const endPoint = '/money/' + id;
         return axiosInstance.delete(endPoint);
     }
 
@@ -32,8 +32,8 @@ export const MoneyService = (axiosInstance: any = instance) => {
         return axiosInstance.delete(endPoint);
     }
 
-    const editBank = (payload: any) => {
-        const url = '/register-bank/bank/';
+    const edit = (payload: any) => {
+        const url = '/money/';
         return axiosInstance.patch(url, payload);
     }
 
@@ -56,6 +56,6 @@ export const MoneyService = (axiosInstance: any = instance) => {
         exclusionCard,
         editAccount,
         editCard,
-        editBank
+        edit
     }
 }

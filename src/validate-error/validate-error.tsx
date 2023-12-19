@@ -62,6 +62,8 @@ export const ValidateError = (message: any): string => {
             return Messages.messages.duplicateNames;
         case "ENTRANCE_INVALID":
             return Messages.messages.entranceNotStarted;
+        case "MONEY_ALREADY_EXISTS":
+            return Messages.messages.moneyExists;
 
         default:
             return Messages.titles.errorMessage;

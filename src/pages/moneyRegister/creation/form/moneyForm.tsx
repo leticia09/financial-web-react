@@ -8,12 +8,13 @@ import useMoneyStore from "../../store/moneyStore";
 import {DropdownSingleSelect} from "../../../../components/dropdown";
 import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
 
-interface IMemberForm {
-    i: number;
-    hasDelete: boolean;
+interface IMoneyForm {
+    i?: number;
+    hasDelete?: boolean;
+    hasEdit?: boolean;
 }
 
-export const MoneyForm: FunctionComponent<IMemberForm> = ({i, hasDelete}: IMemberForm) => {
+export const MoneyForm: FunctionComponent<IMoneyForm> = ({i, hasDelete, hasEdit}: IMoneyForm) => {
     const formStore = useMoneyStore();
     const globalStore = useGlobalStore();
 
@@ -22,54 +23,97 @@ export const MoneyForm: FunctionComponent<IMemberForm> = ({i, hasDelete}: IMembe
     }
 
     return (
-        <div className="register-member">
+        <>
+            {!hasEdit &&
+                <div className="register-member">
 
-            <DropdownSingleSelect
-                label={Messages.titles.owner}
-                data={globalStore.members}
-                disabled={false}
-                width={"200px"}
-                idProperty={"id"}
-                descriptionProperty={"name"}
-                getValue={(value) => formStore.setFormListValue(i, 'ownerId', value)}
-                value={formStore.formList[i].ownerId}
-            />
+                    <DropdownSingleSelect
+                        label={Messages.titles.owner}
+                        data={globalStore.members}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => formStore.setFormListValue(i, 'ownerId', value)}
+                        value={formStore.formList[i].ownerId}
+                    />
 
-            <DropdownSingleSelect
-                label={Messages.titles.currency}
-                data={globalStore.currency}
-                disabled={false}
-                width={"200px"}
-                idProperty={"id"}
-                descriptionProperty={"description"}
-                getValue={(value) => formStore.setFormListValue(i, 'currency', value)}
-                value={formStore.formList[i].currency}
-            />
+                    <DropdownSingleSelect
+                        label={Messages.titles.currency}
+                        data={globalStore.currency}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"description"}
+                        getValue={(value) => formStore.setFormListValue(i, 'currency', value)}
+                        value={formStore.formList[i].currency}
+                    />
 
-            <Input
-                label={Messages.titles.name}
-                disabled={false}
-                width="200px"
-                getValue={(value) => formStore.setFormListValue(i, 'value', value)}
-                inputValue={formStore.formList[i].value}
-            />
+                    <Input
+                        label={Messages.titles.currentValue}
+                        disabled={false}
+                        width="200px"
+                        getValue={(value) => formStore.setFormListValue(i, 'value', value)}
+                        inputValue={formStore.formList[i].value}
+                    />
 
-            {hasDelete && (
-                <ButtonComponent
-                    disabled={false}
-                    width="30px"
-                    height="30px"
-                    cursor="pointer"
-                    borderRadius="4px"
-                    color="red"
-                    background="transparent"
-                    border="none"
-                    padding="2px"
-                    marginBottom="1px"
-                    fontWeight="400"
-                    icon={<BsTrash size={12}/>}
-                    action={() => handleDeleteMember(i)}/>
-            )}
-        </div>
+                    {hasDelete && !hasEdit && (
+                        <ButtonComponent
+                            disabled={false}
+                            width="30px"
+                            height="30px"
+                            cursor="pointer"
+                            borderRadius="4px"
+                            color="red"
+                            background="transparent"
+                            border="none"
+                            padding="2px"
+                            marginBottom="1px"
+                            fontWeight="400"
+                            icon={<BsTrash size={12}/>}
+                            action={() => handleDeleteMember(i)}/>
+                    )}
+                </div>
+            }
+
+            {hasEdit &&
+                <>
+                    <div className="register-member">
+
+                        <DropdownSingleSelect
+                            label={Messages.titles.owner}
+                            data={globalStore.members}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"id"}
+                            descriptionProperty={"name"}
+                            getValue={(value) => formStore.setFormListValue(i, 'ownerId', value)}
+                            value={formStore.formList[i].ownerId}
+                        />
+
+                        <DropdownSingleSelect
+                            label={Messages.titles.currency}
+                            data={globalStore.currency}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"id"}
+                            descriptionProperty={"description"}
+                            getValue={(value) => formStore.setFormListValue(i, 'currency', value)}
+                            value={formStore.formList[i].currency}
+                        />
+                    </div>
+                    <div className="register-member">
+                        <Input
+                            label={Messages.titles.currentValue}
+                            disabled={false}
+                            width="200px"
+                            getValue={(value) => formStore.setFormListValue(i, 'value', value)}
+                            inputValue={formStore.formList[i].value}
+                        />
+                    </div>
+                </>
+            }
+
+        </>
     );
 }
