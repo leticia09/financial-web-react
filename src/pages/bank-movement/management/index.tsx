@@ -150,8 +150,8 @@ export const BankMovementData: FunctionComponent = () => {
 
     const actions = (index) => (
         <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
-            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => handleOpen(index)}/>
-            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(index)}/>
+            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(index)}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => console.log(index)}/>
         </div>
     );
 
@@ -173,15 +173,14 @@ export const BankMovementData: FunctionComponent = () => {
     const getData = async () => {
         const response = await service.get(loginStore.userId);
         setResponses(response.data.data);
-
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
             data.value,
-            globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
+            globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "Dado bancário foi exluído" ,
             data.dateMovement,
             data.entranceId ? globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description : null,
             data.expenseId ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,
             data.obs,
-            globalStore.members.filter(me=> me.id === data.ownerId)[0].name,
+            data.ownerId ? globalStore.members.filter(me=> me.id === data.ownerId)[0].name : null,
             data.referencePeriod,
             data.type,
             data.currency,

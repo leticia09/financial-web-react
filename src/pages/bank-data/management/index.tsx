@@ -21,6 +21,7 @@ import {MoneyService} from "../../moneyRegister/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {MoneyForm} from "../../moneyRegister/creation/form/moneyForm";
 import useMoneyStore from "../../moneyRegister/store/moneyStore";
+import {TicketsService} from "../../tickets/service";
 
 
 const columns: IColumns[] = [
@@ -128,6 +129,59 @@ const columnsMoney: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
 ];
+const columnsTicket: IColumns[] = [
+    {
+        id: "ownerId",
+        label: "Titular",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "cardName",
+        label: "Cartão",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+
+    {
+        id: "finalCard",
+        label: "Final Cartão",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "modality",
+        label: "Modalidade",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "currency",
+        label: "Moeda",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "balance",
+        label: "Saldo",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "actions",
+        label: "Ações",
+        minWidth: 50,
+        width: 50,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+];
 
 function createDataMoney(ownerId, currency, value, actions, index) {
     return {ownerId, currency, value, actions, index};
@@ -163,10 +217,13 @@ function createData(user, actions) {
 export const BankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const useBankStore = useFormBankStore();
+    const globalStore = useGlobalStore();
     const bankDataManagementService = BankDataManagementService();
     const moneyService = MoneyService();
+    const ticketService = TicketsService();
     const formStoreMoney = useMoneyStore();
     const [accordionData, setAccordionData] = useState([{} as IAccordion]);
+    const [accordionDataTicket, setAccordionDataTicket] = useState([{} as IAccordion]);
     const navigate = useNavigate();
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -182,17 +239,31 @@ export const BankData: FunctionComponent = () => {
     const [rowsMoney, setRowsMoney] = useState([]);
     const [openModalMoneyExclusion, setOpenModalMoneyExclusion] = useState(false);
     const [currentId, setCurrentMoneyId] = useState();
+    const [ticketId, setCurrentTicketId] = useState();
     const [currentMoneyIndex, setCurrentMoneyIndex] = useState(0);
     const [openModalMoneyEdit, setOpenModalMoneyEdit] = useState(false);
-    const globalStore = useGlobalStore();
+    const [openModalTicketExclusion, setOpenModalTicketExclusion] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             getData();
+            getTickets();
             getMoney();
         }
         fetchData().then();
     }, []);
+
+    function createDataTicket(user, actions) {
+        const {id, ownerId, cardName, finalCard, modality, balance, currency} = user;
+        return {id,
+            ownerId: globalStore.members.filter(mem => mem.id === ownerId)[0].name,
+            cardName,
+            finalCard: finalCard.toString(),
+            modality,
+            balance,
+            currency,
+            actions};
+    }
 
     const getData = async () => {
         try {
@@ -200,6 +271,17 @@ export const BankData: FunctionComponent = () => {
             const accordion = response.data.data.map((user: any, index: number) => createAccordion(user, index, user.id, getIcon(user.name, "34", "34")));
             useBankStore.setForms(response.data.data);
             setAccordionData(accordion);
+
+        } catch (error) {
+            console.log('Error', error);
+        }
+    }
+
+    const getTickets = async () => {
+        try {
+            const response = await ticketService.getTicket(loginStore.userId);
+            const accordion = response.data.data.map((user: any, index: number) => createAccordionTicket(user, index, user.id, getIcon(user.name, "34", "34")));
+            setAccordionDataTicket(accordion);
 
         } catch (error) {
             console.log('Error', error);
@@ -220,7 +302,7 @@ export const BankData: FunctionComponent = () => {
 
             let list = [];
             response.data.data.forEach(res => {
-                let currency =  globalStore.currency.filter(c => c.description === res.currency)[0] ? globalStore.currency.filter(c => c.description === res.currency)[0].id : res.currency
+                let currency = globalStore.currency.filter(c => c.description === res.currency)[0] ? globalStore.currency.filter(c => c.description === res.currency)[0].id : res.currency
                 list.push({
                     id: res.id,
                     userAuthId: res.userAuthId,
@@ -244,6 +326,21 @@ export const BankData: FunctionComponent = () => {
             <AiIcons.AiOutlineDelete onClick={() => handleOpenMoneyExclusion(id)} className="icon_delete" size={18}/>
         </div>
     ];
+
+    const actionsTicket = (id: number, index: number) => [
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEdit onClick={() => handleOpenMoneyEdit(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete onClick={() => handleOpenTicketExclusion(id)} className="icon_delete" size={18}/>
+        </div>
+    ];
+
+    const actionsTicketCard = (id: number, index: number) => [
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+            <AiIcons.AiOutlineEdit onClick={() => handleOpenMoneyEdit(index)} className="icon_space" size={18}/>
+            <AiIcons.AiOutlineDelete onClick={() => handleOpenMoneyExclusion(id)} className="icon_delete" size={18}/>
+        </div>
+    ];
+
     const actionsBank = (index: number, id: number) => [
         <div style={{width: "65px", display: "flex", justifyContent: "space-between"}}>
             <AiIcons.AiOutlineEye onClick={() => handleBankOpenView(id)} className="icon_space" size={18}/>
@@ -291,6 +388,22 @@ export const BankData: FunctionComponent = () => {
             label: user.name,
             Component: accordions,
             actions: actionsBank(index, id),
+            icon: icon
+        }
+    }
+
+    function createAccordionTicket(tickets, index, id, icon?) {
+        const transformedRows = tickets.cardFinancialEntityResponseList.map((user: any, index: number) => createDataTicket(user, actionsTicketCard(id, index)));
+        const Component = <TableComponent
+            columns={columnsTicket}
+            rows={transformedRows}
+            pagination={true}
+            width={"100%"}
+        />
+        return {
+            label: tickets.name,
+            Component: Component,
+            actions: actionsTicket(id, index),
             icon: icon
         }
     }
@@ -377,9 +490,20 @@ export const BankData: FunctionComponent = () => {
         setOpenModalMoneyExclusion(false);
     }
 
+    const handleCloseTicketExclusion = () => {
+        setOpenModalTicketExclusion(false);
+    }
+
     const handleOpenMoneyExclusion = (id) => {
         setCurrentMoneyId(id);
         setOpenModalMoneyExclusion(true);
+
+    }
+
+    const handleOpenTicketExclusion = (id) => {
+        setCurrentTicketId(id);
+        setOpenModalTicketExclusion(true);
+        console.log('entrei')
 
     }
 
@@ -485,16 +609,40 @@ export const BankData: FunctionComponent = () => {
         }
     }
 
+    const exclusionTicket = async () => {
+        setIsLoading(true);
+        try {
+            const response = await ticketService.exclusion(ticketId);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenModalTicketExclusion(false);
+                    setIsLoading(false);
+                    getTickets();
+                }
+            }, 2000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    }
+
     const editMoney = async () => {
         setIsLoading(true);
-            const payload = {
-                currency: globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0] ? globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0].description : formStoreMoney.formList[currentMoneyIndex].currency,
-                value: formStoreMoney.formList[currentMoneyIndex].value,
-                index: formStoreMoney.formList[currentMoneyIndex].index,
-                userAuthId: loginStore.userId,
-                ownerId: formStoreMoney.formList[currentMoneyIndex].ownerId,
-                id: formStoreMoney.formList[currentMoneyIndex].id
-            }
+        const payload = {
+            currency: globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0] ? globalStore.currency.filter(c => c.id.toString() === formStoreMoney.formList[currentMoneyIndex].currency.toString())[0].description : formStoreMoney.formList[currentMoneyIndex].currency,
+            value: formStoreMoney.formList[currentMoneyIndex].value,
+            index: formStoreMoney.formList[currentMoneyIndex].index,
+            userAuthId: loginStore.userId,
+            ownerId: formStoreMoney.formList[currentMoneyIndex].ownerId,
+            id: formStoreMoney.formList[currentMoneyIndex].id
+        }
         try {
             const response = await moneyService.edit(payload);
             setOpenToast(true);
@@ -585,9 +733,9 @@ export const BankData: FunctionComponent = () => {
 
             <Management
                 title="Vales"
-                path="/grupos/dados-bancarios/cadastro"
+                path="/grupos/tickets/cadastro"
                 hasAccordion={true}
-                accordionData={accordionData}
+                accordionData={accordionDataTicket}
                 getValue={(value) => useBankStore.setCurrentBankIndex(value)}
                 changeShow={true}
 
@@ -669,7 +817,7 @@ export const BankData: FunctionComponent = () => {
                 label={Messages.titles.exclusion}
                 getValue={exclusionAccount}
                 Form={
-                    <div>
+                    <div>ß
                         <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.exclusionAccount}</div>
                         <div style={{
                             padding: "10px 10px 0 10px",
@@ -733,6 +881,23 @@ export const BankData: FunctionComponent = () => {
                     openToast={openToast}
                 />
             }
+
+            <ModalComponent
+                openModal={openModalTicketExclusion}
+                setOpenModal={handleCloseTicketExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusionTicket}
+                Form={
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px", }}>{Messages.messages.exclusionTicket}</div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
+                    </div>
+                }
+                disabledSave={false}
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
+            />
         </>
     );
 }

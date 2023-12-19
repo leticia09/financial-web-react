@@ -14,6 +14,7 @@ import {useParams} from 'react-router-dom';
 import {IAccount} from "interfaces/bankData";
 import {FormControlLabel, Switch} from "@mui/material";
 import {GlobalService} from "../../../global-informtions/service";
+import {getIcon} from "../../../../icons";
 
 
 export const BankDataForm: FunctionComponent = () => {
@@ -263,6 +264,7 @@ export const BankDataForm: FunctionComponent = () => {
                     inputValue={formStore.formList.name}
                     viewMode={formStore.formType === "VIEW"}
                 />
+                {formStore.formList.name && <div>{getIcon(formStore.formList.name, "34", "34")}</div>}
             </div>
             <h3 className="title-bank">{Messages.titles.account}
                 {showComment && <span className="title-bank-comment"> {Messages.messages.notAllowedMoreThan}</span>}
