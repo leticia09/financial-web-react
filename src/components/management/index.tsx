@@ -43,7 +43,7 @@ export const Management: FunctionComponent<IManagement> = ({
                                                                hasAccordion,
                                                                accordionData,
                                                                getValue,
-                                                               changeShow
+                                                               changeShow = false,
                                                            }: IManagement) => {
     const navigate = useNavigate();
     const [expandedAccordion, setExpandedAccordion] = useState<number | null>(null);
@@ -67,7 +67,7 @@ export const Management: FunctionComponent<IManagement> = ({
                 </Box>
             }
             <div className="content-management">
-                <div className={changeShow ? 'labels-management-change': 'labels-management'} onClick={handleTable}>
+                <div className={changeShow ? 'labels-management-change' : 'labels-management'} onClick={handleTable}>
                     <h3>{title}</h3>
 
                     <div className={`button-create ${hasAuxButton ? 'button-aux' : ''}`}>
@@ -153,12 +153,24 @@ export const Management: FunctionComponent<IManagement> = ({
                         )}
                     </div>
                 ) : (
-                    changeShow === false ? (
-                        <div className="content-not-grid">
-                            {Messages.titles.emptyList}
+                    changeShow === false && rows && arrayHeader && rows.length > 0 ? (
+                        <div className='content-grid-management'>
+                            <TableComponent
+                                columns={arrayHeader}
+                                rows={rows}
+                                pagination={true}
+                                width={"100%"}
+                            />
                         </div>
+                    ) : (
+                        changeShow === true && (rows && arrayHeader && rows.length > 0) || (accordionData && accordionData.length > 0) ? (
+                            <div></div>
                         ) : (
-                        <div></div>
+                            <div className="content-not-grid">
+                                {Messages.titles.emptyList}
+                            </div>
+                        )
+
                     )
 
                 )
