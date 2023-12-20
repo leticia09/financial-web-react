@@ -31,7 +31,12 @@ export const EntranceService = (axiosInstance: any = instance) => {
         return axiosInstance.get(url);
     }
 
+    const exclusion = (id: number) => {
+        const endPoint = '/entrance/' + id;
+        return axiosInstance.delete(endPoint);
+    }
+
     return {
-        getTypeSalary, edit, create, list, getData, listWithFilters
+        getTypeSalary, edit, create, list, getData, listWithFilters, exclusion
     }
 }

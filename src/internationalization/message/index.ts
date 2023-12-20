@@ -134,6 +134,8 @@ const Messages = {
         balance: 'Saldo',
         registerTickets: 'Cadastro de Vales',
         addTickets: '+ Adicionar Vale',
+        ticket: 'Vale',
+        receiveForm: 'Forma Recebimento',
     },
     buttons: {},
     labels: {},
@@ -170,6 +172,7 @@ const Messages = {
         paymentInfo: 'Ao salvar uma despesa com a forma de pagamento Débito, será debitado de sua conta o valor automaticamente.',
         moneyExists: 'Moeda para este usuário já existe!',
         exclusionTicket: 'Ao excluir este Vale, todas as movimentações bancárias, receitas e despesas associadas também serão permanentemente removidos.',
+        ticketInfo: 'Tickets ou Vales alimentação'
     },
     modals: {},
     toasts: {}

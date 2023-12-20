@@ -55,7 +55,7 @@ export const EntranceCreation: FunctionComponent = () => {
             ]}
             titlesButton={Messages.titles.addCard}
             save={save}
-            disabledSaveButton={formStore.formList.length === 0}
+            disabledSaveButton={false}
             pathBack="/receitas"
             toastMessage={toastMessage}
             severityType={severity}

@@ -4,8 +4,8 @@ export interface IEntrance {
     type: string;
     ownerId: number;
     salary: number;
-    bankId: number;
-    accountNumber: number;
+    bankId?: number;
+    accountNumber?: number;
     userAuthId: number;
     index: number;
     frequency: string;
@@ -13,6 +13,9 @@ export interface IEntrance {
     finalDate?: string;
     monthReceive: number;
     dayReceive: number;
+    ticketId?: number;
+    cardId?: number;
+    moneyId?: number
 }
 
 export interface ITypeSalary {

@@ -11,6 +11,8 @@ import {DropdownSingleSelect} from "../../../components/dropdown";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
 import {ButtonComponent} from "../../../components/button";
 import useEntranceStore from "../store/useEntranceStore";
+import {ModalComponent} from "../../../components/modal";
+import {ValidateError} from "../../../validate-error/validate-error";
 
 const columns: IColumns[] = [
     {
@@ -42,7 +44,20 @@ const columns: IColumns[] = [
         align: "right",
         format: (value) => value.toFixed(2),
     },
-
+    {
+        id: "financialCardName",
+        label: "Vale - Cartão",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "moneyId",
+        label: "Dinheiro Físico",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
     {
         id: "salary",
         label: "Salário Líquido Previsto",
@@ -119,7 +134,7 @@ type RowType = {
     index: number;
 };
 
-function createData(source, type, ownerId, bankName, salary, valueReceived,frequency, initialDate, finalDate, monthReceive, dayReceive, status, actions, index, currency) {
+function createData(source, type, ownerId, bankName, salary, valueReceived,frequency, initialDate, finalDate, monthReceive, dayReceive, status,financialCardName, moneyId, actions, index, currency) {
     let color = "";
     let border= "";
     if(status === "Aguardando") {
@@ -156,8 +171,8 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
         source,
         type,
         ownerId,
-        bankName,
-        salary:  currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        bankName: bankName? bankName: "--",
+        salary: currency ? currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : moneyId + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
         valueReceived: valueReceived?  currency + " "+ valueReceived.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : "--",
         frequency,
         initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
@@ -165,6 +180,8 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
         monthReceive: monthReceive ? monthReceive.toString() : "--",
         dayReceive: dayReceive ? dayReceive.toString() : "--",
         status: statusCard,
+        financialCardName: financialCardName ? financialCardName : "--",
+        moneyId: moneyId? "Sim" : "--",
         actions,
         index
     };
@@ -180,10 +197,16 @@ export const EntranceData: FunctionComponent = () => {
     const globalStore = useGlobalStore();
     const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
     const [filterMonth, setFilterMonth] = useState(0);
-    const actions = (index) => (
+    const [openToast, setOpenToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
+    const [openModalExclusion, setOpenModalExclusion] = useState(false);
+    const [currentId, setCurrentId] = useState();
+
+    const actions = (id) => (
         <div style={{width: "100%", display: "flex", justifyContent:"space-between",alignItems: "center", textAlign:"center"}}>
-            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(index)}/>
-            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => console.log(index)}/>
+            <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(id)}/>
+            <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(id)}/>
         </div>
     );
 
@@ -216,7 +239,9 @@ export const EntranceData: FunctionComponent = () => {
             data.monthReceive,
             data.dayReceive,
             data.status,
-            actions(index),
+            data.financialCardName,
+            data.money,
+            actions(data.id),
             index,
             data.currency
         ));
@@ -269,6 +294,40 @@ export const EntranceData: FunctionComponent = () => {
         getGraphic(value, filterYear[0].description);
     }
 
+    const handleOpenModalExclusion = (id) => {
+        setOpenModalExclusion(true);
+        setCurrentId(id);
+    }
+
+    const handleCloseExclusion = () => {
+        setOpenModalExclusion(false);
+    }
+
+    const exclusion = async () => {
+        setIsLoading(true);
+        try {
+            const response = await service.exclusion(currentId);
+            setOpenToast(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+            setTimeout(() => {
+                if (response.data.severity === "success") {
+                    setOpenToast(false);
+                    setOpenModalExclusion(false);
+                    setIsLoading(false);
+                    getData(new Date().getMonth() + 1, filterYear[0].description);
+                    getGraphic(new Date().getMonth() + 1, filterYear[0].description);
+                }
+            }, 3000);
+
+        } catch (e) {
+            setSeverity("error");
+            setToastMessage(Messages.titles.errorMessage);
+            setOpenToast(false);
+            setIsLoading(false);
+        }
+    };
+
     return (
         <>
             <DashboardComponent
@@ -306,6 +365,22 @@ export const EntranceData: FunctionComponent = () => {
                         />
                     </div>
                 }
+            />
+
+            <ModalComponent
+                openModal={openModalExclusion}
+                setOpenModal={handleCloseExclusion}
+                label={Messages.titles.exclusion}
+                getValue={exclusion}
+                Form={
+                    <div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
+                    </div>
+                }
+                disabledSave={false}
+                toastMessage={toastMessage}
+                severityType={severity}
+                openToast={openToast}
             />
 
         </>

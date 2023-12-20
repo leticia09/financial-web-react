@@ -255,14 +255,16 @@ export const BankData: FunctionComponent = () => {
 
     function createDataTicket(user, actions) {
         const {id, ownerId, cardName, finalCard, modality, balance, currency} = user;
-        return {id,
+        return {
+            id,
             ownerId: globalStore.members.filter(mem => mem.id === ownerId)[0].name,
             cardName,
             finalCard: finalCard.toString(),
             modality,
             balance,
             currency,
-            actions};
+            actions
+        };
     }
 
     const getData = async () => {
@@ -503,8 +505,6 @@ export const BankData: FunctionComponent = () => {
     const handleOpenTicketExclusion = (id) => {
         setCurrentTicketId(id);
         setOpenModalTicketExclusion(true);
-        console.log('entrei')
-
     }
 
     const handleMoneyCloseEdit = () => {
@@ -889,7 +889,7 @@ export const BankData: FunctionComponent = () => {
                 getValue={exclusionTicket}
                 Form={
                     <div>
-                        <div style={{padding: "10px 10px 0 10px", }}>{Messages.messages.exclusionTicket}</div>
+                        <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.exclusionTicket}</div>
                         <div style={{padding: "10px 10px 0 10px"}}>{Messages.messages.confirm}</div>
                     </div>
                 }

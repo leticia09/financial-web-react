@@ -46,7 +46,7 @@ export const SidebarData = [
         iconOpened: <RiIcons.RiArrowUpSFill/>,
     },
     {
-        title: 'Mov. Bancária',
+        title: 'Movimentações',
         path: '/movimentacao-bancaria',
         icon: <FcIcons.FcMoneyTransfer size={20}/>,
         iconClosed: <RiIcons.RiArrowDownSFill/>,

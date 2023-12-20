@@ -27,6 +27,9 @@ type Actions = {
     setInitialDate: (initialDate: string) => void;
     setMonthReceive: (monthReceive: number) => void;
     setDayReceive: (dayReceive: number) => void;
+    setTicket: (ticketId: number) => void;
+    setTicketCard: (cardId: number) => void;
+    setMoney: (moneyId: number) => void;
     resetForm: () => void;
 
     setTypeSalary: (index: number, field: keyof ITypeSalary, value: string, authId?: number) => void;
@@ -51,6 +54,9 @@ const initialState: State = {
             finalDate: null,
             monthReceive: 0,
             dayReceive: 0,
+            ticketId: null,
+            cardId: null,
+            moneyId: null,
         },
     typeSalary: [
         {
@@ -106,13 +112,16 @@ const useEntranceStore = create<State & Actions>((set) => {
                         salary: 0,
                         bankId: 0,
                         accountNumber: 0,
+                        userAuthId: 0,
                         index: 0,
-                        userAuthId: authId,
                         frequency: '',
                         initialDate: null,
                         finalDate: null,
                         monthReceive: 0,
                         dayReceive: 0,
+                        ticketId: null,
+                        cardId: null,
+                        moneyId: null,
                     };
                 }
 
@@ -254,6 +263,34 @@ const useEntranceStore = create<State & Actions>((set) => {
             }));
         },
 
+        setTicket: (ticketId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    ticketId: ticketId,
+                },
+            }));
+        },
+
+        setTicketCard: (cardId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    cardId: cardId,
+                },
+            }));
+        },
+
+        setMoney: (moneyId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    moneyId: moneyId,
+                },
+            }));
+
+        },
+
         deleteSalaryType: (index: number) => {
             set((state) => {
                 const updatedFormList = [...state.typeSalary];
@@ -284,7 +321,10 @@ const useEntranceStore = create<State & Actions>((set) => {
                     initialDate: null,
                     finalDate: null,
                     monthReceive: 0,
-                    dayReceive: 0
+                    dayReceive: 0,
+                    ticketId: 0,
+                    cardId: 0,
+                    moneyId: 0,
                 },
             }));
         },

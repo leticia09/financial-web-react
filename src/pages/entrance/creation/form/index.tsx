@@ -17,7 +17,8 @@ import * as AiIcons from "react-icons/ai";
 import {InputDataComponent} from "../../../../components/input-data";
 import {Toast} from "../../../../components/toast";
 import {GlobalService} from "../../../global-informtions/service";
-import {FormControlLabel, Switch} from "@mui/material";
+import {Checkbox, FormControlLabel, Switch} from "@mui/material";
+import {InformationComponent} from "../../../../components/information";
 
 const columns: IColumns[] = [
     {
@@ -52,6 +53,20 @@ const columns: IColumns[] = [
     {
         id: "accountNumber",
         label: "Conta",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "cardId",
+        label: "Vale - Cartão",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "moneyId",
+        label: "Dinheiro",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -108,7 +123,7 @@ const columns: IColumns[] = [
     },
 ];
 
-function createData(source, type, ownerId, bankId, accountNumber, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, actions, index) {
+function createData(source, type, ownerId, bankId, accountNumber, salary, frequency, initialDate, finalDate, monthReceive, dayReceive, cardId, moneyId, actions, index) {
     return {
         source,
         type,
@@ -121,6 +136,8 @@ function createData(source, type, ownerId, bankId, accountNumber, salary, freque
         finalDate,
         monthReceive: monthReceive ? monthReceive.toString() : null,
         dayReceive: dayReceive ? dayReceive.toString() : null,
+        cardId: cardId ? cardId : "--",
+        moneyId: moneyId ? 'Sim' : 'Não',
         actions,
         index
     };
@@ -155,6 +172,18 @@ export const EntranceForm: FunctionComponent = () => {
     const [open, setOpen] = useState(false);
     const [openWarningToast, setOpenWarningToast] = useState(false);
     const [hasSwitch, setHasSwitch] = useState(false);
+    const [checked, setChecked] = useState(0);
+    const [ticketData, setTicketData] = useState([]);
+    const [ticketCardData, setTicketCardData] = useState([]);
+    const [message, setMessage] = useState(
+        <>
+            Não foram encontradas contas bancárias associadas
+            <br/>
+            ao titular e banco.
+        </>
+    )
+    const [moneyData, setMoneyData] = useState([]);
+
 
     const handleCloseToastWarning = () => {
         setOpenWarningToast(false);
@@ -171,6 +200,9 @@ export const EntranceForm: FunctionComponent = () => {
         const fetchData = async () => {
             const bankResponse = await globalService.getBank(loginStore.userId);
             globalStore.setBank(bankResponse.data.data);
+            const money = await globalService.getMoney(loginStore.userId);
+            globalStore.setMoney(money.data.data);
+
             await getSalary();
         };
         fetchData();
@@ -201,6 +233,9 @@ export const EntranceForm: FunctionComponent = () => {
                 finalDate: formStore.form.finalDate ? formStore.form.finalDate : null,
                 monthReceive: formStore.form.monthReceive && formStore.form.monthReceive !== 0 ? formStore.form.monthReceive : null,
                 dayReceive: formStore.form.dayReceive && formStore.form.dayReceive !== 0 ? formStore.form.dayReceive : null,
+                ticketId: formStore.form.ticketId ? formStore.form.ticketId : null,
+                cardId: formStore.form.cardId ? formStore.form.cardId : null,
+                moneyId: formStore.form.moneyId ? formStore.form.moneyId : null,
             }
         )
         formStore.setFormList(updateList);
@@ -208,14 +243,16 @@ export const EntranceForm: FunctionComponent = () => {
             data.source,
             data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-            data.bankId,
-            data.accountNumber,
+            data.bankId || data.bankId !== 0 ? globalStore.bank.filter(b => b.id === data.bankId)[0].name : "--",
+            data.accountNumber || data.accountNumber !== 0 ? accountData.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
             data.salary,
             data.frequency,
             data.initialDate,
             data.finalDate,
             data.monthReceive,
             data.dayReceive,
+            data.cardId && ticketCardData.filter(c => c.id.toString() === data.cardId.toString())[0] ? ticketCardData.filter(c => c.id.toString() === data.cardId.toString())[0].cardName : "--",
+            data.moneyId,
             actions(index),
             index
         ));
@@ -223,6 +260,7 @@ export const EntranceForm: FunctionComponent = () => {
         setSalary("");
         formStore.resetForm();
         setHasSwitch(false);
+        setChecked(0);
     }
     const handleAction = () => {
         setOpenModal(true);
@@ -238,14 +276,16 @@ export const EntranceForm: FunctionComponent = () => {
             data.source,
             data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-            globalStore.bank.filter(ba => ba.id === data.bankId)[0].name,
-            data.accountNumber,
+            data.bankId || data.bankId !== 0 ? globalStore.bank.filter(b => b.id === data.bankId)[0].name : "--",
+            data.accountNumber || data.accountNumber !== 0 ? accountData.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
             data.salary,
             data.frequency,
             data.initialDate,
             data.finalDate,
             data.monthReceive,
             data.dayReceive,
+            data.cardId && ticketCardData.filter(c => c.id.toString() === data.cardId.toString())[0] ? ticketCardData.filter(c => c.id.toString() === data.cardId.toString())[0].cardName : "--",
+            data.moneyId,
             actions(index),
             index
         ));
@@ -311,6 +351,16 @@ export const EntranceForm: FunctionComponent = () => {
             formStore.setBankId(0);
             formStore.setAccountNumber(null);
         }
+        if(checked === 3) {
+            formStore.setTicketCard(null);
+            formStore.setTicket(0);
+            setTicketCardData([]);
+        }
+
+        if(checked === 1) {
+            setMoneyData(globalStore.money.filter(re => re.ownerId === value));
+        }
+
     }
 
     const handleBank = (value) => {
@@ -326,23 +376,59 @@ export const EntranceForm: FunctionComponent = () => {
 
     const handleChangeSwitch = (event) => {
         setHasSwitch(event.target.checked);
-        if(event.target.checked) {
+        if (event.target.checked) {
             let index = formStore.formList.length - 1;
-            formStore.setType(typeSalaryData.filter(fi=> fi.description === formStore.formList[index].type)[0].id);
+            formStore.setType(typeSalaryData.filter(fi => fi.description === formStore.formList[index].type)[0].id);
             formStore.setOwnerId(formStore.formList[index].ownerId);
             formStore.setBankId(formStore.formList[index].bankId);
             formStore.setAccountNumber(formStore.formList[index].accountNumber);
             formStore.setUserAuthId(formStore.formList[index].userAuthId);
-            formStore.setFrequency(globalStore.frequency.filter(fr=> fr.description === formStore.formList[index].frequency)[0].id);
+            formStore.setFrequency(globalStore.frequency.filter(fr => fr.description === formStore.formList[index].frequency)[0].id);
             formStore.setInitialDate(formStore.formList[index].initialDate);
             formStore.setFinalDate(formStore.formList[index].finalDate);
             formStore.setMonthReceive(formStore.formList[index].monthReceive);
             formStore.setDayReceive(formStore.formList[index].dayReceive);
             formStore.setSalary(formStore.formList[index].salary);
+            formStore.setTicket(formStore.formList[index].ticketId);
+            formStore.setTicketCard(formStore.formList[index].cardId);
             setSalary(formStore.formList[index].salary.toString())
         }
         setHasSwitch(!hasSwitch);
     }
+
+    const handleChecked = async (event) => {
+        setChecked(event);
+        if (event === 3 ) {
+            const ticket = await globalService.getTicket(loginStore.userId);
+            globalStore.setTickets(ticket.data.data);
+            setTicketData(ticket.data.data);
+        }
+    };
+
+    const handleTicket = (value) => {
+        formStore.setTicket(value);
+        const ticket = globalStore.tickets.filter(t => t.id === value)[0];
+        setTicketCardData(ticket.cardFinancialEntityResponseList.filter(t => t.ownerId === formStore.form.ownerId))
+        if (ticket.cardFinancialEntityResponseList.filter(t => t.ownerId === formStore.form.ownerId).length === 0) {
+            setOpenWarningToast(true);
+            setMessage(<>
+                Não foram encontrados cartões associados
+                <br/>
+                ao titular e vale selecionado.
+            </>)
+        }
+    }
+
+    const validate = (): boolean => {
+        if (checked === 3) {
+            return !formStore.form.salary || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId || !formStore.form.frequency || !formStore.form.initialDate || !formStore.form.ticketId || !formStore.form.cardId;
+        } else  if(checked === 2) {
+            return !formStore.form.bankId || !formStore.form.salary || !formStore.form.accountNumber || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId || !formStore.form.frequency || !formStore.form.initialDate;
+        } else {
+            return !formStore.form.salary || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId || !formStore.form.frequency|| !formStore.form.initialDate || !formStore.form.moneyId;
+        }
+    }
+    const isValid = validate();
 
     return (
         <>
@@ -354,6 +440,19 @@ export const EntranceForm: FunctionComponent = () => {
                     getValue={(value) => formStore.setSource(value)}
                     inputValue={formStore.form.source}
                 />
+
+                <DropdownSingleSelect
+                    label={Messages.titles.receiveForm}
+                    data={globalStore.receiveForm}
+                    disabled={false}
+                    width={"200px"}
+                    idProperty={"id"}
+                    descriptionProperty={"description"}
+                    getValue={(value) => handleChecked(value)}
+                    value={checked}
+                />
+            </div>
+            <div className="register-member">
                 <DropdownSingleSelect
                     label={Messages.titles.typeOfEntrance}
                     data={typeSalaryData}
@@ -377,29 +476,74 @@ export const EntranceForm: FunctionComponent = () => {
                     value={formStore.form.ownerId}
                 />
 
-                <DropdownSingleSelect
-                    label={Messages.titles.bank}
-                    data={globalStore.bank}
-                    disabled={!formStore.form.ownerId}
-                    width={"200px"}
-                    idProperty={"id"}
-                    descriptionProperty={"name"}
-                    getValue={(value) => handleBank(value)}
-                    value={formStore.form.bankId}
-                />
+                {checked === 1 &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.money}
+                        data={moneyData}
+                        disabled={!formStore.form.ownerId}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"currency"}
+                        getValue={(value) => formStore.setMoney(value)}
+                        value={formStore.form.ticketId}
+                    />
+                }
+
+                {checked === 3 &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.ticket}
+                        data={ticketData}
+                        disabled={!formStore.form.ownerId}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => handleTicket(value)}
+                        value={formStore.form.ticketId}
+                    />
+                }
+
+                {checked === 2 &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.bank}
+                        data={globalStore.bank}
+                        disabled={!formStore.form.ownerId}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => handleBank(value)}
+                        value={formStore.form.bankId}
+                    />
+                }
+
 
             </div>
             <div className="register-member">
-                <DropdownSingleSelect
-                    label={Messages.titles.account}
-                    data={accountData}
-                    disabled={accountData.length === 0 || formStore.form.bankId === 0}
-                    width={"200px"}
-                    idProperty={"id"}
-                    descriptionProperty={"accountNumber"}
-                    getValue={(value) => formStore.setAccountNumber(value)}
-                    value={formStore.form.accountNumber}
-                />
+
+                {checked === 3 &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.card}
+                        data={ticketCardData}
+                        disabled={!formStore.form.ticketId}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"cardName"}
+                        getValue={(value) => formStore.setTicketCard(value)}
+                        value={formStore.form.bankId}
+                    />
+                }
+
+                {checked === 2 &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.account}
+                        data={accountData}
+                        disabled={accountData.length === 0 || formStore.form.bankId === 0}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"accountNumber"}
+                        getValue={(value) => formStore.setAccountNumber(value)}
+                        value={formStore.form.accountNumber}
+                    />
+                }
                 <Input
                     label={Messages.titles.salaryValue}
                     disabled={false}
@@ -501,7 +645,7 @@ export const EntranceForm: FunctionComponent = () => {
             <div className="add-button-member">
                 <ButtonComponent
                     label={Messages.titles.addEntrance}
-                    disabled={!formStore.form.bankId || !formStore.form.salary || !formStore.form.accountNumber || !formStore.form.type || !formStore.form.source || !formStore.form.ownerId || !formStore.form.frequency || !formStore.form.initialDate}
+                    disabled={isValid}
                     width="160px"
                     height="30px"
                     cursor="pointer"
@@ -558,13 +702,7 @@ export const EntranceForm: FunctionComponent = () => {
                 severity={"warning"}
                 width="100%"
                 duration={4000}
-                message={
-                    <>
-                        Não foram encontradas contas bancárias associadas
-                        <br/>
-                        ao titular e banco.
-                    </>
-                }
+                message={message}
                 open={openWarningToast}
                 onClose={handleCloseToastWarning}
             />

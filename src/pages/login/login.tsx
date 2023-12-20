@@ -81,6 +81,12 @@ export const Login: FunctionComponent = () => {
                     const expense = await globalService.getExpense(response.data.data.id);
                     globalStore.setExpense(expense.data.data);
 
+                    const ticket = await globalService.getTicket(response.data.data.id);
+                    globalStore.setTickets(ticket.data.data);
+
+                    const money = await globalService.getMoney(response.data.data.id);
+                    globalStore.setMoney(money.data.data);
+
                     const entrance = await globalService.getEntrance(response.data.data.id);
                     let list = [];
                     entrance.data.data.forEach(res => {
