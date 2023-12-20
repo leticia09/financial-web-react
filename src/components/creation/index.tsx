@@ -1,17 +1,13 @@
 import './creation.css'
 import {FunctionComponent} from "react";
-// @ts-ignore
-import {ButtonComponent} from "../button/index.tsx";
-// @ts-ignore
-import {FooterRegister} from "../footer-register/index.tsx";
+import {ButtonComponent} from "../button";
+import {FooterRegister} from "../footer-register";
 import {BsBackspace} from "react-icons/bs";
 import {GiCheckMark} from "react-icons/gi";
-// @ts-ignore
-import {Toast} from "../toast/index.tsx";
-// @ts-ignore
-import {LoadingComponent} from "../loading/index.tsx";
-// @ts-ignore
-import {BlockComponent} from "../block/index.tsx";
+import {Toast} from "../toast";
+import {BlockComponent} from "../block";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 interface ICreation {
     titles: string;
@@ -20,7 +16,6 @@ interface ICreation {
     pathBack: string;
     toastMessage: string;
     severityType: 'success' | 'info' | 'warning' | 'error';
-    isLoading: boolean;
     open: boolean;
     handleClose: (reason: string) => void;
     hasBlock?: boolean;
@@ -31,27 +26,28 @@ interface ICreation {
     handleAddMember?: () => void;
     titlesButton: string;
     hasButton?: boolean;
+    showLineProgress?: boolean;
 }
 
-export const Creation: FunctionComponent <ICreation> = ({
-                                                titles,
-                                                Form,
-                                                save,
-                                                pathBack,
-                                                toastMessage,
-                                                severityType,
-                                                isLoading,
-                                                open,
-                                                handleClose,
-                                                hasButton,
-                                                hasBlock,
-                                                blocksNumber,
-                                                columns,
-                                                rows,
-                                                disabledSaveButton,
-                                                handleAddMember,
-                                                titlesButton,
-                                            }: ICreation) => {
+export const Creation: FunctionComponent<ICreation> = ({
+                                                           titles,
+                                                           Form,
+                                                           save,
+                                                           pathBack,
+                                                           toastMessage,
+                                                           severityType,
+                                                           open,
+                                                           handleClose,
+                                                           hasButton,
+                                                           hasBlock,
+                                                           blocksNumber,
+                                                           columns,
+                                                           rows,
+                                                           disabledSaveButton,
+                                                           handleAddMember,
+                                                           titlesButton,
+                                                           showLineProgress
+                                                       }: ICreation) => {
 
 
     const handleSave = () => {
@@ -67,7 +63,12 @@ export const Creation: FunctionComponent <ICreation> = ({
     }
 
     return (
-        <>
+        <div className='creation-content'>
+            {showLineProgress &&
+                <Box sx={{marginTop: "58px", marginLeft: "-5px", width: '100.6%'}}>
+                    <LinearProgress/>
+                </Box>
+            }
             <div className="content-member">
 
                 <div className="labels-member">
@@ -122,16 +123,12 @@ export const Creation: FunctionComponent <ICreation> = ({
                 <Toast
                     severity={severityType}
                     width="100%"
-                    duration={2000}
+                    duration={3000}
                     message={toastMessage}
                     open={open}
                     onClose={handleCloseToast}
                 />
-
-                {isLoading && (
-                    <LoadingComponent/>
-                )}
             </div>
-        </>
+        </div>
     );
 }

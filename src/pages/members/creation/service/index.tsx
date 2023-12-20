@@ -1,5 +1,4 @@
-// @ts-ignore
-import {instance} from "../../../../services/Core/api/api.tsx";
+import {instance} from "../../../../services/Core/api/api";
 
 export const RegisterMembersService = (axiosInstance: any = instance) => {
     const createMember = (payload) => {

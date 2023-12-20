@@ -7,23 +7,35 @@ import {MemberForm} from "./form/";
 import useFormStore from "./store/useFormStore";
 import {Messages} from "../../../internationalization/message";
 import {Creation} from "../../../components/creation";
-import {BankDataManagementService} from "../../bank-data/service";
 import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {ValidateError} from "../../../validate-error/validate-error";
+import {ValidateFormMember} from "./validate-factory";
+import {MembersManagementService} from "../service";
 
 
 export const RegisterMember: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormStore();
     const globalStore = useGlobalStore();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
     const registerMembersService = RegisterMembersService();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [toastMessage, setToastMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        formStore.setFormList([
+            {
+                id: null,
+                index: 0,
+                name: "",
+                userAuthId: 0,
+                color: '',
+                status: 0
+            }
+        ])
         formStore.resetFormStore();
     }, []);
 
@@ -41,7 +53,9 @@ export const RegisterMember: FunctionComponent = () => {
                 id: null,
                 name: '',
                 index: updateList.length,
-                userAuthId: loginStore.userId
+                userAuthId: loginStore.userId,
+                color: '',
+                status: 0
             }
         )
         formStore.setFormList(updateList);
@@ -56,36 +70,16 @@ export const RegisterMember: FunctionComponent = () => {
 
         try {
             const response = await registerMembersService.createMember(formStore.formList);
-            if (response.data.message === "Sucesso") {
-                setOpen(true);
-                setSeverity("success");
-                setToastMessage(Messages.titles.addMember);
+            setOpen(true);
+            setSeverity(response.data.severity);
+            setToastMessage(ValidateError(response.data.message));
+
+            setTimeout(() => {
+                setOpen(false);
+                if (response.data.severity === "success")
+                navigate("/grupos/membros");
                 setIsLoading(false);
-
-                const memberResponse = await bankDataManagementService.getMembers(loginStore.userId);
-                globalStore.setMember(memberResponse.data.data);
-
-                setTimeout(() => {
-                    setOpen(false);
-                    navigate("/grupos/membros");
-                }, 2000);
-
-            } else {
-                setOpen(true);
-                setSeverity("error");
-                console.log(response)
-                if(response.data.message === "NOME_ALREADY_EXISTS") {
-                    setToastMessage(Messages.titles.nameExists);
-                } else if(response.data.message === "NOME_IS_EMPTY") {
-
-                } else {
-                    setToastMessage(Messages.titles.errorMessage);
-                }
-                setIsLoading(false);
-
-            }
-
-
+            }, 3000);
 
         } catch (e) {
             setIsLoading(false);
@@ -101,7 +95,7 @@ export const RegisterMember: FunctionComponent = () => {
             Form={
                 formStore.formList.map((member, i) => (
                     <MemberForm
-                        key={member.index}
+                        key={i}
                         i={i}
                         hasDelete={i > 0}
                     />
@@ -113,9 +107,9 @@ export const RegisterMember: FunctionComponent = () => {
             pathBack="/grupos/membros"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
-            disabledSaveButton={!formStore.formList[0].name}
+            disabledSaveButton={ValidateFormMember(formStore.formList)}
             hasButton={true}
             handleClose={handleClose}
         />

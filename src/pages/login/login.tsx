@@ -1,27 +1,20 @@
-import {FunctionComponent, useState} from "react";
-import {Link} from "react-router-dom";
+import { FunctionComponent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import './login.css'
-// @ts-ignore
-import {Input} from "../../components/input/index.tsx";
-// @ts-ignore
-import {InputPassword} from "../../components/password/index.tsx";
-// @ts-ignore
-import {Messages} from "../../internationalization/message/index.ts";
-// @ts-ignore
-import {ButtonComponent} from "../../components/button/index.tsx";
-import {useNavigate} from "react-router-dom";
-// @ts-ignore
-import {LoginService} from "./service/index.tsx";
-// @ts-ignore
-import useLoginStore from "./store/useLoginStore.ts";
-// @ts-ignore
-import {Toast} from "../../components/toast/index.tsx";
-// @ts-ignore
-import useGlobalStore from "../global-informtions/store/useGlobalStore.ts";
-// @ts-ignore
-import {BankDataManagementService} from "../bank-data/service/index.tsx";
-// @ts-ignore
-import {GlobalService} from "../global-informtions/service/index.tsx";
+import { LoginService } from "./service";
+import useLoginStore from "./store/useLoginStore";
+import useGlobalStore from "../global-informtions/store/useGlobalStore";
+import { GlobalService } from "../global-informtions/service";
+import { Messages } from "../../internationalization/message";
+import { Input } from "../../components/input";
+import { InputPassword } from "../../components/password";
+import { ButtonComponent } from "../../components/button";
+import { Toast } from "../../components/toast";
+import { MembersManagementService } from "../members/service";
+import { LogoIcon } from "icons/assets/iconLogo";
+import { motion } from "framer-motion";
+import {getDefaultLocale} from "react-datepicker";
+
 
 export const Login: FunctionComponent = () => {
     const navigate = useNavigate();
@@ -29,9 +22,9 @@ export const Login: FunctionComponent = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
-    const {setAuth, setUser, setUserId, setSex} = useLoginStore();
+    const { setAuth, setUser, setUserId, setSex } = useLoginStore();
     const globalStore = useGlobalStore();
-    const bankDataManagementService = BankDataManagementService();
+    const membersManagementService = MembersManagementService();
     const globalService = GlobalService();
 
     const handleClose = (reason: string) => {
@@ -57,20 +50,54 @@ export const Login: FunctionComponent = () => {
 
             try {
                 const response = await loginService.auth(payload);
-                if (response.data.message === "SUCCESS") {
+                if (response.data.severity === "success") {
                     setAuth(response.data.data.auth);
                     setUser(response.data.data.name);
                     setUserId(response.data.data.id);
                     setSex(response.data.data.sex);
-                    navigate("/dashboard");
+                    navigate("/splash");
 
-                    const memberResponse = await bankDataManagementService.getMembers(response.data.data.id);
+                    const memberResponse = await membersManagementService.getMembersDropdown(response.data.data.id);
                     globalStore.setMember(memberResponse.data.data);
 
                     const modalityResponse = await globalService.getModality();
                     globalStore.setModality(modalityResponse.data);
 
-                    console.log(globalStore)
+                    const bankResponse = await globalService.getBank(response.data.data.id);
+                    globalStore.setBank(bankResponse.data.data);
+
+                    const typeOfScoreResponse = await globalService.getTypeOfScore();
+                    globalStore.setTypeOfScore(typeOfScoreResponse.data.data);
+
+                    const programResponse = await globalService.getProgram(response.data.data.id);
+                    globalStore.setProgram(programResponse.data.data);
+
+                    const statusResponse = await globalService.getStatus();
+                    globalStore.setStatus(statusResponse.data.data);
+
+                    const groupResponse = await globalService.getGroups(response.data.data.id);
+                    globalStore.setMacroGroup(groupResponse.data.data);
+
+                    const expense = await globalService.getExpense(response.data.data.id);
+                    globalStore.setExpense(expense.data.data);
+
+                    const ticket = await globalService.getTicket(response.data.data.id);
+                    globalStore.setTickets(ticket.data.data);
+
+                    const money = await globalService.getMoney(response.data.data.id);
+                    globalStore.setMoney(money.data.data);
+
+                    const entrance = await globalService.getEntrance(response.data.data.id);
+                    let list = [];
+                    entrance.data.data.forEach(res => {
+                        list.push({
+                            id: res.id,
+                            description: res.source + " - " + res.type,
+                            salary: res.currency + " " + res.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                            ownerId: res.owner.id,
+                        })
+                    })
+                    globalStore.setEntrance(list)
 
                 } else {
                     setOpen(true);
@@ -84,15 +111,26 @@ export const Login: FunctionComponent = () => {
     }
     return (
         <div className="login">
-            <div className="content-info">
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="content-info">
                 <div className="info-title">
                     {Messages.titles.infoTitleLogin}
                 </div>
                 <div className="info-text">
                     {Messages.titles.infoTextLogin}
                 </div>
-            </div>
-            <div className="content-login">
+            </motion.div>
+            <motion.div className="content-login"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+            >
+                <div className="logo-content">
+                    <LogoIcon width="150" height="150" />
+                </div>
                 <div className="login-img">
                     <div>{Messages.titles.financial}</div>
                 </div>
@@ -146,7 +184,7 @@ export const Login: FunctionComponent = () => {
                     open={open}
                     onClose={handleClose}
                 />
-            </div>
-        </div>
+            </motion.div>
+        </div >
     );
 }

@@ -2,21 +2,28 @@ import create from 'zustand';
 import {IAccount, IBankData, ICard} from '../../../../interfaces/bankData';
 
 type State = {
+    forms: any[];
     formList: IBankData;
     columns: any[];
     rows: any[];
     formType: string;
+    currentBankIndex: number
 };
 
 type Actions = {
+    setForms: (forms: any[]) => void;
     setFormList: (data: IBankData) => void;
     setColumns: (columns: any[]) => void;
     setRows: (rows: any[]) => void;
     addAccount: (account: IAccount) => void;
     resetAccounts: () => void;
     setBankNameFormList: (bankName: string) => void;
+    setBankId: (bankId: string) => void;
     addCard: (card: ICard, index: number) => void;
     setFormType: (type: string) => void;
+    setCurrentBankIndex: (index: number) => void;
+    updateAccountField: (bankIndex: number, accountIndex: number, field: string, value: any) => void;
+    updateCardField: (bankIndex: number, accountIndex: number, cardIndex: number,field: string, value: any) => void;
 };
 
 const initialState: State = {
@@ -27,15 +34,22 @@ const initialState: State = {
         {label: "Final"},
         {label: "Modalidade"},
         {label: "Vencimento"},
-        {label: "Fatura"}],
+        {label: "Fatura"},
+        {label: "Programa"},
+        {label: "Pontuação"},
+        {label: "Moeda"}
+    ],
     rows: [],
-    formType: "CREATE"
+    forms: [],
+    formType: "CREATE",
+    currentBankIndex: 0
 };
 
 const useFormBankStore = create<State & Actions>((set) => ({
     ...initialState,
     setFormList: (data) => set({formList: data}),
     setColumns: (columns) => set({columns}),
+    setForms: (forms) => set({forms}),
     setRows: (rows) => set({rows}),
     addAccount: (newAccount) => {
         set((state) => {
@@ -68,6 +82,14 @@ const useFormBankStore = create<State & Actions>((set) => ({
             },
         }));
     },
+    setBankId: (bankId) => {
+        set((state) => ({
+            formList: {
+                ...state.formList,
+                id: bankId,
+            },
+        }));
+    },
     addCard: (newCard, index) => {
         set((state) => {
             const updatedAccounts: IAccount[] = state.formList.accounts.slice();
@@ -81,6 +103,30 @@ const useFormBankStore = create<State & Actions>((set) => ({
         });
     },
     setFormType: (type) => set({formType: type}),
+    setCurrentBankIndex: (index) => set({currentBankIndex: index}),
+    updateAccountField: (bankIndex, accountIndex, field, value) => {
+        set((state) => {
+            const updatedForms = [...state.forms];
+            const updatedAccounts = [...updatedForms[bankIndex].accounts];
+
+            updatedAccounts[accountIndex][field] = value;
+            updatedForms[bankIndex].accounts = updatedAccounts;
+
+            return { forms: updatedForms };
+        });
+    },
+    updateCardField: (bankIndex, accountIndex, cardIndex, field, value) => {
+        set((state) => {
+            const updatedForms = [...state.forms];
+            const updatedCars = [...updatedForms[bankIndex].accounts[accountIndex].cards];
+
+            updatedCars[cardIndex][field] = value;
+
+            updatedForms[bankIndex].accounts[accountIndex].cards = updatedCars;
+
+            return { forms: updatedForms };
+        });
+    },
 
 }));
 

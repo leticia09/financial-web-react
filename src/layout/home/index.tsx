@@ -6,6 +6,20 @@ import {Members} from "../../pages/members/managment";
 import {RegisterMember} from "../../pages/members/creation"
 import {BankData} from "../../pages/bank-data/management";
 import {RegisterBankData} from "../../pages/bank-data/creation";
+import {EntranceData} from "../../pages/entrance/management";
+import {PointProgramData} from "../../pages/points-programs/management";
+import {CreateProgramPoint} from "../../pages/points-programs/creation";
+import {TransferProgram} from "../../pages/points-programs/creation/transfer";
+import {UsePoint} from "../../pages/points-programs/creation/use";
+import {GroupsCreation} from "../../pages/groups/creation";
+import {Groups} from "../../pages/groups/management";
+import {BankMovementData} from "../../pages/bank-movement/management";
+import {EntranceCreation} from "../../pages/entrance/creation";
+import {Receive} from "../../pages/bank-movement/creation/receive";
+import {ExpenseData} from "../../pages/expense/management";
+import {ExpenseCreation} from "../../pages/expense/creation";
+import {MoneyCreation} from "../../pages/moneyRegister/creation";
+import {TicketsCreation} from "../../pages/tickets/creation";
 
 export const Home: FunctionComponent = () => {
 
@@ -16,8 +30,8 @@ export const Home: FunctionComponent = () => {
                 flexGrow: 1,
                 p: 1,
                 background: "#f2f7fb",
-                height: "100vh",
-                width: "100%"
+                width: "100%",
+                minHeight: '100vh',
             }}
         >
             <Routes>
@@ -34,6 +48,35 @@ export const Home: FunctionComponent = () => {
                 />
                 <Route path="/grupos/dados-bancarios/:id"
                        element={<RegisterBankData />}/>
+                <Route path="/receitas"
+                       element={<EntranceData />}/>
+                <Route path="/receitas/cadastro"
+                       element={<EntranceCreation />}/>
+                <Route path="/grupos/programa-pontos"
+                       element={<PointProgramData />}/>
+                <Route path="/grupos/programa-pontos/programa/cadastro"
+                       element={<CreateProgramPoint />}/>
+                <Route path="/grupos/programa-pontos/programa/tranferencia"
+                       element={<TransferProgram />}/>
+                <Route path="/grupos/programa-pontos/programa/utilizar"
+                       element={<UsePoint />}/>
+                <Route path="/grupos/grupos"
+                       element={<Groups />}/>
+                <Route path="/grupos/grupos/cadastro"
+                       element={<GroupsCreation />}/>
+                <Route path="/grupos/dinheiro/cadastro"
+                       element={<MoneyCreation/>} />
+                <Route path="/grupos/tickets/cadastro"
+                       element={<TicketsCreation/>} />
+                <Route path="/movimentacao-bancaria"
+                       element={<BankMovementData/>} />
+                <Route path="/movimentacao-bancaria/receber"
+                       element={<Receive/>} />
+                <Route path="/despesas"
+                       element={<ExpenseData/>} />
+                <Route path="/despesas/cadastro"
+                       element={<ExpenseCreation/>} />
+
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>
                <Route path="/grupos/pontos/cadastro"

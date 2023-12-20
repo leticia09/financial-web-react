@@ -2,7 +2,7 @@
     background-color: #F4F4F4;
 }
 .scrollbar::-webkit-scrollbar {
-    width: 4px;
+    width: 2px;
     height: 4px;
     background: #a4acac;
 
@@ -13,7 +13,7 @@
 }
 
 .icon_space {
-    margin-right: 4px;
+    margin-right: 2px;
 }
 
 .icon_delete, .icon_space {

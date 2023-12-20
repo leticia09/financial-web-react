@@ -1,8 +1,7 @@
 import {FunctionComponent} from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-// @ts-ignore
-import {SidebarNavigation} from "../sidebar-nav/index.tsx";
+import {SidebarNavigation} from "../sidebar-nav";
 
 interface ISidebar {
     showSidebar: boolean;

@@ -10,19 +10,22 @@ import useGlobalStore from "../../../global-informtions/store/useGlobalStore";
 import {ValidateCard} from "../validade-factory/validadeFactory";
 import {BankDataManagementService} from "../../service";
 import useLoginStore from "../../../login/store/useLoginStore";
-import { useParams } from 'react-router-dom';
-import { IAccount } from "interfaces/bankData";
+import {useParams} from 'react-router-dom';
+import {IAccount} from "interfaces/bankData";
+import {FormControlLabel, Switch} from "@mui/material";
+import {GlobalService} from "../../../global-informtions/service";
+import {getIcon} from "../../../../icons";
 
 
 export const BankDataForm: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const formStore = useFormBankStore();
     const globalStore = useGlobalStore();
-    const [numberAccount, setNumberAccount] = useState(null);
-    const [accountOwner, setAccountOwner] = useState(null);
+    const [numberAccount, setNumberAccount] = useState('');
+    const [accountOwner, setAccountOwner] = useState('');
     const [showComment, setShowComment] = useState(false);
     const [account, setAccount] = useState(null);
-    const [cardName, setCardName] = useState(null);
+    const [cardName, setCardName] = useState('');
     const [cardOwner, setCardOwner] = useState(null);
     const [finalCard, setFinalCard] = useState(null);
     const [cardModality, setCardModality] = useState(null);
@@ -31,6 +34,14 @@ export const BankDataForm: FunctionComponent = () => {
     const {id} = useParams();
     const bankDataManagementService = BankDataManagementService();
     const [bankName, setBankName] = useState(null);
+    const [hasScore, setScore] = useState(false);
+    const [program, setProgram] = useState(null);
+    const [points, setPoints] = useState('');
+    const [currency, setCurrency] = useState(null);
+    const [accountValue, setAccountValue] = useState(null);
+    const [accountCurrency, setAccountCurrency] = useState(null);
+    const [programData, setProgramData] = useState([])
+    const service = GlobalService();
 
     const days = [];
 
@@ -38,12 +49,16 @@ export const BankDataForm: FunctionComponent = () => {
         formStore.resetAccounts();
         formStore.setRows([]);
         resetFields();
+        setScore(false);
         resetCardFields();
         if (id) {
             const fetchData = async () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
                     fillForm(response.data.data);
+                    console.log(response.data.data)
+                    formStore.setBankId(id);
+
                 } catch (error) {
                     console.log('Error', error);
                 }
@@ -51,6 +66,8 @@ export const BankDataForm: FunctionComponent = () => {
             fetchData().then();
         } else {
             formStore.setFormType("CREATE");
+            formStore.setBankNameFormList('');
+            setBankName("")
         }
     }, []);
 
@@ -59,11 +76,10 @@ export const BankDataForm: FunctionComponent = () => {
     }
 
     const fillForm = (form) => {
-        setBankName(form.name);
+        formStore.setBankNameFormList(form.name)
         form.accounts.forEach((account: IAccount) => {
             formStore.addAccount(account);
         })
-
         transformDataToRows(form);
     }
     const handleAccountBank = (value) => {
@@ -80,9 +96,11 @@ export const BankDataForm: FunctionComponent = () => {
             formStore.addAccount({
                 label: null,
                 accountNumber: numberAccount,
-                owner: globalStore.members.filter(member => member.id === accountOwner)[0].name,
+                owner: accountOwner,
                 cards: null,
-                index: formStore.formList.accounts.length
+                index: formStore.formList.accounts.length + 1,
+                value: accountValue,
+                currency: globalStore.currency.filter(currency => currency.id.toString() === accountCurrency.toString())[0].description,
             });
             resetFields();
         } else {
@@ -92,16 +110,25 @@ export const BankDataForm: FunctionComponent = () => {
     };
 
     const resetFields = () => {
-        setNumberAccount('');
-        setAccountOwner('');
+        if(formStore.formType === "CREATE") {
+            setNumberAccount('');
+            setAccountOwner('');
+            setAccountValue('');
+            setAccountCurrency('');
+        }
     };
 
     const handleCardName = (value: any) => {
         setCardName(value);
     }
 
-    const handleCardOwner = (value: any) => {
+    const handleCardOwner = async (value: any) => {
         setCardOwner(value);
+        setScore(false);
+        setCurrency("");
+        setPoints("");
+        setProgram(null);
+        setProgramData(await getProgram(value));
     }
 
     const handleFinalCard = (value: any) => {
@@ -120,19 +147,73 @@ export const BankDataForm: FunctionComponent = () => {
         setClosingDate(value);
     }
 
-    const transformDataToRows = (formList) => {
-        const rows = formList.accounts.map((account) => {
-            return account.cards.map((card) => ([
-                {label: card.name},
-                {label: account.owner,},
-                {label: card.finalNumber,},
-                {label: card.modality,},
-                {label: card.closingDate,},
-                {label: card.dueDate,}
-            ]));
-        });
-        console.log('rows', rows)
+    const handleChangeScore = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setScore(event.target.checked);
+    };
 
+    const handleProgram = (value: any) => {
+        setProgram(value);
+    }
+
+    const handlePoints = (value: any) => {
+        setPoints(value);
+    }
+
+    const handleCurrency = (value: any) => {
+        setCurrency(value);
+    }
+
+    const handleAccountValue = (value: any) => {
+        setAccountValue(value);
+    }
+
+    const handleAccountCurrency = (value: any) => {
+        setAccountCurrency(value);
+    }
+
+    const getProgram = async (id: number) => {
+        const response = await service.getProgramById(id);
+        globalStore.setProgram(response.data.data);
+        return response.data.data;
+    };
+
+    const transformDataToRows = (formList: any) => {
+        const rows = formList.accounts.map((account: any) => {
+            return account.cards.map((card: any) => {
+                    let row = [];
+                    row.push({label: card.name});
+                    if (card.owner.name) {
+                        row.push({label: card.owner.name});
+                    } else if (card.owner) {
+                        row.push({label: card.owner});
+                    }
+                    row.push({label: card.finalNumber});
+                    row.push({label: card.modality});
+                    row.push({label: card.closingDate});
+                    row.push({label: card.dueDate});
+
+                    if (card.program && card.program.program) {
+                        row.push({label: card.program.program});
+                    } else if (card.program) {
+                        row.push({label: card.program});
+                    } else {
+                        row.push({label: null});
+                    }
+                    if (card.point) {
+                        row.push({label: card.point});
+                    } else {
+                        row.push({label: null});
+                    }
+
+                    if (card.currency) {
+                        row.push({label: card.currency});
+                    } else {
+                        row.push({label: null});
+                    }
+                    return row;
+                }
+            );
+        });
         formStore.setRows(rows);
     }
 
@@ -145,9 +226,12 @@ export const BankDataForm: FunctionComponent = () => {
                 modality: globalStore.modality.filter(modality => modality.id === cardModality)[0].name,
                 closingDate: closingDate,
                 dueDate: dueDate,
-                index: formStore.formList.accounts[account].cards.length,
+                index: formStore.formList.accounts[account - 1].cards.length + 1,
+                program: programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,
+                points: points,
+                currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
             };
-            formStore.addCard(newCard, account);
+            formStore.addCard(newCard, account - 1);
             transformDataToRows(formStore.formList);
             resetCardFields();
         }
@@ -155,13 +239,18 @@ export const BankDataForm: FunctionComponent = () => {
 
     const resetCardFields = () => {
         setCardName('');
-        setCardOwner({id: ''});
+        setCardOwner('');
         setFinalCard('');
-        setCardModality(null);
+        setCardModality('');
         setClosingDate(null);
         setDueDate(null);
-        setAccount({id: ''});
+        setAccount('');
+        setPoints(null);
+        setProgram('');
+        setCurrency('');
+        setScore(false);
     }
+
 
     return (
         <div>
@@ -172,14 +261,15 @@ export const BankDataForm: FunctionComponent = () => {
                     disabled={formStore.formType === "VIEW"}
                     width="200px"
                     getValue={(value) => formStore.setBankNameFormList(value)}
-                    inputValue={bankName}
+                    inputValue={formStore.formList.name}
                     viewMode={formStore.formType === "VIEW"}
                 />
+                {formStore.formList.name && <div>{getIcon(formStore.formList.name, "34", "34")}</div>}
             </div>
             <h3 className="title-bank">{Messages.titles.account}
                 {showComment && <span className="title-bank-comment"> {Messages.messages.notAllowedMoreThan}</span>}
             </h3>
-            {formStore.formType === "CREATE" &&
+            {(formStore.formType === "CREATE" || formStore.formType === "EDIT") &&
                 <div className="register-bank">
                     <Input
                         label={Messages.titles.accountNumber}
@@ -200,9 +290,30 @@ export const BankDataForm: FunctionComponent = () => {
                         getValue={(value) => handleAccountOwner(value)}
                         value={accountOwner}
                     />
+
+                    <Input
+                        label={Messages.titles.value}
+                        disabled={false}
+                        width="200px"
+                        getValue={(value) => handleAccountValue(value)}
+                        inputValue={accountValue}
+                        maskNumeric={true}
+                    />
+
+                    <DropdownSingleSelect
+                        label={Messages.titles.currency}
+                        data={globalStore.currency}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"description"}
+                        getValue={(value) => handleAccountCurrency(value)}
+                        value={accountCurrency}
+                    />
+
                 </div>
             }
-            {formStore.formType === "CREATE" &&
+            {(formStore.formType === "CREATE" || formStore.formType === "EDIT") &&
                 <div className="register-bank">
                     <div className="register-bank-add-button">
                         <ButtonComponent
@@ -222,7 +333,7 @@ export const BankDataForm: FunctionComponent = () => {
                     </div>
                 </div>
             }
-            {formStore.formList.accounts && formStore.formList.accounts.length > 0 && formStore.formType === "CREATE" && (
+            {formStore.formList.accounts && formStore.formList.accounts.length > 0 && (formStore.formType === "CREATE" || formStore.formType === "EDIT") && (
                 <div>
                     <h3 className="title-bank">Cartão</h3>
                     <div className="register-bank">
@@ -303,7 +414,53 @@ export const BankDataForm: FunctionComponent = () => {
                                 value={closingDate}
                             />
                         )}
+                        {(cardModality === 1 || cardModality === 3) && (
+                            <FormControlLabel style={{marginLeft: "12px"}}
+                                              control={
+                                                  <Switch
+                                                      disabled={programData.length === 0}
+                                                      checked={hasScore}
+                                                      onChange={handleChangeScore}
+                                                      name="gilad"/>
+                                              }
+                                              label={Messages.titles.score}
+                            />
+                        )}
                     </div>
+
+                    {hasScore &&
+                        <div className="register-bank">
+                            <DropdownSingleSelect
+                                label={Messages.titles.program}
+                                data={programData}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => handleProgram(value)}
+                                value={program}
+                            />
+                            <Input
+                                label={Messages.titles.points}
+                                disabled={false}
+                                width="200px"
+                                getValue={(value) => handlePoints(value)}
+                                inputValue={points}
+                                maskNumeric={true}
+                            />
+
+                            <DropdownSingleSelect
+                                label={Messages.titles.currency}
+                                data={globalStore.currency}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => handleCurrency(value)}
+                                value={currency}
+                            />
+                        </div>
+                    }
 
 
                     <div className="register-bank">

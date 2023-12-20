@@ -27,6 +27,7 @@
       "@/": ["./"],
     }
   },
+  "files": ["globals.d.ts"],
   "include": [
     "src",
     "declarations.d.ts"

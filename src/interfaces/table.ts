@@ -1,7 +1,8 @@
 export interface IRow {
-    id: number;
-    name: string;
-    status: string;
+    id?: number;
+    index?: number;
+    name?: string;
+    status?: string;
     actions: React.ReactNode[];
 }
 
@@ -12,4 +13,9 @@ export interface IColumns {
     width?: number;
     align?: 'inherit' | 'left' | 'center' | 'right' | 'justify';
     format?: (value: any) => any;
+}
+
+export interface ICard {
+    label: string,
+    value: number
 }

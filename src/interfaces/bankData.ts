@@ -1,4 +1,5 @@
 export interface IBankData {
+    id?: string;
     name: string,
     accounts: IAccount[],
     userAuthId: number
@@ -6,18 +7,24 @@ export interface IBankData {
 
 export interface IAccount {
     label: string,
-    accountNumber: number,
+    accountNumber: string,
     owner: string,
     cards: ICard[],
-    index: number
+    index: number,
+    value: number,
+    currency: string,
 }
 
 export interface ICard {
+    id?: number
     name: string,
     owner: string,
     finalNumber: number,
     modality: string,
     closingDate: number,
     dueDate: number,
-    index: number
+    index: number,
+    program?: string,
+    point?: number,
+    currency?: string
 }

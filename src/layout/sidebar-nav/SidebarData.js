@@ -8,66 +8,63 @@ export const SidebarData = [
     {
         title: 'Dashboard',
         path: '/dashboard',
-        icon: <FcIcons.FcMindMap size={20} />
+        icon: <FcIcons.FcMindMap size={20}/>
     },
-    { 
+    {
         title: 'Gerenciamento',
         path: '/dashboard',
         icon: <FcIcons.FcList size={20}/>,
-        iconClosed: <RiIcons.RiArrowDownSFill />,
-        iconOpened: <RiIcons.RiArrowUpSFill />,
-    
-        subNav: [
-          {
-            title: 'Membros',
-            path: '/grupos/membros',
-            icon: <FcIcons.FcCollaboration size={16}/>
-          },
-          {
-            title: 'Dados Bancários',
-            path: '/grupos/dados-bancarios',
-            icon: <FcIcons.FcLibrary size={16} />
-          },
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
 
-          {
-            title: 'Salário',
-            path: '/grupos/salario',
-            icon: <FcIcons.FcCurrencyExchange size={16} />
-          },
+        subNav: [
+            {
+                title: 'Membros',
+                path: '/grupos/membros',
+                icon: <FcIcons.FcCollaboration size={16}/>
+            },
 
             {
-                title: 'Programas de Pontos',
-                path: '/grupos/pontos',
-                icon: <GiIcons.GiAirplaneDeparture size={16}/>
+                title: 'Dados Financeiros',
+                path: '/grupos/dados-bancarios',
+                icon: <FcIcons.FcLibrary size={16}/>
             },
-     
-          {
-            title: 'Grupos',
-            path: '/grupos/grupos',
-            icon: <FcIcons.FcGlobe size={16} />
-          }
+
+            {
+                title: 'Grupos',
+                path: '/grupos/grupos',
+                icon: <FcIcons.FcGlobe size={16}/>
+            }
         ]
     },
+
     {
-      title: 'Receitas',
-      path: '/receitas/graficos',
-      icon: <FcIcons.FcBullish size={20} />,
-      iconClosed: <RiIcons.RiArrowDownSFill />,
-      iconOpened: <RiIcons.RiArrowUpSFill />,
+        title: 'Receitas',
+        path: '/receitas',
+        icon: <FcIcons.FcBullish size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
     },
-    // {
-    //   title: 'Mov. Bancária',
-    //   path: '/movimentacao-bancaria/graficos',
-    //   icon: <FcIcons.FcMoneyTransfer size={20} />,
-    //   iconClosed: <RiIcons.RiArrowDownSFill />,
-    //   iconOpened: <RiIcons.RiArrowUpSFill />,
-    // },
     {
-      title: 'Despesas',
-      path: '/despesas/graficos',
-      icon: <FcIcons.FcBearish size={20}/>,
-      iconClosed: <RiIcons.RiArrowDownSFill />,
-      iconOpened: <RiIcons.RiArrowUpSFill />,
+        title: 'Movimentações',
+        path: '/movimentacao-bancaria',
+        icon: <FcIcons.FcMoneyTransfer size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
+    },
+    {
+        title: 'Despesas',
+        path: '/despesas',
+        icon: <FcIcons.FcBearish size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
+    },
+    {
+        title: 'Programa de Pontos',
+        path: '/grupos/programa-pontos',
+        icon: <GiIcons.GiAirplaneDeparture size={20}/>,
+        iconClosed: <RiIcons.RiArrowDownSFill/>,
+        iconOpened: <RiIcons.RiArrowUpSFill/>,
     },
     {
         title: 'Previsões',
@@ -75,10 +72,10 @@ export const SidebarData = [
         icon: <FcIcons.FcRatings size={20}/>
     },
     {
-      title: 'Metas',
-      path: '/metas',
-      icon: <FcIcons.FcTodoList size={20}/>
-  },
+        title: 'Metas',
+        path: '/metas',
+        icon: <FcIcons.FcTodoList size={20}/>
+    },
     // {
     //   title: 'Milhas',
     //   path: '/milhas',
@@ -100,9 +97,9 @@ export const SidebarData = [
     //     icon: <AiIcons.AiFillExperiment size={20}/>
     // },
     {
-      title: 'Support',
-      path: '/support',
-      icon: <FcIcons.FcSettings size={20}/>
+        title: 'Support',
+        path: '/support',
+        icon: <FcIcons.FcSettings size={20}/>
     }
-  ];
+];
   

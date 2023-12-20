@@ -1,0 +1,23 @@
+.content-color-picker {
+    border: 1px solid #c4c4c4;
+    height: 40px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+}
+.content-color-picker:hover {
+    border: 1px solid black;
+}
+
+.content-color-picker-label {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.content-color-picker-label-value {
+    margin-left: 12px;
+    font-size: 14px;
+}

@@ -1,31 +1,73 @@
-.content, .content-grid{
+.management-content {
+    opacity: 0;
+    transform: translateX(-100%);
+    animation: slideIn 2s forwards;
+    margin-bottom: -50px;
+
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.content-management, .content-grid-management{
     font-size: 0.85rem;
     border-radius: 4px;
     color: #333;
-    margin-top: 65px;
+    margin-top: 60px;
     background: white;
     box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     border: 2px solid white;
     width: 100%;
 }
 
-.labels {
+.labels-management {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 8px 18px 8px 18px;
     align-items: center;
+    font-size: 16px;
+    font-weight: 800;
+    font-style: normal;
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    color: black;
+
 }
 
-.content-grid {
+.labels-management-change {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 18px 8px 18px;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 800;
+    font-style: normal;
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    color: black;
+}
+
+.content-grid-management {
     margin-top: 8px;
+    background: transparent;
 }
 
 .content-not-grid {
     font-size: 1rem;
     border-radius: 4px;
     color: #333;
-    margin-top: 8px;
+    margin-top: 12px;
     padding: 20px;
     text-align: center;
     background: white;
@@ -34,6 +76,32 @@
     width: 100%;
 }
 
+.content-accordion {
+    font-size: 1rem;
+    border-radius: 4px;
+    color: #333;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    margin-top: 12px;
+    text-align: center;
+    background: transparent;
+    width: 100%;
+}
+
 .button-create {
     max-height: 40px;
+}
+
+.button-aux {
+    max-height: 40px;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.two-columns {
+    display: flex;
+    justify-content: space-between;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }

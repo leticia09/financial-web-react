@@ -1,4 +1,4 @@
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import {Creation} from "../../../components/creation";
 import {Messages} from "../../../internationalization/message";
 import useLoginStore from "../../login/store/useLoginStore";
@@ -7,6 +7,11 @@ import {BankDataForm} from "./form/bankForm";
 import {ValidateForm} from "./validade-factory/validadeFactory";
 import {BankDataManagementService} from "../service";
 import {useNavigate} from "react-router-dom";
+import {ValidateError} from "../../../validate-error/validate-error";
+import {accordionActionsClasses} from "@mui/material";
+import useGlobalStore from "../../global-informtions/store/useGlobalStore";
+import {MembersManagementService} from "../../members/service";
+import {GlobalService} from "../../global-informtions/service";
 
 export const RegisterBankData: FunctionComponent = () => {
     const loginStore = useLoginStore();
@@ -17,6 +22,20 @@ export const RegisterBankData: FunctionComponent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const registerBankService = BankDataManagementService();
     const navigate = useNavigate();
+    const globalStore = useGlobalStore();
+    const membersManagementService = MembersManagementService();
+    const service = GlobalService();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const memberResponse = await membersManagementService.getMembersDropdown(loginStore.userId);
+            globalStore.setMember(memberResponse.data.data);
+
+            const programResponse = await service.getProgram(loginStore.userId);
+            globalStore.setProgram(programResponse.data.data);
+        };
+        fetchData();
+    }, []);
 
     const handleClose = (reason: string) => {
         if (reason === "clickaway") {
@@ -26,44 +45,44 @@ export const RegisterBankData: FunctionComponent = () => {
     };
 
     const save = async () => {
-        formStore.formList.userAuthId = loginStore.userId;
-
         setIsLoading(true);
 
+        formStore.formList.userAuthId = loginStore.userId;
+
+        formStore.formList.accounts.forEach(account => {
+            account.cards.forEach(card => {
+                let owner = globalStore.members.filter(mem => mem.name === card.owner)[0]
+                let program = globalStore.program.filter(pro => pro.description === card.program)[0];
+                card.program = program ? program.id : null;
+                card.owner = owner ? owner.id.toString() : null;
+            })
+        });
+
         try {
-            const response = await registerBankService.saveRegisterBank(formStore.formList);
+            let response: { data: { message: string; severity: string; }; };
+            if(formStore.formType === "CREATE") {
+                response = await registerBankService.saveRegisterBank(formStore.formList);
+            }
+            if(formStore.formType === "EDIT") {
+                response = await registerBankService.editBank(formStore.formList);
+            }
+
             if (response.data.message === "success") {
                 setOpen(true);
                 setSeverity("success");
                 setToastMessage(Messages.messages.operationSuccess);
-                setIsLoading(false);
 
                 setTimeout(() => {
                     setOpen(false);
-                    navigate("/grupos/dados-bancarios");
-                }, 2000);
+                    setIsLoading(false);
+                    if (response.data.severity === "success")
+                        navigate("/grupos/dados-bancarios");
+                }, 3000);
 
             } else {
                 setOpen(true);
                 setSeverity("error");
-                switch (response.data.message) {
-                    case "REQUIRED_FIELDS_MISSING":
-                        setToastMessage(Messages.messages.requiredFields);
-                        break;
-                    case "BANK_NAME_ALREADY_EXISTS":
-                        setToastMessage(Messages.messages.bankNameAlreadyExists);
-                        break;
-                    case "DUPLICATE_ACCOUNT_NUMBER":
-                        setToastMessage(Messages.messages.duplicateAccountNumber);
-                        break;
-                    case "DUPLICATE_CARD_NUMBER":
-                        setToastMessage(Messages.messages.duplicateCardNumber);
-                        break;
-                    default:
-                        setToastMessage(Messages.titles.errorMessage);
-
-                }
-
+                setToastMessage(ValidateError(response.data.message));
                 setIsLoading(false);
             }
 
@@ -87,7 +106,7 @@ export const RegisterBankData: FunctionComponent = () => {
             pathBack="/grupos/dados-bancarios"
             toastMessage={toastMessage}
             severityType={severity}
-            isLoading={isLoading}
+            showLineProgress={isLoading}
             open={open}
             handleClose={handleClose}
             hasBlock={true}

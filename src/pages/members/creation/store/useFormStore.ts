@@ -15,10 +15,12 @@ type Actions = {
 const initialState: State = {
     formList: [
         {
-            id: 0,
-            name: '',
+            id: null,
             index: 0,
-            userAuthId: 0
+            name: "",
+            userAuthId: 0,
+            color: '',
+            status: 0,
         }
     ],
 };
@@ -38,7 +40,9 @@ const useFormStore = create<State & Actions>((set) => ({
                     id: null,
                     index: 0,
                     name: "",
-                    userAuthId: authId
+                    userAuthId: 0,
+                    color: '',
+                    status: 0,
                 };
             }
 
@@ -58,7 +62,18 @@ const useFormStore = create<State & Actions>((set) => ({
         });
     },
     resetFormStore: () => {
-        set(initialState);
+        set({
+            formList: [
+                {
+                    id: null,
+                    index: 0,
+                    name: "",
+                    userAuthId: 0,
+                    color: '',
+                    status: 0,
+                }
+            ]
+        })
     },
 }));
 

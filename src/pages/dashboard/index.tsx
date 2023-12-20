@@ -27,6 +27,7 @@ ChartJS.register(
 
 export const options1 = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         legend: {
             position: "top" as const,
@@ -111,8 +112,8 @@ export const data1 = {
         {
             label: "Fixas",
             data: [5, 12, 10, 20, 18, 24, 5, 12, 10, 20, 18, 24],
-            borderColor: "#00ff00",
-            backgroundColor: "#adff2f",
+            borderColor: "#335c92",
+            backgroundColor: "#335c92",
         },
     ],
 };
@@ -206,13 +207,13 @@ export const tiposDespesas = [
 
 export const Dashboard: FunctionComponent = () => {
     return (
-        <div>
+        <div className="content-dash">
             <div className="page">
                 <div className="painel">
                     <div className="labels_dash">
-                        {tiposDespesas.map((item) => {
+                        {tiposDespesas.map((item, index) => {
                             return (
-                                <div className="label_dash">
+                                <div className="label_dash" key={index}>
                                     <div className="label_despesas">{item.nome}</div>
                                     <div >{item.valor}</div>
                                 </div>

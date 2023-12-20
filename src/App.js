@@ -22,7 +22,7 @@ function App() {
         <ToastProvider>
             <Router>
                 <Routes>
-                    <Route path="/" element={<SplashScreen/>}/>
+                    <Route path="/splash" element={<SplashScreen/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route exact path="/register-account" element={<RegisterAccount/>}/>
                     <Route path="/*" element={<Private loginInformation={loginStore}/>}/>

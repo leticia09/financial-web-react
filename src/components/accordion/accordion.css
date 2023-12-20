@@ -1,0 +1,21 @@
+.accordion-summary {
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+}
+.accordion-summary-border {
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+    border-bottom: 1px solid #ed8800;
+
+}
+
+.accordion-component {
+
+}
+
+.accordion-content {
+    margin-bottom: 16px;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.1);
+}
