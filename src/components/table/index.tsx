@@ -8,6 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import {IColumns, IRow} from "../../interfaces/table";
+import "./table.css"
+import {isAfter, isBefore, parse} from "date-fns";
 
 interface ITableComponent {
     columns: IColumns[];
@@ -24,21 +26,83 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                                                                    }: ITableComponent) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const handleChangePage = (event, newPage) => {
+    const [orderBy, setOrderBy] = useState('');
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
 
+    const handleRequestSort = (property: string) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const sortedRows = () => {
+        if (orderBy === '') return rows;
+
+        return rows.slice().sort((a: IRow, b: IRow) => {
+            let comparison = 0;
+            let valueA = a[orderBy];
+            let valueB = b[orderBy];
+
+            if (typeof valueA === 'object' && typeof valueB === 'object') {
+                valueA = valueA.props.label;
+                valueB = valueB.props.label;
+            }
+
+            if (typeof valueA === "string" && typeof valueB === "string") {
+                if (validateDate(valueA) && validateDate(valueB)) {
+                    const dateA = parse(valueA, 'dd/MM/yyyy', new Date());
+                    const dateB = parse(valueB, 'dd/MM/yyyy', new Date());
+
+                    if (dateA && dateB) {
+                        if (order === 'asc') {
+                            comparison = isBefore(dateA, dateB) ? -1 : 1;
+                        } else {
+                            comparison = isAfter(dateA, dateB) ? 1 : -1;
+                        }
+                    }
+
+                } else {
+                    console.log(valueA, valueB)
+                    if (order === 'asc') {
+
+                        return valueA.localeCompare(valueB);
+                    } else {
+                        return valueB.localeCompare(valueA);
+                    }
+                }
+            }
+
+            if (typeof valueA === "number" && typeof valueB === "number") {
+                if (valueA > valueB) {
+                    comparison = 1;
+                } else if (valueA < valueB) {
+                    comparison = -1;
+                }
+            }
+
+
+
+            return order === 'asc' ? comparison : -comparison;
+        });
+    };
+
+    function validateDate(input) {
+        const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+        return datePattern.test(input);
+    }
+
     return (
-        <Paper sx={{width: width, overflow: "hidden"}}>
-            <TableContainer
-                sx={{maxHeight: 440, maxWidth: "100%"}}
-                className="scrollbar"
-            >
+        <Paper sx={{width: width, overflow: "hidden", maxWidth: "100%"}}>
+            <TableContainer sx={{maxHeight: 500, maxWidth: "100%"}} className="scrollbar">
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -52,8 +116,10 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                                         textAlign: "center",
                                         fontWeight: "600",
                                         padding: "8px 8px",
-                                        fontSize: "14px"
+                                        fontSize: "14px",
+                                        cursor: "pointer"
                                     }}
+                                    onClick={() => handleRequestSort(column.id)}
                                 >
                                     {column.label}
                                 </TableCell>
@@ -61,20 +127,20 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                        {sortedRows().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => {
                             return (
                                 <TableRow
                                     hover
                                     role="checkbox"
                                     tabIndex={-1}
-                                    key={row.index}
+                                    key={rowIndex}
                                     sx={{height: "8px", border: "1px solid red", lineHeight: "1"}}
                                 >
                                     {columns.map((column) => {
                                         const value = row[column.id];
                                         return (
                                             <TableCell
-                                                key={`${row.index}-${column.id}`}
+                                                key={`${rowIndex}-${column.id}`}
                                                 sx={{
                                                     textAlign: "center",
                                                     padding: "8px 8px",
@@ -82,9 +148,7 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                                                     fontWeight: "200"
                                                 }}
                                             >
-                                                {column.format && typeof value === "number"
-                                                    ? column.format(value)
-                                                    : value}
+                                                {column.format && typeof value === "number" ? column.format(value) : value}
                                             </TableCell>
                                         );
                                     })}
@@ -94,18 +158,18 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                     </TableBody>
                 </Table>
             </TableContainer>
-            {pagination &&
+            {pagination && (
                 <TablePagination
                     sx={{height: "45px", overflow: "hidden"}}
-                    rowsPerPageOptions={[5, 10, 25, 100]}
+                    rowsPerPageOptions={[5, 10]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                />}
-
+                />
+            )}
         </Paper>
     );
-}
+};

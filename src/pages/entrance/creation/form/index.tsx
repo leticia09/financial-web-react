@@ -17,8 +17,8 @@ import * as AiIcons from "react-icons/ai";
 import {InputDataComponent} from "../../../../components/input-data";
 import {Toast} from "../../../../components/toast";
 import {GlobalService} from "../../../global-informtions/service";
-import {Checkbox, FormControlLabel, Switch} from "@mui/material";
-import {InformationComponent} from "../../../../components/information";
+import {FormControlLabel, Switch} from "@mui/material";
+
 
 const columns: IColumns[] = [
     {
@@ -698,6 +698,7 @@ export const EntranceForm: FunctionComponent = () => {
                     />
                 </div>
             }
+
             <Toast
                 severity={"warning"}
                 width="100%"
