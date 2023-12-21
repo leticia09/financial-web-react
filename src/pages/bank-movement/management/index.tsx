@@ -175,7 +175,7 @@ export const BankMovementData: FunctionComponent = () => {
         setResponses(response.data.data);
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
             data.value,
-            globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "Dado bancário foi exluído" ,
+            globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "--" ,
             data.dateMovement,
             data.entranceId ? globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description : null,
             data.expenseId ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,

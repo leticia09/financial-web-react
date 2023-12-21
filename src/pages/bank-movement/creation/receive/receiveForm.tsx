@@ -12,6 +12,7 @@ import * as AiIcons from "react-icons/ai";
 import {getMonth, getYear, isAfter} from "date-fns";
 import {EntranceService} from "../../../entrance/service";
 import movementBankStore from "../../store";
+import {GlobalService} from "../../../global-informtions/service";
 
 const columns: IColumns[] = [
     {
@@ -86,6 +87,7 @@ export const ReceiveForm: FunctionComponent = () => {
         const formStore = movementBankStore();
         const loginStore = useLoginStore();
         const globalStore = useGlobalStore();
+        const globalService = GlobalService();
         const service = EntranceService();
         const [rows, setRows] = useState<RowType[]>([]);
         const [paymentRefer, setPaymentRefer] = useState("");

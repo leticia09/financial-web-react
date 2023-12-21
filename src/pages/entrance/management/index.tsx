@@ -101,7 +101,7 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
-        id: "mouthReceive",
+        id: "monthReceive",
         label: "Mês",
         minWidth: 30,
         align: "center",

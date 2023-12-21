@@ -48,57 +48,76 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
         if (orderBy === '') return rows;
 
         return rows.slice().sort((a: IRow, b: IRow) => {
-            let comparison = 0;
-            let valueA = a[orderBy];
-            let valueB = b[orderBy];
+                let comparison = 0;
+                let valueA = a[orderBy];
+                let valueB = b[orderBy];
 
-            if (typeof valueA === 'object' && typeof valueB === 'object') {
-                valueA = valueA.props.label;
-                valueB = valueB.props.label;
-            }
+                if (typeof valueA === 'object' && typeof valueB === 'object') {
+                    valueA = valueA.props.label;
+                    valueB = valueB.props.label;
+                }
 
-            if (typeof valueA === "string" && typeof valueB === "string") {
-                if (validateDate(valueA) && validateDate(valueB)) {
-                    const dateA = parse(valueA, 'dd/MM/yyyy', new Date());
-                    const dateB = parse(valueB, 'dd/MM/yyyy', new Date());
+                if (typeof valueA === "string" && typeof valueB === "string") {
 
-                    if (dateA && dateB) {
+                    if (validateDate(valueA) && validateDate(valueB)) {
+                        const dateA = parse(valueA, 'dd/MM/yyyy', new Date());
+                        const dateB = parse(valueB, 'dd/MM/yyyy', new Date());
+
+                        if (dateA && dateB) {
+                            if (order === 'asc') {
+                                comparison = isBefore(dateA, dateB) ? -1 : 1;
+                            } else {
+                                comparison = isAfter(dateA, dateB) ? 1 : -1;
+                            }
+                        }
+
+                    } else if ((valueA.includes("R$") && valueB.includes("R$")) || (valueA.includes("US$") && valueB.includes("US$")) || (valueA.includes("€") && valueB.includes("€"))) {
+                        const numericValueA = extractNumericValue(valueA);
+                        const numericValueB = extractNumericValue(valueB);
+
+                
                         if (order === 'asc') {
-                            comparison = isBefore(dateA, dateB) ? -1 : 1;
+                            return numericValueA > numericValueB ? 1 : -1;
                         } else {
-                            comparison = isAfter(dateA, dateB) ? 1 : -1;
+                            return numericValueA > numericValueB ? -1 : 1;
+                        }
+
+                    } else {
+                        if (order === 'asc') {
+                            return valueA.localeCompare(valueB);
+                        } else {
+                            return valueB.localeCompare(valueA);
                         }
                     }
 
-                } else {
-                    console.log(valueA, valueB)
-                    if (order === 'asc') {
 
-                        return valueA.localeCompare(valueB);
-                    } else {
-                        return valueB.localeCompare(valueA);
+                }
+
+                if (typeof valueA === "number" && typeof valueB === "number") {
+                    if (valueA > valueB) {
+                        comparison = 1;
+                    } else if (valueA < valueB) {
+                        comparison = -1;
                     }
                 }
+
+                return order === 'asc' ? comparison : -comparison;
             }
-
-            if (typeof valueA === "number" && typeof valueB === "number") {
-                if (valueA > valueB) {
-                    comparison = 1;
-                } else if (valueA < valueB) {
-                    comparison = -1;
-                }
-            }
-
-
-
-            return order === 'asc' ? comparison : -comparison;
-        });
+        )
+            ;
     };
 
     function validateDate(input) {
         const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
         return datePattern.test(input);
     }
+
+    function extractNumericValue(value) {
+        const numericPart = value.match(/[0-9.,]+/);
+        const numericValue = numericPart ? numericPart[0].replace(/[.,]/g, '') : NaN;
+        return parseFloat(numericValue);
+    }
+
 
     return (
         <Paper sx={{width: width, overflow: "hidden", maxWidth: "100%"}}>
