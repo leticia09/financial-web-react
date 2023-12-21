@@ -15,7 +15,7 @@ type Actions = {
     setFormList: (data: IBankData) => void;
     setColumns: (columns: any[]) => void;
     setRows: (rows: any[]) => void;
-    addAccount: (account: IAccount) => void;
+    addAccount: (account: IAccount, label: string) => void;
     resetAccounts: () => void;
     setBankNameFormList: (bankName: string) => void;
     setBankId: (bankId: string) => void;
@@ -51,9 +51,9 @@ const useFormBankStore = create<State & Actions>((set) => ({
     setColumns: (columns) => set({columns}),
     setForms: (forms) => set({forms}),
     setRows: (rows) => set({rows}),
-    addAccount: (newAccount) => {
+    addAccount: (newAccount: IAccount, label: string) => {
         set((state) => {
-            newAccount.label = "Conta: " + newAccount.accountNumber + "/" + newAccount.owner;
+            newAccount.label = label;
             if(!newAccount.cards) {
                 newAccount.cards = [];
             }

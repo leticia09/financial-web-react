@@ -30,7 +30,7 @@ export const BlockComponent: FunctionComponent <IBlockComponent> = ({title, colu
             <div className="block-component-content">
                 {columns && columns.length > 0 && rows && rows.length > 0 ? (
                     columns.map((column, i) => (
-                        <div key={column.label}>
+                        <div key={i}>
                             {rows[currentIndex][i].label &&
                                 <div className="block-component-content-line">
                                     <span className="block-component-content-item">{column.label}: </span>

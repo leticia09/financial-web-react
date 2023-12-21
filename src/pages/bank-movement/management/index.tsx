@@ -173,14 +173,15 @@ export const BankMovementData: FunctionComponent = () => {
     const getData = async () => {
         const response = await service.get(loginStore.userId);
         setResponses(response.data.data);
+
         const transformedRows = response.data.data.map((data: any, index: number) => createData(
             data.value,
-            globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "--" ,
+            globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "--",
             data.dateMovement,
-            data.entranceId ? globalStore.entrance.filter(en=> en.id === data.entranceId)[0].description : null,
+            data.entranceId &&  globalStore.entrance.filter(en => en.id === data.entranceId)[0] ? globalStore.entrance.filter(en => en.id === data.entranceId)[0].description : null,
             data.expenseId ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,
             data.obs,
-            data.ownerId ? globalStore.members.filter(me=> me.id === data.ownerId)[0].name : null,
+            data.ownerId ? globalStore.members.filter(me => me.id === data.ownerId)[0].name : null,
             data.referencePeriod,
             data.type,
             data.currency,
@@ -223,7 +224,7 @@ export const BankMovementData: FunctionComponent = () => {
         );
 
         let card = {
-            label: Messages.titles.totalMoney,
+            label: Messages.titles.totalMoney + " - R$",
             value: "R$ " + data.data.data.total1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
@@ -238,8 +239,8 @@ export const BankMovementData: FunctionComponent = () => {
         }
 
         let card3 = {
-            label: Messages.titles.totalDollar,
-            value: "U$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            label: Messages.titles.totalMoney + " - US$",
+            value: "US$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let cards = [];

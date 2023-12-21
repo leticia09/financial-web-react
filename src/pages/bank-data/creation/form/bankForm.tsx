@@ -56,7 +56,6 @@ export const BankDataForm: FunctionComponent = () => {
                 try {
                     const response = await bankDataManagementService.getRegisterBankById(loginStore.userId, id);
                     fillForm(response.data.data);
-                    console.log(response.data.data)
                     formStore.setBankId(id);
 
                 } catch (error) {
@@ -78,7 +77,7 @@ export const BankDataForm: FunctionComponent = () => {
     const fillForm = (form) => {
         formStore.setBankNameFormList(form.name)
         form.accounts.forEach((account: IAccount) => {
-            formStore.addAccount(account);
+            formStore.addAccount(account,account.accountNumber + " / " + globalStore.members.filter(m => m.id.toString() === account.owner.toString())[0].name);
         })
         transformDataToRows(form);
     }
@@ -94,6 +93,7 @@ export const BankDataForm: FunctionComponent = () => {
     const addAccount = () => {
         if (formStore.formList.accounts.length <= 2) {
             formStore.addAccount({
+                id: null,
                 label: null,
                 accountNumber: numberAccount,
                 owner: accountOwner,
@@ -101,7 +101,7 @@ export const BankDataForm: FunctionComponent = () => {
                 index: formStore.formList.accounts.length + 1,
                 value: accountValue,
                 currency: globalStore.currency.filter(currency => currency.id.toString() === accountCurrency.toString())[0].description,
-            });
+            },  numberAccount + " / " + globalStore.members.filter(m => m.id.toString() === accountOwner.toString())[0].name);
             resetFields();
         } else {
             setShowComment(true);

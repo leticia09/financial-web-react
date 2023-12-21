@@ -1,13 +1,10 @@
 import {FunctionComponent, useState} from "react";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-// @ts-ignore
-import {Header} from "./header/index.tsx";
-// @ts-ignore
-import {Sidebar} from "./sidebar/index.tsx";
-import {ILoginInformation} from "../interfaces/loginInformation";
-// @ts-ignore
-import {Home} from "./home/index.tsx";
+import { ILoginInformation } from "interfaces/loginInformation";
+import {Header} from "./header";
+import {Sidebar} from "./sidebar";
+import {Home} from "./home";
+
 
 export const Layout: FunctionComponent = (loginInformation: ILoginInformation) => {
 
@@ -18,7 +15,7 @@ export const Layout: FunctionComponent = (loginInformation: ILoginInformation) =
     }
 
     return (
-        <Box sx={{display: "flex", maxWidth: "100%"}}>
+        <Box sx={{display: "flex", maxWidth: "100%", overflowX: "auto"}}>
 
             <Header
                 showSidebar={showSidebar}

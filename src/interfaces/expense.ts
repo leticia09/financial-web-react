@@ -13,4 +13,14 @@ export interface IExpense {
     value: number;
     userAuthId: number;
     index: number;
+
+    hasSplitExpense: boolean;
+    frequency: string;
+    initialDate: string;
+    monthPayment: number;
+    dayPayment: number;
+
+    moneyId?: number,
+    ticketId?: number;
+    cardId?: number;
 }

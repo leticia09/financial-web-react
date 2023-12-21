@@ -14,13 +14,12 @@ import {GlobalService} from "../../../global-informtions/service";
 import {Checkbox, FormControlLabel, Switch} from "@mui/material";
 import useExpenseStore from "../../store/useExpenseStore";
 import {InformationComponent} from "../../../../components/information";
-import {ExpenseService} from "../../service";
 import {Toast} from "../../../../components/toast";
 
 const columns: IColumns[] = [
     {
         id: "ownerId",
-        label: "Responsável",
+        label: "Titular",
         minWidth: 70,
         align: "right",
         format: (value) => value.toLocaleString("en-US"),
@@ -35,28 +34,35 @@ const columns: IColumns[] = [
 
     {
         id: "macroGroup",
-        label: "Grupo Macro",
+        label: "G. Macro",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "specificGroup",
-        label: "Grupo Específico",
+        label: "G. Específico",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "paymentForm",
-        label: "Forma de Pagamento",
+        label: "Forma Pagamento",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
     },
     {
         id: "finalCard",
-        label: "Final Cartão",
+        label: "Cartão",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "hasSplitExpense",
+        label: "Parcelado",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -77,7 +83,35 @@ const columns: IColumns[] = [
     },
     {
         id: "dateBuy",
-        label: "Data da Compra",
+        label: "Dt. Compra",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "frequency",
+        label: "Periodicidade",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "initialDate",
+        label: "Dt. Inicial",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "dayReceive",
+        label: "Dia",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "mouthReceive",
+        label: "Mês",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -91,7 +125,7 @@ const columns: IColumns[] = [
     },
     {
         id: "obs",
-        label: "Observação",
+        label: "Obs",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -99,14 +133,17 @@ const columns: IColumns[] = [
     {
         id: "actions",
         label: "Ações",
-        minWidth: 70,
-        width: 100,
+        minWidth: 40,
+        width: 40,
         align: "right",
         format: (value) => value.toFixed(2),
     },
 ];
 
-function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, actions, index) {
+function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard,
+                    quantityPart, hasFixed, dateBuy, obs, value, hasSplitExpense, frequency, initialDate,
+                    monthPayment, dayPayment,
+                    actions, index) {
     return {
         local,
         macroGroup,
@@ -119,6 +156,11 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
         dateBuy,
         obs: obs ? obs : "--",
         value,
+        hasSplitExpense: hasSplitExpense ? "Sim" : "Não",
+        frequency: frequency ? frequency : "--",
+        initialDate: initialDate ? initialDate : "--",
+        monthPayment: monthPayment ? monthPayment : "--",
+        dayPayment: dayPayment ? dayPayment : "--",
         actions,
         index
     };
@@ -146,17 +188,21 @@ export const ExpenseForm: FunctionComponent = () => {
     const loginStore = useLoginStore();
     const globalStore = useGlobalStore();
     const globalService = GlobalService();
-    const [openModal, setOpenModal] = useState(false);
-    const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
-    const [toastMessage, setToastMessage] = useState('');
     const [openToast, setOpenToast] = useState(false);
-    const service = ExpenseService();
     const [rows, setRows] = useState<RowType[]>([]);
     const [value, setValue] = useState('');
     const [hasSwitch, setHasSwitch] = useState(false);
     const [checked, setChecked] = useState(false);
     const [specificGroupData, setSpecificGroupData] = useState([]);
-    const [cardData, setCardData] = useState([])
+    const [cardData, setCardData] = useState([]);
+    const [hasSplitExpense, setHasSplitExpense] = useState(false);
+    const [ticketData, setTicketData] = useState([]);
+    const [ticketCardData, setTicketCardData] = useState([]);
+    const [message, setMessege] = useState(<>
+        Ao salvar uma despesa com a forma de pagamento Débito/Pix/Dinheiro
+        <br/>
+        à vista, será retirado o valor automaticamente.
+    </>)
 
     const actions = (index) => (
         <div style={{width: "50%", display: "flex"}}>
@@ -169,6 +215,9 @@ export const ExpenseForm: FunctionComponent = () => {
         const fetchData = async () => {
             const groupResponse = await globalService.getGroups(loginStore.userId);
             globalStore.setMacroGroup(groupResponse.data.data);
+
+            const money = await globalService.getMoney(loginStore.userId);
+            globalStore.setMoney(money.data.data);
 
             const bankResponse = await globalService.getBank(loginStore.userId);
             globalStore.setBank(bankResponse.data.data);
@@ -196,6 +245,11 @@ export const ExpenseForm: FunctionComponent = () => {
                 value: formStore.form.value,
                 userAuthId: loginStore.userId,
                 index: updateList.length,
+                hasSplitExpense: formStore.form.hasSplitExpense,
+                frequency: globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0] ? globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0].description : null,
+                initialDate: formStore.form.initialDate ? formStore.form.initialDate : null,
+                monthPayment: formStore.form.monthPayment && formStore.form.monthPayment !== 0 ? formStore.form.monthPayment : null,
+                dayPayment: formStore.form.dayPayment && formStore.form.dayPayment !== 0 ? formStore.form.dayPayment : null,
             }
         )
         formStore.setFormList(updateList);
@@ -212,6 +266,11 @@ export const ExpenseForm: FunctionComponent = () => {
             data.dateBuy,
             data.obs,
             data.value,
+            data.hasSplitExpense,
+            data.frequency,
+            data.initialDate,
+            data.monthPayment,
+            data.dayPayment,
             actions(index),
             index
         ));
@@ -236,6 +295,11 @@ export const ExpenseForm: FunctionComponent = () => {
             data.dateBuy,
             data.obs,
             data.value,
+            data.hasSplitExpense,
+            data.frequency,
+            data.initialDate,
+            data.monthPayment,
+            data.dayPayment,
             actions(index),
             index
         ));
@@ -286,14 +350,43 @@ export const ExpenseForm: FunctionComponent = () => {
             formStore.setValue(formStore.formList[index].value);
             formStore.setUserAuthId(loginStore.userId);
             setValue(formStore.formList[index].value.toString());
+            formStore.setFrequency(globalStore.frequency.filter(fr => fr.description === formStore.formList[index].frequency)[0].id);
+            formStore.setInitialDate(formStore.formList[index].initialDate);
+            formStore.setMonthReceive(formStore.formList[index].monthPayment);
+            formStore.setDayReceive(formStore.formList[index].dayPayment);
         }
         setHasSwitch(!hasSwitch);
     }
 
     const handleChecked = (event) => {
-        formStore.setHasFixed(event.target.checked)
-        setChecked(event.target.checked);
+        if (event.target.checked && hasSplitExpense) {
+            setMessege(<>
+                Não é possível ter criar uma despesa parcelada e fixa
+                <br/>
+                ao mesmo tempo.
+            </>)
+            setOpenToast(true);
+        }
+        if (!hasSplitExpense) {
+            formStore.setHasFixed(event.target.checked)
+            setChecked(event.target.checked);
+        }
     };
+
+    const handleSplit = (event) => {
+        if (event.target.checked && checked) {
+            setMessege(<>
+                Não é possível ter criar uma despesa parcelada e fixa
+                <br/>
+                ao mesmo tempo.
+            </>)
+            setOpenToast(true);
+        }
+        if (!checked) {
+            formStore.setHasSplitExpense(event.target.checked);
+            setHasSplitExpense(event.target.checked);
+        }
+    }
 
     const handleMacroGroup = (event) => {
         formStore.setMacroGroup(event);
@@ -306,20 +399,40 @@ export const ExpenseForm: FunctionComponent = () => {
         formStore.setValue(value);
     }
 
-    const handlePayment = (value) => {
+    const handlePayment = async (value) => {
         formStore.setPaymentForm(value);
         const payment = globalStore.paymentForm.filter(p => p.id === value)[0].description;
         const card = getCards(formStore.form.ownerId);
         const cardFiltered = card.filter(ca => ca.modality.includes(payment));
         setCardData(cardFiltered);
 
-        if (value === 2) {
+        if (value === 1 || value === 2 || value === 4) {
             setOpenToast(true);
+        }
+
+        if (value === 5) {
+            const ticket = await globalService.getTicket(loginStore.userId);
+            globalStore.setTickets(ticket.data.data);
+            setTicketData(ticket.data.data);
         }
     }
 
     const handleCloseToast = () => {
         setOpenToast(false);
+    }
+
+    const handleTicket = (value) => {
+        formStore.setTicket(value);
+        const ticket = globalStore.tickets.filter(t => t.id === value)[0];
+        setTicketCardData(ticket.cardFinancialEntityResponseList.filter(t => t.ownerId === formStore.form.ownerId))
+        if (ticket.cardFinancialEntityResponseList.filter(t => t.ownerId === formStore.form.ownerId).length === 0) {
+            setOpenToast(true);
+            setMessege(<>
+                Não foram encontrados cartões associados
+                <br/>
+                ao titular e vale selecionado.
+            </>)
+        }
     }
 
     return (
@@ -335,7 +448,8 @@ export const ExpenseForm: FunctionComponent = () => {
                     getValue={(value) => handleOwner(value)}
                     value={formStore.form.ownerId}
                 />
-
+            </div>
+            <div className="register-member">
                 <Input
                     label={Messages.titles.local}
                     disabled={false}
@@ -365,9 +479,6 @@ export const ExpenseForm: FunctionComponent = () => {
                     getValue={(value) => formStore.setSpecificGroup(value)}
                     value={formStore.form.specificGroup}
                 />
-
-            </div>
-            <div className="register-member">
                 <DropdownSingleSelect
                     label={Messages.titles.paymentForm}
                     data={globalStore.paymentForm}
@@ -379,7 +490,49 @@ export const ExpenseForm: FunctionComponent = () => {
                     value={formStore.form.paymentForm}
                 />
 
-                {(formStore.form.paymentForm.toString() === "2" || formStore.form.paymentForm.toString() === "3") &&
+            </div>
+            <div className="register-member">
+                {formStore.form.paymentForm.toString() !== "5" &&
+                    <FormControlLabel style={{marginLeft: "2px", width: "210px"}}
+                                      control={
+                                          <Checkbox
+                                              checked={hasSplitExpense}
+                                              onChange={handleSplit}
+                                              color="primary"
+                                          />
+                                      }
+                                      label={Messages.titles.term}
+                    />
+                }
+
+                {formStore.form.paymentForm.toString() === "5" &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.ticket}
+                        data={ticketData}
+                        disabled={!formStore.form.paymentForm}
+                        width={"210px"}
+                        idProperty={"id"}
+                        descriptionProperty={"name"}
+                        getValue={(value) => handleTicket(value)}
+                        value={formStore.form.ticketId}
+                    />
+                }
+
+                {formStore.form.paymentForm.toString() === "5" &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.card}
+                        data={ticketCardData}
+                        disabled={!formStore.form.paymentForm}
+                        width={"210px"}
+                        idProperty={"id"}
+                        descriptionProperty={"cardName"}
+                        getValue={(value) => formStore.setCardId(value)}
+                        value={formStore.form.cardId}
+                    />
+                }
+
+
+                {((formStore.form.paymentForm.toString() === "2") || formStore.form.paymentForm.toString() === "3" || formStore.form.paymentForm.toString() === "4") &&
                     <DropdownSingleSelect
                         label={Messages.titles.finalCard}
                         data={cardData}
@@ -393,7 +546,10 @@ export const ExpenseForm: FunctionComponent = () => {
 
                 }
 
-                {(formStore.form.paymentForm.toString() === "3") &&
+                {((formStore.form.paymentForm.toString() === "3") ||
+                        (formStore.form.paymentForm.toString() === "1" && hasSplitExpense) ||
+                        (formStore.form.paymentForm.toString() === "2" && hasSplitExpense) ||
+                        (formStore.form.paymentForm.toString() === "4" && hasSplitExpense)) &&
                     <Input
                         label={Messages.titles.quantityPart}
                         disabled={false}
@@ -413,9 +569,87 @@ export const ExpenseForm: FunctionComponent = () => {
                 />
             </div>
 
+            {((formStore.form.paymentForm.toString() === "1" && hasSplitExpense) ||
+                    (formStore.form.paymentForm.toString() === "2" && hasSplitExpense) ||
+                    (formStore.form.paymentForm.toString() === "4" && hasSplitExpense)) &&
+                <div className="register-member">
+                    <DropdownSingleSelect
+                        label={Messages.titles.frequency}
+                        data={globalStore.frequency.filter(f => f.id === 2 || f.id === 5)}
+                        disabled={false}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"description"}
+                        getValue={(value) => formStore.setFrequency(value)}
+                        value={formStore.form.frequency}
+                    />
+
+                    {(formStore.form.frequency.toString() === "2") &&
+                        <DropdownSingleSelect
+                            label={Messages.titles.dayReceive}
+                            data={globalStore.days}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"id"}
+                            descriptionProperty={"description"}
+                            getValue={(value) => formStore.setDayReceive(value)}
+                            value={formStore.form.dayPayment}
+                        />
+                    }
+                    {formStore.form.frequency.toString() === "1" &&
+                        <InputDataComponent
+                            label={Messages.titles.date}
+                            disabled={false}
+                            width="200px"
+                            getValue={(value) => formStore.setInitialDate(value)}
+                            viewMode={false}
+                            disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
+                            after={true}
+                        />
+                    }
+
+                    {(formStore.form.frequency.toString() !== "1" && formStore.form.frequency.toString() !== "2") && formStore.form.frequency !== "" &&
+                        <>
+                            <DropdownSingleSelect
+                                label={Messages.titles.dayReceive}
+                                data={globalStore.days}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => formStore.setDayReceive(value)}
+                                value={formStore.form.dayPayment}
+                            />
+                            <DropdownSingleSelect
+                                label={Messages.titles.monthReceive}
+                                data={globalStore.monthOfYear}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => formStore.setMonthReceive(value)}
+                                value={formStore.form.monthPayment}
+                            />
+                        </>
+                    }
+
+                    {(formStore.form.frequency.toString() !== "1") && formStore.form.frequency !== "" &&
+                        <>
+                            <InputDataComponent
+                                label={Messages.titles.initialDate}
+                                disabled={false}
+                                width="200px"
+                                getValue={(value) => formStore.setInitialDate(value)}
+                                viewMode={false}
+                                disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
+                                after={true}
+                            />
+                        </>
+                    }
+                </div>
+            }
+
             <div className="register-member">
-
-
                 <InputDataComponent
                     label={Messages.titles.dateBuy}
                     disabled={false}
@@ -425,17 +659,21 @@ export const ExpenseForm: FunctionComponent = () => {
                     disabledDates={null}
                     after={true}
                 />
-                <FormControlLabel style={{marginLeft: "2px"}}
-                                  control={
-                                      <Checkbox
-                                          checked={checked}
-                                          onChange={handleChecked}
-                                          color="primary"
-                                      />
-                                  }
-                                  label={Messages.titles.hasFixed}
-                />
-                <InformationComponent message={Messages.messages.expenseInfo}/>
+                {formStore.form.paymentForm.toString() !== "5" &&
+                    <>
+                        <FormControlLabel style={{marginLeft: "2px"}}
+                                          control={
+                                              <Checkbox
+                                                  checked={checked}
+                                                  onChange={handleChecked}
+                                                  color="primary"
+                                              />
+                                          }
+                                          label={Messages.titles.hasFixed}
+                        />
+                        <InformationComponent message={Messages.messages.expenseInfo}/>
+                    </>
+                }
             </div>
 
             <div className="register-member">
@@ -492,13 +730,7 @@ export const ExpenseForm: FunctionComponent = () => {
                 severity={"info"}
                 width="100%"
                 duration={4000}
-                message={
-                    <>
-                        Ao salvar uma despesa com a forma de pagamento Débito
-                        <br/>
-                        será debitado de sua conta o valor automaticamente.
-                    </>
-                }
+                message={message}
                 open={openToast}
                 onClose={handleCloseToast}
             />

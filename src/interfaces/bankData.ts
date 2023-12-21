@@ -6,6 +6,7 @@ export interface IBankData {
 }
 
 export interface IAccount {
+    id: number;
     label: string,
     accountNumber: string,
     owner: string,

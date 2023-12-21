@@ -116,6 +116,8 @@ const initialState: State = {
         {id: 1, description: "Dinheiro"},
         {id: 2, description: "Débito"},
         {id: 3, description: "Crédito"},
+        {id: 4, description: "Pix"},
+        {id: 5, description: "Vale"},
     ],
 };
 

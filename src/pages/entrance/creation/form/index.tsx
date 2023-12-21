@@ -183,6 +183,7 @@ export const EntranceForm: FunctionComponent = () => {
         </>
     )
     const [moneyData, setMoneyData] = useState([]);
+    const [saveChecked, setSaveChecked] = useState(0);
 
 
     const handleCloseToastWarning = () => {
@@ -200,6 +201,7 @@ export const EntranceForm: FunctionComponent = () => {
         const fetchData = async () => {
             const bankResponse = await globalService.getBank(loginStore.userId);
             globalStore.setBank(bankResponse.data.data);
+
             const money = await globalService.getMoney(loginStore.userId);
             globalStore.setMoney(money.data.data);
 
@@ -391,13 +393,16 @@ export const EntranceForm: FunctionComponent = () => {
             formStore.setSalary(formStore.formList[index].salary);
             formStore.setTicket(formStore.formList[index].ticketId);
             formStore.setTicketCard(formStore.formList[index].cardId);
-            setSalary(formStore.formList[index].salary.toString())
+            formStore.setMoney(formStore.formList[index].moneyId);
+            setSalary(formStore.formList[index].salary.toString());
+            setChecked(saveChecked);
         }
         setHasSwitch(!hasSwitch);
     }
 
     const handleChecked = async (event) => {
         setChecked(event);
+        setSaveChecked(event);
         if (event === 3 ) {
             const ticket = await globalService.getTicket(loginStore.userId);
             globalStore.setTickets(ticket.data.data);
@@ -485,7 +490,7 @@ export const EntranceForm: FunctionComponent = () => {
                         idProperty={"id"}
                         descriptionProperty={"currency"}
                         getValue={(value) => formStore.setMoney(value)}
-                        value={formStore.form.ticketId}
+                        value={formStore.form.moneyId}
                     />
                 }
 
@@ -528,7 +533,7 @@ export const EntranceForm: FunctionComponent = () => {
                         idProperty={"id"}
                         descriptionProperty={"cardName"}
                         getValue={(value) => formStore.setTicketCard(value)}
-                        value={formStore.form.bankId}
+                        value={formStore.form.cardId}
                     />
                 }
 

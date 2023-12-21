@@ -83,10 +83,14 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
             tooltip: {
                 callbacks: {
                     label: function (context) {
-                        if(tooltipLabel) {
+                        const label = context.dataset.label + ": " || '';
+                        console.log(context.dataset.label)
+                        console.log((tooltipLabel))
+                        console.log(context.dataIndex)
+                        if(tooltipLabel.length > 0) {
                             return tooltipLabel[context.dataIndex];
                         } else {
-                            const label = context.dataset.label + ": " || '';
+
                             return label + context.parsed.y;
                         }
                     },

@@ -27,7 +27,14 @@ type Actions = {
     setDateBuy: (dateBuy: string) => void;
     setObs: (obs: string) => void;
     setValue: (value: number) => void;
-
+    setHasSplitExpense: (hasSplitExpense: boolean) => void;
+    setFrequency: (frequency: string) => void;
+    setInitialDate: (initialDate: string) => void;
+    setMonthReceive: (monthReceive: number) => void;
+    setDayReceive: (dayReceive: number) => void;
+    setCardId: (dayReceive: number) => void;
+    setMoney: (moneyId: number) => void;
+    setTicket: (ticketId: number) => void;
 
 };
 
@@ -48,7 +55,15 @@ const initialState: State = {
             obs: '',
             value: 0,
             userAuthId: 0,
-            index: 0
+            index: 0,
+            hasSplitExpense: false,
+            frequency: '',
+            initialDate: null,
+            monthPayment: 0,
+            dayPayment: 0,
+            ticketId: null,
+            cardId: null,
+            moneyId: null,
         },
 
     graphicData: {
@@ -101,7 +116,15 @@ const useExpenseStore = create<State & Actions>((set) => {
                         obs: '',
                         value: 0,
                         userAuthId: 0,
-                        index: 0
+                        index: 0,
+                        hasSplitExpense: false,
+                        frequency: '',
+                        initialDate: null,
+                        monthPayment: 0,
+                        dayPayment: 0,
+                        ticketId: null,
+                        cardId: null,
+                        moneyId: null,
                     };
                 }
 
@@ -223,6 +246,78 @@ const useExpenseStore = create<State & Actions>((set) => {
             }));
         },
 
+        setHasSplitExpense: (hasSplitExpense: boolean) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    hasSplitExpense: hasSplitExpense,
+                },
+            }));
+        },
+        setFrequency: (frequency: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    frequency: frequency,
+                },
+            }));
+        },
+
+        setDayReceive: (dayReceive: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    dayReceive: dayReceive,
+                },
+            }));
+        },
+
+        setMonthReceive: (monthReceive: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    monthReceive: monthReceive,
+                },
+            }));
+        },
+
+        setInitialDate: (initialDate: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    initialDate: initialDate,
+                },
+            }));
+        },
+
+        setCardId: (cardId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    cardId: cardId,
+                },
+            }));
+        },
+
+        setTicket: (ticketId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    ticketId: ticketId,
+                },
+            }));
+        },
+
+        setMoney: (moneyId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    moneyId: moneyId,
+                },
+            }));
+
+        },
+
         resetFormStore: () => {
             set(initialState);
         },
@@ -244,7 +339,15 @@ const useExpenseStore = create<State & Actions>((set) => {
                     obs: '',
                     value: 0,
                     userAuthId: 0,
-                    index: 0
+                    index: 0,
+                    hasSplitExpense: false,
+                    frequency: '',
+                    initialDate: null,
+                    monthReceive: 0,
+                    dayReceive: 0,
+                    ticketId: null,
+                    cardId: null,
+                    moneyId: null,
                 },
             }));
         },

@@ -75,7 +75,7 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                         const numericValueA = extractNumericValue(valueA);
                         const numericValueB = extractNumericValue(valueB);
 
-                
+
                         if (order === 'asc') {
                             return numericValueA > numericValueB ? 1 : -1;
                         } else {
@@ -120,8 +120,8 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
 
 
     return (
-        <Paper sx={{width: width, overflow: "hidden", maxWidth: "100%"}}>
-            <TableContainer sx={{maxHeight: 500, maxWidth: "100%"}} className="scrollbar">
+        <Paper sx={{width: width, maxWidth: "100%", marginBottom:"18px"}}>
+            <TableContainer sx={{overflowX: "auto"}} className="scrollbar">
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -130,8 +130,6 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                                     key={column.id}
                                     align={column.align}
                                     style={{
-                                        minWidth: column.minWidth,
-                                        width: column.width,
                                         textAlign: "center",
                                         fontWeight: "600",
                                         padding: "8px 8px",
@@ -153,7 +151,7 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                                     role="checkbox"
                                     tabIndex={-1}
                                     key={rowIndex}
-                                    sx={{height: "8px", border: "1px solid red", lineHeight: "1"}}
+                                    sx={{lineHeight: "1"}}
                                 >
                                     {columns.map((column) => {
                                         const value = row[column.id];
@@ -180,7 +178,7 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
             {pagination && (
                 <TablePagination
                     sx={{height: "45px", overflow: "hidden"}}
-                    rowsPerPageOptions={[5, 10]}
+                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
