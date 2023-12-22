@@ -136,7 +136,9 @@ const Messages = {
         addTickets: '+ Adicionar Vale',
         ticket: 'Vale',
         receiveForm: 'Forma Recebimento',
-        term: "Despesa Parcelada"
+        term: "Despesa Parcelada",
+        dayPayment: "Dia Pagamento",
+        monthPayment: "Mês Pagamento",
     },
     buttons: {},
     labels: {},

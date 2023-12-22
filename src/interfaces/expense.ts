@@ -22,5 +22,8 @@ export interface IExpense {
 
     moneyId?: number,
     ticketId?: number;
-    cardId?: number;
+    cardId?: number
+
+    bankId?: number;
+    accountId?: number;
 }

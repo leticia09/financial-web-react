@@ -142,8 +142,7 @@ const columns: IColumns[] = [
 
 function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard,
                     quantityPart, hasFixed, dateBuy, obs, value, hasSplitExpense, frequency, initialDate,
-                    monthPayment, dayPayment,
-                    actions, index) {
+                    monthPayment, dayPayment, moneyId, bankId, accountId, actions, index) {
     return {
         local,
         macroGroup,
@@ -161,6 +160,9 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
         initialDate: initialDate ? initialDate : "--",
         monthPayment: monthPayment ? monthPayment : "--",
         dayPayment: dayPayment ? dayPayment : "--",
+        moneyId: moneyId ? moneyId : "--",
+        bankId: bankId ? bankId : "--",
+        accountId: accountId ? accountId : "--",
         actions,
         index
     };
@@ -198,6 +200,7 @@ export const ExpenseForm: FunctionComponent = () => {
     const [hasSplitExpense, setHasSplitExpense] = useState(false);
     const [ticketData, setTicketData] = useState([]);
     const [ticketCardData, setTicketCardData] = useState([]);
+    const [moneyData, setMoneyData] = useState([]);
     const [message, setMessege] = useState(<>
         Ao salvar uma despesa com a forma de pagamento Débito/Pix/Dinheiro
         <br/>
@@ -248,8 +251,13 @@ export const ExpenseForm: FunctionComponent = () => {
                 hasSplitExpense: formStore.form.hasSplitExpense,
                 frequency: globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0] ? globalStore.frequency.filter(fre => fre.id === formStore.form.frequency)[0].description : null,
                 initialDate: formStore.form.initialDate ? formStore.form.initialDate : null,
-                monthPayment: formStore.form.monthPayment && formStore.form.monthPayment !== 0 ? formStore.form.monthPayment : null,
-                dayPayment: formStore.form.dayPayment && formStore.form.dayPayment !== 0 ? formStore.form.dayPayment : null,
+                monthPayment: formStore.form.monthPayment ? formStore.form.monthPayment : null,
+                dayPayment: formStore.form.dayPayment ? formStore.form.dayPayment : null,
+                moneyId: formStore.form.moneyId ? formStore.form.moneyId : null,
+                accountId: formStore.form.accountId ? formStore.form.accountId : null,
+                bankId: formStore.form.bankId ? formStore.form.bankId : null,
+                cardId: formStore.form.cardId ? formStore.form.cardId : null,
+                ticketId: formStore.form.ticketId ? formStore.form.ticketId : null,
             }
         )
         formStore.setFormList(updateList);
@@ -271,6 +279,9 @@ export const ExpenseForm: FunctionComponent = () => {
             data.initialDate,
             data.monthPayment,
             data.dayPayment,
+            data.moneyId,
+            data.bankId,
+            data.accountId,
             actions(index),
             index
         ));
@@ -300,6 +311,9 @@ export const ExpenseForm: FunctionComponent = () => {
             data.initialDate,
             data.monthPayment,
             data.dayPayment,
+            data.moneyId,
+            data.bankId,
+            data.accountId,
             actions(index),
             index
         ));
@@ -354,6 +368,11 @@ export const ExpenseForm: FunctionComponent = () => {
             formStore.setInitialDate(formStore.formList[index].initialDate);
             formStore.setMonthReceive(formStore.formList[index].monthPayment);
             formStore.setDayReceive(formStore.formList[index].dayPayment);
+            formStore.setMoney(formStore.formList[index].moneyId);
+            formStore.setAccountId(formStore.formList[index].accountId);
+            formStore.setBankId(formStore.formList[index].bankId);
+            formStore.setCardId(formStore.form[index].cardId);
+            formStore.setTicket(formStore.form[index].ticketId);
         }
         setHasSwitch(!hasSwitch);
     }
@@ -414,6 +433,10 @@ export const ExpenseForm: FunctionComponent = () => {
             const ticket = await globalService.getTicket(loginStore.userId);
             globalStore.setTickets(ticket.data.data);
             setTicketData(ticket.data.data);
+        }
+
+        if(value === 1) {
+            setMoneyData(globalStore.money.filter(re => re.ownerId.toString() === formStore.form.ownerId.toString()));
         }
     }
 
@@ -492,6 +515,7 @@ export const ExpenseForm: FunctionComponent = () => {
 
             </div>
             <div className="register-member">
+
                 {formStore.form.paymentForm.toString() !== "5" &&
                     <FormControlLabel style={{marginLeft: "2px", width: "210px"}}
                                       control={
@@ -502,6 +526,19 @@ export const ExpenseForm: FunctionComponent = () => {
                                           />
                                       }
                                       label={Messages.titles.term}
+                    />
+                }
+
+                {formStore.form.paymentForm.toString() === "1" &&
+                    <DropdownSingleSelect
+                        label={Messages.titles.money}
+                        data={moneyData}
+                        disabled={!formStore.form.ownerId}
+                        width={"200px"}
+                        idProperty={"id"}
+                        descriptionProperty={"currency"}
+                        getValue={(value) => formStore.setMoney(value)}
+                        value={formStore.form.moneyId}
                     />
                 }
 
@@ -532,7 +569,7 @@ export const ExpenseForm: FunctionComponent = () => {
                 }
 
 
-                {((formStore.form.paymentForm.toString() === "2") || formStore.form.paymentForm.toString() === "3" || formStore.form.paymentForm.toString() === "4") &&
+                {((formStore.form.paymentForm.toString() === "2") || formStore.form.paymentForm.toString() === "3") &&
                     <DropdownSingleSelect
                         label={Messages.titles.finalCard}
                         data={cardData}
@@ -543,6 +580,31 @@ export const ExpenseForm: FunctionComponent = () => {
                         getValue={(value) => formStore.setFinalCard(value)}
                         value={formStore.form.finalCard}
                     />
+                }
+
+                {(formStore.form.paymentForm.toString() === "4") &&
+                    <>
+                        <DropdownSingleSelect
+                            label={Messages.titles.bank}
+                            data={globalStore.bank}
+                            disabled={!formStore.form.paymentForm}
+                            width={"210px"}
+                            idProperty={"id"}
+                            descriptionProperty={"name"}
+                            getValue={(value) => formStore.setFinalCard(value)}
+                            value={formStore.form.finalCard}
+                        />
+                        <DropdownSingleSelect
+                            label={Messages.titles.account}
+                            data={cardData}
+                            disabled={!formStore.form.paymentForm}
+                            width={"210px"}
+                            idProperty={"id"}
+                            descriptionProperty={"description"}
+                            getValue={(value) => formStore.setFinalCard(value)}
+                            value={formStore.form.finalCard}
+                        />
+                    </>
 
                 }
 
@@ -611,7 +673,7 @@ export const ExpenseForm: FunctionComponent = () => {
                     {(formStore.form.frequency.toString() !== "1" && formStore.form.frequency.toString() !== "2") && formStore.form.frequency !== "" &&
                         <>
                             <DropdownSingleSelect
-                                label={Messages.titles.dayReceive}
+                                label={Messages.titles.dayPayment}
                                 data={globalStore.days}
                                 disabled={false}
                                 width={"200px"}

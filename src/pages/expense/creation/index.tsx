@@ -26,6 +26,8 @@ export const ExpenseCreation: FunctionComponent = () => {
     const save = async () => {
         setIsLoading(true);
 
+        console.log(formStore.formList)
+
         try {
             const response = await entranceService.create(formStore.formList);
             setOpen(true);

@@ -84,14 +84,21 @@ export const DashboardComponent: FunctionComponent<IDashboard> = ({
                 callbacks: {
                     label: function (context) {
                         const label = context.dataset.label + ": " || '';
-                        console.log(context.dataset.label)
-                        console.log((tooltipLabel))
-                        console.log(context.dataIndex)
-                        if(tooltipLabel.length > 0) {
-                            return tooltipLabel[context.dataIndex];
-                        } else {
+                        let obj = [];
+                        if(tooltipLabel) {
+                            tooltipLabel.forEach(tooltip => {
+                               if(tooltip.label === context.dataset.label) {
+                                   tooltip.tooltipList.forEach(tool => {
+                                       if(tool.name === context.label) {
+                                           obj = tool.tooltipLabel;
+                                       }
+                                   })
+                               }
+                            });
 
-                            return label + context.parsed.y;
+                            return obj
+                        } else {
+                           return label + context.parsed.y;
                         }
                     },
                 }

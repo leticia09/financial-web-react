@@ -36,6 +36,9 @@ type Actions = {
     setMoney: (moneyId: number) => void;
     setTicket: (ticketId: number) => void;
 
+    setBankId: (bankId: number) => void;
+    setAccountId: (accountId: number) => void;
+
 };
 
 const initialState: State = {
@@ -64,6 +67,8 @@ const initialState: State = {
             ticketId: null,
             cardId: null,
             moneyId: null,
+            bankId: null,
+            accountId: null
         },
 
     graphicData: {
@@ -125,6 +130,8 @@ const useExpenseStore = create<State & Actions>((set) => {
                         ticketId: null,
                         cardId: null,
                         moneyId: null,
+                        bankId: null,
+                        accountId: null
                     };
                 }
 
@@ -263,20 +270,20 @@ const useExpenseStore = create<State & Actions>((set) => {
             }));
         },
 
-        setDayReceive: (dayReceive: number) => {
+        setDayReceive: (dayPayment: number) => {
             set((state) => ({
                 form: {
                     ...state.form,
-                    dayReceive: dayReceive,
+                    dayPayment: dayPayment,
                 },
             }));
         },
 
-        setMonthReceive: (monthReceive: number) => {
+        setMonthReceive: (monthPayment: number) => {
             set((state) => ({
                 form: {
                     ...state.form,
-                    monthReceive: monthReceive,
+                    monthPayment: monthPayment,
                 },
             }));
         },
@@ -313,6 +320,25 @@ const useExpenseStore = create<State & Actions>((set) => {
                 form: {
                     ...state.form,
                     moneyId: moneyId,
+                },
+            }));
+
+        },
+
+        setBankId: (bankId: number) =>  {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    bankId: bankId,
+                },
+            }));
+
+        },
+        setAccountId: (accountId: number) =>  {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    accountId: accountId,
                 },
             }));
 
