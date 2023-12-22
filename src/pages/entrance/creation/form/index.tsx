@@ -175,6 +175,7 @@ export const EntranceForm: FunctionComponent = () => {
     const [checked, setChecked] = useState(0);
     const [ticketData, setTicketData] = useState([]);
     const [ticketCardData, setTicketCardData] = useState([]);
+    const [accountDataTotal, setAccountDataTotal] = useState([]);
     const [message, setMessage] = useState(
         <>
             Não foram encontradas contas bancárias associadas
@@ -246,7 +247,7 @@ export const EntranceForm: FunctionComponent = () => {
             data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             data.bankId || data.bankId !== 0 ? globalStore.bank.filter(b => b.id === data.bankId)[0].name : "--",
-            data.accountNumber || data.accountNumber !== 0 ? accountData.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
+            data.accountNumber || data.accountNumber !== 0 ? accountDataTotal.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
             data.salary,
             data.frequency,
             data.initialDate,
@@ -279,7 +280,7 @@ export const EntranceForm: FunctionComponent = () => {
             data.type,
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             data.bankId || data.bankId !== 0 ? globalStore.bank.filter(b => b.id === data.bankId)[0].name : "--",
-            data.accountNumber || data.accountNumber !== 0 ? accountData.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
+            data.accountNumber || data.accountNumber !== 0 ? accountDataTotal.filter(ac => ac.id === data.accountNumber)[0].accountNumber : "--",
             data.salary,
             data.frequency,
             data.initialDate,
@@ -368,6 +369,11 @@ export const EntranceForm: FunctionComponent = () => {
     const handleBank = (value) => {
         formStore.setBankId(value);
         const accountsFiltered = globalStore.bank.filter(ba => ba.id === value)[0].accounts;
+        let list = [];
+        globalStore.bank.forEach(b => {
+            b.accounts.forEach(a => list.push(a));
+        })
+        setAccountDataTotal(list);
         const accounts = accountsFiltered.filter(ac => ac.owner.toString() === formStore.form.ownerId.toString());
         setAccountData(accounts);
 

@@ -139,6 +139,12 @@ const Messages = {
         term: "Despesa Parcelada",
         dayPayment: "Dia Pagamento",
         monthPayment: "Mês Pagamento",
+        external: 'Transferência Externa',
+        accountOrigin: 'Conta Origem',
+        accountDestiny: 'Conta Destino',
+        dateTransfer: 'Data Transferência',
+        bankOrigin: 'Banco Origem',
+        bankDestiny: 'Banco Destino'
     },
     buttons: {},
     labels: {},
@@ -175,7 +181,8 @@ const Messages = {
         paymentInfo: 'Ao salvar uma despesa com a forma de pagamento Débito, será debitado de sua conta o valor automaticamente.',
         moneyExists: 'Moeda para este usuário já existe!',
         exclusionTicket: 'Ao excluir este Vale, todas as movimentações bancárias, receitas e despesas associadas também serão permanentemente removidos.',
-        ticketInfo: 'Tickets ou Vales alimentação'
+        ticketInfo: 'Tickets ou Vales alimentação',
+        externalInfo: 'Trasferência para contas bancárias não registradas neste sistema.',
     },
     modals: {},
     toasts: {}

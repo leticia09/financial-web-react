@@ -195,7 +195,8 @@ export const EntranceData: FunctionComponent = () => {
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
-    const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
+    const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()},{id: 3, description: new Date().getFullYear() + 1}]);
+
     const [filterMonth, setFilterMonth] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');

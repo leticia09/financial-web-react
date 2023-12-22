@@ -178,7 +178,7 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
             {pagination && (
                 <TablePagination
                     sx={{height: "45px", overflow: "hidden"}}
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[5, 10, 25, 50, 100]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}

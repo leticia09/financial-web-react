@@ -159,6 +159,7 @@ export const BankMovementData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log('aaaaaaaaa')
                 await getExpense();
                 await getEntrance();
                 await getData();
@@ -317,13 +318,13 @@ export const BankMovementData: FunctionComponent = () => {
         <>
             <DashboardComponent
                 titleButton={Messages.titles.transfer}
-                path="/grupos/programa-pontos/programa/cadastro"
+                path="/movimentacao-bancaria/transferir"
                 title={Messages.titles.movementBank}
                 rows={rows}
                 arrayHeader={columns}
                 hasAuxButton={true}
                 auxTitle={Messages.titles.pay}
-                auxPath="/grupos/programa-pontos/programa/tranferencia"
+                auxPath="/movimentacao-bancaria/pagar"
                 dataSets={store.graphicData.dataSet}
                 labelsData={store.graphicData.labels}
                 optionText={Messages.titles.movementBank}

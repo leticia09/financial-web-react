@@ -361,7 +361,7 @@ const useExpenseStore = create<State & Actions>((set) => {
                     finalCard: 0,
                     quantityPart: 0,
                     hasFixed: false,
-                    dateBuy: null,
+                    dateBuy: '',
                     obs: '',
                     value: 0,
                     userAuthId: 0,

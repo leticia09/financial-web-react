@@ -219,19 +219,37 @@ export const BankDataForm: FunctionComponent = () => {
 
     const addCard = () => {
         if (account !== null) {
-            const newCard = {
-                name: cardName,
-                owner: globalStore.members.filter(member => member.id === cardOwner)[0].name,
-                finalNumber: parseInt(finalCard),
-                modality: globalStore.modality.filter(modality => modality.id === cardModality)[0].name,
-                closingDate: closingDate,
-                dueDate: dueDate,
-                index: formStore.formList.accounts[account - 1].cards.length + 1,
-                program: programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,
-                points: points,
-                currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
-            };
-            formStore.addCard(newCard, account - 1);
+            if(formStore.formType === "CREATE") {
+                const newCard = {
+                    name: cardName,
+                    owner: globalStore.members.filter(member => member.id === cardOwner)[0].name,
+                    finalNumber: parseInt(finalCard),
+                    modality: globalStore.modality.filter(modality => modality.id === cardModality)[0].name,
+                    closingDate: closingDate,
+                    dueDate: dueDate,
+                    index: formStore.formList.accounts[account - 1].cards.length + 1,
+                    program: programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,
+                    points: points,
+                    currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
+                };
+                formStore.addCard(newCard, account - 1);
+            }
+
+            if(formStore.formType === "EDIT") {
+                const newCard = {
+                    name: cardName,
+                    owner: globalStore.members.filter(member => member.id === cardOwner)[0].name,
+                    finalNumber: parseInt(finalCard),
+                    modality: globalStore.modality.filter(modality => modality.id === cardModality)[0].name,
+                    closingDate: closingDate,
+                    dueDate: dueDate,
+                    index: null,
+                    program: programData.filter((pro => pro.id === program))[0] ? programData.filter((pro => pro.id === program))[0].description : null,
+                    points: points,
+                    currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
+                };
+                formStore.addCard(newCard, formStore.formList.accounts.findIndex(item => item.id === account));
+            }
             transformDataToRows(formStore.formList);
             resetCardFields();
         }
@@ -365,16 +383,30 @@ export const BankDataForm: FunctionComponent = () => {
                             numericLimit={4}
                         />
 
-                        <DropdownSingleSelect
-                            label={Messages.titles.accountBank}
-                            data={formStore.formList.accounts}
-                            disabled={false}
-                            width={"200px"}
-                            idProperty={"index"}
-                            descriptionProperty={"accountNumber"}
-                            getValue={(value) => handleAccount(value)}
-                            value={account}
-                        />
+                        { formStore.formType === "EDIT" &&
+                            <DropdownSingleSelect
+                                label={Messages.titles.accountBank}
+                                data={formStore.formList.accounts}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"id"}
+                                descriptionProperty={"accountNumber"}
+                                getValue={(value) => handleAccount(value)}
+                                value={account ? account : 0}
+                            />
+                        }
+                        { formStore.formType === "CREATE" &&
+                            <DropdownSingleSelect
+                                label={Messages.titles.accountBank}
+                                data={formStore.formList.accounts}
+                                disabled={false}
+                                width={"200px"}
+                                idProperty={"index"}
+                                descriptionProperty={"accountNumber"}
+                                getValue={(value) => handleAccount(value)}
+                                value={account ? account : 0}
+                            />
+                        }
 
                     </div>
 

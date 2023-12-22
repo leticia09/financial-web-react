@@ -352,10 +352,10 @@ export const ExpenseForm: FunctionComponent = () => {
         if (event.target.checked) {
             let index = formStore.formList.length - 1;
             formStore.setLocal(formStore.formList[index].local);
-            formStore.setMacroGroup(formStore.formList[index].macroGroup);
-            formStore.setSpecificGroup(formStore.formList[index].specificGroup);
+            formStore.setMacroGroup(globalStore.macroGroup.filter(mg => mg.name === formStore.formList[index].macroGroup)[0].id);
+            formStore.setSpecificGroup(specificGroupData.filter(sp=> sp.name === formStore.formList[index].specificGroup)[0].id);
             formStore.setOwnerId(formStore.formList[index].ownerId);
-            formStore.setPaymentForm(formStore.formList[index].paymentForm);
+            formStore.setPaymentForm(globalStore.paymentForm.filter(p => p.description === formStore.formList[index].paymentForm)[0].id);
             formStore.setFinalCard(formStore.formList[index].finalCard);
             formStore.setQuantityPart(formStore.formList[index].quantityPart);
             formStore.setHasFixed(formStore.formList[index].hasFixed);
@@ -364,15 +364,24 @@ export const ExpenseForm: FunctionComponent = () => {
             formStore.setValue(formStore.formList[index].value);
             formStore.setUserAuthId(loginStore.userId);
             setValue(formStore.formList[index].value.toString());
-            formStore.setFrequency(globalStore.frequency.filter(fr => fr.description === formStore.formList[index].frequency)[0].id);
-            formStore.setInitialDate(formStore.formList[index].initialDate);
-            formStore.setMonthReceive(formStore.formList[index].monthPayment);
-            formStore.setDayReceive(formStore.formList[index].dayPayment);
-            formStore.setMoney(formStore.formList[index].moneyId);
-            formStore.setAccountId(formStore.formList[index].accountId);
-            formStore.setBankId(formStore.formList[index].bankId);
-            formStore.setCardId(formStore.form[index].cardId);
-            formStore.setTicket(formStore.form[index].ticketId);
+            if (formStore.formList[index].frequency)
+                formStore.setFrequency(globalStore.frequency.filter(fr => fr.description === formStore.formList[index].frequency)[0].id);
+            if (formStore.formList[index].initialDate)
+                formStore.setInitialDate(formStore.formList[index].initialDate);
+            if (formStore.formList[index].monthPayment)
+                formStore.setMonthReceive(formStore.formList[index].monthPayment);
+            if (formStore.formList[index].dayPayment)
+                formStore.setDayReceive(formStore.formList[index].dayPayment);
+            if (formStore.formList[index].moneyId)
+                formStore.setMoney(formStore.formList[index].moneyId);
+            if (formStore.formList[index].accountId)
+                formStore.setAccountId(formStore.formList[index].accountId);
+            if (formStore.formList[index].bankId)
+                formStore.setBankId(formStore.formList[index].bankId);
+            if (formStore.formList[index].cardId)
+                formStore.setCardId(formStore.form[index].cardId);
+            if (formStore.formList[index].ticketId)
+                formStore.setTicket(formStore.form[index].ticketId);
         }
         setHasSwitch(!hasSwitch);
     }
@@ -435,7 +444,7 @@ export const ExpenseForm: FunctionComponent = () => {
             setTicketData(ticket.data.data);
         }
 
-        if(value === 1) {
+        if (value === 1) {
             setMoneyData(globalStore.money.filter(re => re.ownerId.toString() === formStore.form.ownerId.toString()));
         }
     }

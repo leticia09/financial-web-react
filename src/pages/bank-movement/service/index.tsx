@@ -11,8 +11,8 @@ export const MovementBankService = (axiosInstance: any = instance) => {
         return axiosInstance.post(url, payload);
     }
 
-    const transfer = (payload) => {
-        const url = '/movement-bank/transfer'
+    const transfer = (payload, userAuth) => {
+        const url = '/movement-bank/transfer/' + userAuth
         return axiosInstance.post(url, payload);
     }
 

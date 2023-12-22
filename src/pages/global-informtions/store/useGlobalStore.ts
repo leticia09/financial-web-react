@@ -5,7 +5,7 @@ import {IBankData} from "../../../interfaces/bankData";
 type State = {
     modality: any[];
     members: IMember[] | null;
-    bank: IBankData[] | null;
+    bank: IBankData[];
     typeOfScore: any[];
     program: any[];
     status: any[];
