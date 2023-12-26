@@ -21,6 +21,9 @@ type Actions = {
     setReferencePeriod: (referencePeriod: string) => void;
     setOwnerId: (ownerId: number) => void;
     setObs: (obs: string) => void;
+    setBankId: (bankId: number) => void;
+    setAccountId: (accountId: number) => void;
+    setValueEntrance: (value: string) => void;
     deleteItemFormList: (index: number) => any;
     resetFormStore: () => void;
 
@@ -154,6 +157,30 @@ const movementBankStore = create<State & Actions>((set) => ({
                 form: {
                     ...state.form,
                     referencePeriod: referencePeriod,
+                },
+            }));
+        },
+        setBankId: (bankId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    bankId: bankId,
+                },
+            }));
+        },
+        setAccountId: (accountId: number) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    accountId: accountId,
+                },
+            }));
+        },
+        setValueEntrance: (value: string) => {
+            set((state) => ({
+                form: {
+                    ...state.form,
+                    value: value,
                 },
             }));
         },

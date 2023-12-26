@@ -13,6 +13,7 @@ import {getMonth, getYear, isAfter} from "date-fns";
 import {EntranceService} from "../../../entrance/service";
 import movementBankStore from "../../store";
 import {GlobalService} from "../../../global-informtions/service";
+import {validateDate} from "@mui/x-date-pickers/internals";
 
 const columns: IColumns[] = [
     {
@@ -95,6 +96,8 @@ export const ReceiveForm: FunctionComponent = () => {
         const [entranceData, setEntranceData] = useState([]);
         const [currency, setCurrency] = useState([]);
         const [entranceAllData, setEntranceAllData] = useState([]);
+        const [type, setType] = useState(0);
+        const [accountData, setAccountData] = useState([]);
 
         const actions = (index) => (
             <div style={{width: "50%", display: "flex"}}>
@@ -210,94 +213,215 @@ export const ReceiveForm: FunctionComponent = () => {
             getEntrance(value);
         }
 
+        const handleBank = (value) => {
+            formStore.setBankId(value);
+            const accounts = globalStore.bank.filter(b => b.id === value)[0].accounts;
+            setAccountData(accounts.filter(a => a.owner.toString() === formStore.form.ownerId.toString()));
+        }
 
+        const handleType = (value) => {
+            setType(value);
+            reset();
+        }
+
+
+        //TODO: ADICIONAR COLUNA PARA TRANSFERENCIA
+        //TODO: ADICIONAR ROWS PARA TRANSFERENCIA
+        //TODO: AJUSTAR O PAYLOAD E O BANKEND PARA FAZER A TRANSFERÊNCIA
+    
         return (
             <div>
                 <div>
                     <div className="register-member">
                         <DropdownSingleSelect
-                            label={Messages.titles.owner}
-                            data={globalStore.members}
+                            label={Messages.titles.typeOfEntrance}
+                            data={globalStore.receiveTypes}
                             disabled={false}
-                            width={"200px"}
-                            idProperty={"id"}
-                            descriptionProperty={"name"}
-                            getValue={(value) => handleOwner(value)}
-                            value={formStore.form.ownerId}
-                        />
-                        <DropdownSingleSelect
-                            label={Messages.titles.entrance}
-                            data={entranceData}
-                            disabled={!formStore.form.ownerId}
                             width={"200px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
-                            getValue={(value) => handleEntrance(value)}
-                            value={formStore.form.entrance}
-                        />
-
-                        <Input
-                            label={Messages.titles.salaryValue}
-                            disabled={!formStore.form.entrance}
-                            width="200px"
-                            getValue={(value) => handleSalary(value)}
-                            inputValue={salary}
-                            viewMode={false}
-                            price={true}
-                        />
-
-                        <InputDataComponent
-                            label={Messages.titles.dateReceive}
-                            disabled={false}
-                            width="200px"
-                            getValue={(value) => formStore.setReceiveDate(value)}
-                            viewMode={false}
-                            inputValue={formStore.form.receiveDate}
-                            disabledDates={[new Date()]}
-                            before={true}
-                        />
-
-                    </div>
-                    <div className="register-member">
-                        <Input
-                            label={Messages.titles.paymentRefer}
-                            disabled={false}
-                            width="200px"
-                            getValue={(value) => handlePaymentRefer(value)}
-                            inputValue={paymentRefer}
-                            viewMode={false}
-                            maskDate={true}
-                            numericLimit={7}
-                        />
-                        <Input
-                            label={Messages.titles.obs}
-                            disabled={false}
-                            width="418px"
-                            getValue={(value) => formStore.setObs(value)}
-                            inputValue={formStore.form.obs}
-                            viewMode={false}
-                            maskDate={false}
-                            numericLimit={55}
+                            getValue={(value) => handleType(value)}
+                            value={formStore.form.ownerId}
                         />
                     </div>
-                    <div className="register-member">
-                        <div className="add-button-member">
-                            <ButtonComponent
-                                label={"+ " + Messages.titles.receive}
-                                disabled={!formStore.form.entrance || !formStore.form.salary || !formStore.form.receiveDate || !formStore.form.ownerId}
-                                width="160px"
-                                height="30px"
-                                cursor="pointer"
-                                borderRadius="4px"
-                                color="white"
-                                background="#46ba52"
-                                border="none"
-                                padding="2px"
-                                marginBottom="20px"
-                                fontWeight="400"
-                                action={handleAdd}/>
-                        </div>
-                    </div>
+                    { type === 2 &&
+                        <>
+                            <div className="register-member">
+                                <DropdownSingleSelect
+                                    label={Messages.titles.owner}
+                                    data={globalStore.members}
+                                    disabled={false}
+                                    width={"200px"}
+                                    idProperty={"id"}
+                                    descriptionProperty={"name"}
+                                    getValue={(value) => handleOwner(value)}
+                                    value={formStore.form.ownerId}
+                                />
+                                <DropdownSingleSelect
+                                    label={Messages.titles.entrance}
+                                    data={entranceData}
+                                    disabled={!formStore.form.ownerId}
+                                    width={"200px"}
+                                    idProperty={"id"}
+                                    descriptionProperty={"description"}
+                                    getValue={(value) => handleEntrance(value)}
+                                    value={formStore.form.entrance}
+                                />
+
+                                <Input
+                                    label={Messages.titles.salaryValue}
+                                    disabled={!formStore.form.entrance}
+                                    width="200px"
+                                    getValue={(value) => handleSalary(value)}
+                                    inputValue={salary}
+                                    viewMode={false}
+                                    price={true}
+                                />
+
+                                <InputDataComponent
+                                    label={Messages.titles.dateReceive}
+                                    disabled={false}
+                                    width="200px"
+                                    getValue={(value) => formStore.setReceiveDate(value)}
+                                    viewMode={false}
+                                    inputValue={formStore.form.receiveDate}
+                                    disabledDates={[new Date()]}
+                                    before={true}
+                                />
+
+                            </div>
+                            <div className="register-member">
+                                <Input
+                                    label={Messages.titles.paymentRefer}
+                                    disabled={false}
+                                    width="200px"
+                                    getValue={(value) => handlePaymentRefer(value)}
+                                    inputValue={paymentRefer}
+                                    viewMode={false}
+                                    maskDate={true}
+                                    numericLimit={7}
+                                />
+                                <Input
+                                    label={Messages.titles.obs}
+                                    disabled={false}
+                                    width="418px"
+                                    getValue={(value) => formStore.setObs(value)}
+                                    inputValue={formStore.form.obs}
+                                    viewMode={false}
+                                    maskDate={false}
+                                    numericLimit={55}
+                                />
+                            </div>
+                            <div className="register-member">
+                                <div className="add-button-member">
+                                    <ButtonComponent
+                                        label={"+ " + Messages.titles.receive}
+                                        disabled={!formStore.form.entrance || !formStore.form.salary || !formStore.form.receiveDate || !formStore.form.ownerId}
+                                        width="160px"
+                                        height="30px"
+                                        cursor="pointer"
+                                        borderRadius="4px"
+                                        color="white"
+                                        background="#46ba52"
+                                        border="none"
+                                        padding="2px"
+                                        marginBottom="20px"
+                                        fontWeight="400"
+                                        action={handleAdd}/>
+                                </div>
+                            </div>
+                        </>
+                    }
+
+                    { type === 1 &&
+                        <>
+                            <div className="register-member">
+                                <DropdownSingleSelect
+                                    label={Messages.titles.owner}
+                                    data={globalStore.members}
+                                    disabled={false}
+                                    width={"200px"}
+                                    idProperty={"id"}
+                                    descriptionProperty={"name"}
+                                    getValue={(value) => handleOwner(value)}
+                                    value={formStore.form.ownerId}
+                                />
+                                <DropdownSingleSelect
+                                    label={Messages.titles.bank}
+                                    data={globalStore.bank}
+                                    disabled={!formStore.form.ownerId}
+                                    width={"200px"}
+                                    idProperty={"id"}
+                                    descriptionProperty={"name"}
+                                    getValue={(value) => handleBank(value)}
+                                    value={formStore.form.entrance}
+                                />
+
+                                <DropdownSingleSelect
+                                    label={Messages.titles.account}
+                                    data={accountData}
+                                    disabled={!formStore.form.bankId}
+                                    width={"200px"}
+                                    idProperty={"id"}
+                                    descriptionProperty={"accountNumber"}
+                                    getValue={(value) => formStore.setAccountId(value)}
+                                    value={formStore.form.entrance}
+                                />
+
+                                <Input
+                                    label={Messages.titles.currentValue}
+                                    disabled={false}
+                                    width="200px"
+                                    getValue={(value) => formStore.setValueEntrance(value)}
+                                    inputValue={formStore.form.value}
+                                    viewMode={false}
+                                    price={true}
+                                />
+
+                            </div>
+                            <div className="register-member">
+                                <InputDataComponent
+                                    label={Messages.titles.dateReceive}
+                                    disabled={false}
+                                    width="200px"
+                                    getValue={(value) => formStore.setReceiveDate(value)}
+                                    viewMode={false}
+                                    inputValue={formStore.form.receiveDate}
+                                    disabledDates={[new Date()]}
+                                    before={true}
+                                />
+                                <Input
+                                    label={Messages.titles.obs}
+                                    disabled={false}
+                                    width="418px"
+                                    getValue={(value) => formStore.setObs(value)}
+                                    inputValue={formStore.form.obs}
+                                    viewMode={false}
+                                    maskDate={false}
+                                    numericLimit={55}
+                                />
+                            </div>
+                            <div className="register-member">
+                                <div className="add-button-member">
+                                    <ButtonComponent
+                                        label={"+ " + Messages.titles.transfer_}
+                                        disabled={!formStore.form.entrance || !formStore.form.salary || !formStore.form.receiveDate || !formStore.form.ownerId}
+                                        width="160px"
+                                        height="30px"
+                                        cursor="pointer"
+                                        borderRadius="4px"
+                                        color="white"
+                                        background="#46ba52"
+                                        border="none"
+                                        padding="2px"
+                                        marginBottom="20px"
+                                        fontWeight="400"
+                                        action={handleAdd}/>
+                                </div>
+                            </div>
+                        </>
+                    }
+
                 </div>
 
                 {rows.length > 0 &&

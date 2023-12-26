@@ -33,4 +33,7 @@ export interface IReceive {
     referencePeriod: string;
     ownerId: number;
     obs: string;
+    bankId?: number;
+    accountId?: number;
+    value?: string;
 }

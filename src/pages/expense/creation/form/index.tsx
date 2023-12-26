@@ -197,6 +197,7 @@ export const ExpenseForm: FunctionComponent = () => {
     const [checked, setChecked] = useState(false);
     const [specificGroupData, setSpecificGroupData] = useState([]);
     const [cardData, setCardData] = useState([]);
+    const [accountData, setAccountData] = useState([]);
     const [hasSplitExpense, setHasSplitExpense] = useState(false);
     const [ticketData, setTicketData] = useState([]);
     const [ticketCardData, setTicketCardData] = useState([]);
@@ -467,6 +468,12 @@ export const ExpenseForm: FunctionComponent = () => {
         }
     }
 
+    const handleBank = (value) => {
+        formStore.setBankId(value);
+        const bank = globalStore.bank.filter(b => b.id === value)[0];
+        setAccountData(bank.accounts)
+    }
+
     return (
         <>
             <div className="register-member">
@@ -600,17 +607,17 @@ export const ExpenseForm: FunctionComponent = () => {
                             width={"210px"}
                             idProperty={"id"}
                             descriptionProperty={"name"}
-                            getValue={(value) => formStore.setFinalCard(value)}
+                            getValue={(value) => handleBank(value)}
                             value={formStore.form.finalCard}
                         />
                         <DropdownSingleSelect
                             label={Messages.titles.account}
-                            data={cardData}
+                            data={accountData}
                             disabled={!formStore.form.paymentForm}
                             width={"210px"}
                             idProperty={"id"}
-                            descriptionProperty={"description"}
-                            getValue={(value) => formStore.setFinalCard(value)}
+                            descriptionProperty={"accountNumber"}
+                            getValue={(value) => formStore.setAccountId(value)}
                             value={formStore.form.finalCard}
                         />
                     </>

@@ -75,7 +75,6 @@ export const TableComponent: FunctionComponent<ITableComponent> = ({
                         const numericValueA = extractNumericValue(valueA);
                         const numericValueB = extractNumericValue(valueB);
 
-
                         if (order === 'asc') {
                             return numericValueA > numericValueB ? 1 : -1;
                         } else {
