@@ -13,7 +13,6 @@ import {getMonth, getYear, isAfter} from "date-fns";
 import {EntranceService} from "../../../entrance/service";
 import movementBankStore from "../../store";
 import {GlobalService} from "../../../global-informtions/service";
-import {validateDate} from "@mui/x-date-pickers/internals";
 
 const columns: IColumns[] = [
     {
@@ -31,6 +30,20 @@ const columns: IColumns[] = [
         format: (value) => value.toLocaleString("en-US"),
     },
     {
+        id: "bankId",
+        label: "Banco",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+        id: "accountId",
+        label: "Conta",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
         id: "salary",
         label: "Salário Líquido",
         minWidth: 70,
@@ -38,6 +51,13 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
 
+    {
+        id: "value",
+        label: "Valor Transferência",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
     {
         id: "receiveDate",
         label: "Data Recebimento",
@@ -69,8 +89,8 @@ const columns: IColumns[] = [
     },
 ];
 
-function createData(entrance, ownerId, salary, receiveDate, referencePeriod, obs, actions, index) {
-    return {entrance, ownerId, salary, receiveDate, referencePeriod, obs, actions, index};
+function createData(entrance, ownerId, salary, receiveDate, referencePeriod, obs, bankId, accountId, value, actions, index) {
+    return {entrance, ownerId, salary, receiveDate, referencePeriod, obs,bankId, accountId, value,actions, index};
 }
 
 type RowType = {
@@ -81,6 +101,8 @@ type RowType = {
     referencePeriod: string;
     obs: string;
     actions: React.ReactNode[];
+    bankId: number;
+    accountId: number;
     index: number;
 };
 
@@ -147,17 +169,23 @@ export const ReceiveForm: FunctionComponent = () => {
                     salary: formStore.form.salary,
                     receiveDate: formStore.form.receiveDate,
                     referencePeriod: formStore.form.referencePeriod,
+                    bankId: formStore.form.bankId,
+                    accountId: formStore.form.accountId,
+                    value: formStore.form.value,
                     obs: formStore.form.obs
                 }
             )
             formStore.setFormList(updateList);
             const transformedRows = updateList.map((data: any, index: number) => createData(
-                entranceAllData.filter(en => en.id === data.entrance)[0].description,
+                data.entrance ? entranceAllData.filter(en => en.id === data.entrance)[0].description : "--",
                 globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
                 data.salary,
                 data.receiveDate,
-                data.referencePeriod,
-                data.obs,
+                data.referencePeriod? data.referencePeriod : "--",
+                data.obs ? data.obs : "--",
+                data.bankId ? globalStore.bank.filter(b => b.id.toString() === data.bankId.toString())[0].name : "--",
+                data.accountId ? accountData.filter(ac => ac.id.toString() === data.accountId.toString())[0].accountNumber.toString() : "--",
+                data.value,
                 actions(index),
                 index
             ));
@@ -169,13 +197,16 @@ export const ReceiveForm: FunctionComponent = () => {
             let list = formStore.deleteItemFormList(i);
 
             const transformedRows = list.map((data: any, index: number) => createData(
-                entranceAllData.filter(en => en.id === data.entrance)[0].description,
+                data.entrance ? entranceAllData.filter(en => en.id === data.entrance)[0].description : "--",
                 globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-                data.salary,
+                type === 2 ? data.salary : data.value,
                 data.receiveDate,
-                data.referencePeriod,
-                data.obs,
+                data.referencePeriod? data.referencePeriod : "--",
+                data.obs ? data.obs : "--",
+                data.bankId ? data.bankId : "--",
+                data.accountId ? data.accountId : "--",
                 actions(index),
+                data.value,
                 index
             ));
             setRows(transformedRows);
@@ -228,7 +259,7 @@ export const ReceiveForm: FunctionComponent = () => {
         //TODO: ADICIONAR COLUNA PARA TRANSFERENCIA
         //TODO: ADICIONAR ROWS PARA TRANSFERENCIA
         //TODO: AJUSTAR O PAYLOAD E O BANKEND PARA FAZER A TRANSFERÊNCIA
-    
+
         return (
             <div>
                 <div>
@@ -405,7 +436,7 @@ export const ReceiveForm: FunctionComponent = () => {
                                 <div className="add-button-member">
                                     <ButtonComponent
                                         label={"+ " + Messages.titles.transfer_}
-                                        disabled={!formStore.form.entrance || !formStore.form.salary || !formStore.form.receiveDate || !formStore.form.ownerId}
+                                        disabled={!formStore.form.value || !formStore.form.accountId || !formStore.form.bankId || !formStore.form.receiveDate || !formStore.form.ownerId}
                                         width="160px"
                                         height="30px"
                                         cursor="pointer"
@@ -430,7 +461,7 @@ export const ReceiveForm: FunctionComponent = () => {
                             columns={columns}
                             rows={rows}
                             pagination={false}
-                            width={"80%"}
+                            width={"100%"}
                         />
                     </div>
                 }

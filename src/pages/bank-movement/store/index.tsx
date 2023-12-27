@@ -296,7 +296,10 @@ const movementBankStore = create<State & Actions>((set) => ({
                     salary: "",
                     receiveDate: null,
                     ownerId: 0,
-                    obs: ""
+                    obs: "",
+                    value: "",
+                    bankId: 0,
+                    accountId: 0,
                 },
             }));
         },

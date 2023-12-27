@@ -15,6 +15,7 @@ import movementBankStore from "../../store";
 import {GlobalService} from "../../../global-informtions/service";
 import {Checkbox, FormControlLabel} from "@mui/material";
 import {InformationComponent} from "../../../../components/information";
+import {Toast} from "../../../../components/toast";
 
 const columns: IColumns[] = [
     {
@@ -99,7 +100,20 @@ const columns: IColumns[] = [
 ];
 
 function createData(bankOriginId, bankDestinyId, ownerOriginId, ownerDestinyId, accountOriginId, accountDestinyId, receiver, value, dateTransfer, obs, actions, index) {
-    return {bankOriginId, bankDestinyId, ownerOriginId, ownerDestinyId, accountOriginId, accountDestinyId, receiver, value, dateTransfer, obs, actions, index};
+    return {
+        bankOriginId,
+        bankDestinyId,
+        ownerOriginId,
+        ownerDestinyId,
+        accountOriginId,
+        accountDestinyId,
+        receiver,
+        value,
+        dateTransfer,
+        obs,
+        actions,
+        index
+    };
 }
 
 type RowType = {
@@ -119,16 +133,13 @@ type RowType = {
 
 export const TransferForm: FunctionComponent = () => {
         const formStore = movementBankStore();
-        const loginStore = useLoginStore();
         const globalStore = useGlobalStore();
-        const globalService = GlobalService();
-        const service = EntranceService();
         const [checked, setChecked] = useState(false);
         const [accountDataOrigin, setAccountDataOrigin] = useState([]);
         const [accountDataDestiny, setAccountDataDestiny] = useState([]);
+        const [notHaveMoney, setNotHaveMoeny] = useState(false);
 
         const [rows, setRows] = useState<RowType[]>([]);
-        const [salary, setSalary] = useState("");
 
         const actions = (index) => (
             <div style={{width: "50%", display: "flex"}}>
@@ -166,7 +177,7 @@ export const TransferForm: FunctionComponent = () => {
                 data.ownerOriginId ? globalStore.members.filter(mem => mem.id === data.ownerOriginId)[0].name : "--",
                 data.ownerDestinyId ? globalStore.members.filter(mem => mem.id === data.ownerDestinyId)[0].name : "--",
                 data.accountOriginId ? accountDataOrigin.filter(ac => ac.id === data.accountOriginId)[0].accountNumber : "--",
-                data.accountDestinyId ? accountDataDestiny.filter(ac => ac.id === data.accountDestinyId)[0].accountNumber  : "--",
+                data.accountDestinyId ? accountDataDestiny.filter(ac => ac.id === data.accountDestinyId)[0].accountNumber : "--",
                 data.receiver ? data.receiver : "--",
                 data.value,
                 data.dateTransfer,
@@ -209,15 +220,25 @@ export const TransferForm: FunctionComponent = () => {
 
         const handleBankOrigin = (value) => {
             formStore.setBankOriginId(value);
-            const accounts = globalStore.bank.filter(b=> b.id === value)[0].accounts;
+            const accounts = globalStore.bank.filter(b => b.id === value)[0].accounts;
             setAccountDataOrigin(accounts.filter(ac => ac.owner.toString() === formStore.formTransfer.ownerOriginId.toString()));
         }
 
-    const handleBankDestiny = (value) => {
-        formStore.setBankDestinyId(value);
-        const accounts = globalStore.bank.filter(b=> b.id === value)[0].accounts;
-        setAccountDataDestiny(accounts.filter(ac => ac.owner.toString() === formStore.formTransfer.ownerDestinyId.toString()));
-    }
+        const handleBankDestiny = (value) => {
+            formStore.setBankDestinyId(value);
+            const accounts = globalStore.bank.filter(b => b.id === value)[0].accounts;
+            setAccountDataDestiny(accounts.filter(ac => ac.owner.toString() === formStore.formTransfer.ownerDestinyId.toString()));
+        }
+
+        const handleValue = (value) => {
+            formStore.setValue(value);
+            const accountValue = accountDataOrigin.filter(ac => ac.id === formStore.formTransfer.accountOriginId)[0].value;
+            value > accountValue ? setNotHaveMoeny(true) : setNotHaveMoeny(false);
+        }
+
+        const handleCloseToastWarning = () => {
+            setNotHaveMoeny(false);
+        };
 
         return (
             <div>
@@ -322,9 +343,9 @@ export const TransferForm: FunctionComponent = () => {
 
                         <Input
                             label={Messages.titles.currentValue}
-                            disabled={false}
+                            disabled={!formStore.formTransfer.accountOriginId}
                             width="200px"
-                            getValue={(value) => formStore.setValue(value)}
+                            getValue={(value) => handleValue(value)}
                             inputValue={formStore.formTransfer.value}
                             viewMode={false}
                             price={true}
@@ -356,7 +377,7 @@ export const TransferForm: FunctionComponent = () => {
                         <div className="add-button-member">
                             <ButtonComponent
                                 label={"+ " + Messages.titles.transfer_}
-                                disabled={!formStore.formTransfer.ownerOriginId || !formStore.formTransfer.bankOriginId || !formStore.formTransfer.accountOriginId || !formStore.formTransfer.value || !formStore.formTransfer.dateTransfer}
+                                disabled={notHaveMoney || !formStore.formTransfer.ownerOriginId || !formStore.formTransfer.bankOriginId || !formStore.formTransfer.accountOriginId || !formStore.formTransfer.value || !formStore.formTransfer.dateTransfer}
                                 width="160px"
                                 height="30px"
                                 cursor="pointer"
@@ -382,7 +403,14 @@ export const TransferForm: FunctionComponent = () => {
                         />
                     </div>
                 }
-
+                <Toast
+                    severity={"warning"}
+                    width="100%"
+                    duration={4000}
+                    message={"Saldo Insuficiente!"}
+                    open={notHaveMoney}
+                    onClose={handleCloseToastWarning}
+                />
             </div>
         );
     }
