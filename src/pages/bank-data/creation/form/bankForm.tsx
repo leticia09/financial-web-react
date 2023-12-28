@@ -77,7 +77,8 @@ export const BankDataForm: FunctionComponent = () => {
     const fillForm = (form) => {
         formStore.setBankNameFormList(form.name)
         form.accounts.forEach((account: IAccount) => {
-            formStore.addAccount(account,account.accountNumber + " / " + globalStore.members.filter(m => m.id.toString() === account.owner.toString())[0].name);
+            account.index = account.id
+            formStore.addAccount(account, account.accountNumber + " / " + globalStore.members.filter(m => m.id.toString() === account.owner.toString())[0].name);
         })
         transformDataToRows(form);
     }
@@ -101,7 +102,7 @@ export const BankDataForm: FunctionComponent = () => {
                 index: formStore.formList.accounts.length + 1,
                 value: accountValue,
                 currency: globalStore.currency.filter(currency => currency.id.toString() === accountCurrency.toString())[0].description,
-            },  numberAccount + " / " + globalStore.members.filter(m => m.id.toString() === accountOwner.toString())[0].name);
+            }, numberAccount + " / " + globalStore.members.filter(m => m.id.toString() === accountOwner.toString())[0].name);
             resetFields();
         } else {
             setShowComment(true);
@@ -110,7 +111,7 @@ export const BankDataForm: FunctionComponent = () => {
     };
 
     const resetFields = () => {
-        if(formStore.formType === "CREATE") {
+        if (formStore.formType === "CREATE") {
             setNumberAccount('');
             setAccountOwner('');
             setAccountValue('');
@@ -219,7 +220,7 @@ export const BankDataForm: FunctionComponent = () => {
 
     const addCard = () => {
         if (account !== null) {
-            if(formStore.formType === "CREATE") {
+            if (formStore.formType === "CREATE") {
                 const newCard = {
                     name: cardName,
                     owner: globalStore.members.filter(member => member.id === cardOwner)[0].name,
@@ -235,7 +236,7 @@ export const BankDataForm: FunctionComponent = () => {
                 formStore.addCard(newCard, account - 1);
             }
 
-            if(formStore.formType === "EDIT") {
+            if (formStore.formType === "EDIT") {
                 const newCard = {
                     name: cardName,
                     owner: globalStore.members.filter(member => member.id === cardOwner)[0].name,
@@ -248,7 +249,8 @@ export const BankDataForm: FunctionComponent = () => {
                     points: points,
                     currency: globalStore.currency.filter(cur => cur.id === currency)[0] ? globalStore.currency.filter(cur => cur.id === currency)[0].description : null,
                 };
-                formStore.addCard(newCard, formStore.formList.accounts.findIndex(item => item.id === account));
+                let index = formStore.formList.accounts.findIndex(item => item.index === account) !== -1 ? formStore.formList.accounts.findIndex(item => item.index === account) : formStore.formList.accounts.findIndex(item => item.id === account)
+                formStore.addCard(newCard, index);
             }
             transformDataToRows(formStore.formList);
             resetCardFields();
@@ -383,30 +385,16 @@ export const BankDataForm: FunctionComponent = () => {
                             numericLimit={4}
                         />
 
-                        { formStore.formType === "EDIT" &&
-                            <DropdownSingleSelect
-                                label={Messages.titles.accountBank}
-                                data={formStore.formList.accounts}
-                                disabled={false}
-                                width={"200px"}
-                                idProperty={"id"}
-                                descriptionProperty={"accountNumber"}
-                                getValue={(value) => handleAccount(value)}
-                                value={account ? account : 0}
-                            />
-                        }
-                        { formStore.formType === "CREATE" &&
-                            <DropdownSingleSelect
-                                label={Messages.titles.accountBank}
-                                data={formStore.formList.accounts}
-                                disabled={false}
-                                width={"200px"}
-                                idProperty={"index"}
-                                descriptionProperty={"accountNumber"}
-                                getValue={(value) => handleAccount(value)}
-                                value={account ? account : 0}
-                            />
-                        }
+                        <DropdownSingleSelect
+                            label={Messages.titles.accountBank}
+                            data={formStore.formList.accounts}
+                            disabled={false}
+                            width={"200px"}
+                            idProperty={"index"}
+                            descriptionProperty={"accountNumber"}
+                            getValue={(value) => handleAccount(value)}
+                            value={account ? account : 0}
+                        />
 
                     </div>
 

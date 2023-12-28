@@ -40,6 +40,12 @@ export const MovementBankService = (axiosInstance: any = instance) => {
         return axiosInstance.delete(url);
     }
 
+    const getValueAmount = (userAuthId, bankId, accountId, payload) => {
+        const url = '/expense/' +  userAuthId + "/" + bankId + "/" + accountId;
+        return axiosInstance.post(url, payload);
+    }
+
+
     return {
         pay,
         receive,
@@ -48,6 +54,7 @@ export const MovementBankService = (axiosInstance: any = instance) => {
         getData,
         updateStatus,
         use,
-        exclusion
+        exclusion,
+        getValueAmount
     }
 }

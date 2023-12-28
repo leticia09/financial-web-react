@@ -22,7 +22,7 @@ const columns: IColumns[] = [
     },
     {
         id: "local",
-        label: "Local",
+        label: "Descrição",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -44,7 +44,7 @@ const columns: IColumns[] = [
     },
     {
         id: "paymentForm",
-        label: "Forma Pagamento",
+        label: "Pagamento",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -58,7 +58,7 @@ const columns: IColumns[] = [
     },
     {
         id: "quantityPart",
-        label: "Qtdd. Parcelas",
+        label: "Parcelas",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -92,13 +92,6 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
-        id: "obs",
-        label: "Observação",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-    {
         id: "actions",
         label: "Ações",
         minWidth: 60,
@@ -124,7 +117,7 @@ type RowType = {
     index: number;
 };
 
-function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, actions, index) {
+function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, currency, actions, index) {
     let color = "";
     let border = "";
     if (status === "Aguardando") {
@@ -165,9 +158,9 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
         finalCard: finalCard ? finalCard.toString() : "--",
         quantityPart: quantityPart ? quantityPart.toString() : "--",
         hasFixed: hasFixed ? "Sim" : "Não",
-        dateBuy: format(parseISO(dateBuy), 'dd/MM/yyyy'),
+        dateBuy: dateBuy ? format(parseISO(dateBuy), 'dd/MM/yyyy') : "--",
         obs: obs ? obs : "--",
-        value,
+        value: currency + " " + value,
         status: statusCard,
         actions,
         index
@@ -221,6 +214,7 @@ export const ExpenseData: FunctionComponent = () => {
             data.obs,
             data.value,
             data.status,
+            data.currency,
             actions(index),
             index
         ));

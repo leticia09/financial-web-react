@@ -144,7 +144,13 @@ const Messages = {
         accountDestiny: 'Conta Destino',
         dateTransfer: 'Data Transferência',
         bankOrigin: 'Banco Origem',
-        bankDestiny: 'Banco Destino'
+        bankDestiny: 'Banco Destino',
+        payment: "Pagar",
+        addPayment: "Adicionar Pagamento",
+        expense_: "Despesa",
+        datePayment: "Data Pagamento",
+        partValue: "Valor Parcela",
+        amountValue: "Valor Fatura"
     },
     buttons: {},
     labels: {},

@@ -7,7 +7,7 @@ import {
     BRBIcon,
     SafraIcon,
     AleloIcon,
-    CaixaIcon, C6Icon, LiveloIcon, TicketIcon
+    CaixaIcon, C6Icon, LiveloIcon, TicketIcon, RicoIcon
 } from "./assets/iconsBank";
 
 export const getIcon = (name: string, width, height) => {
@@ -54,5 +54,9 @@ export const getIcon = (name: string, width, height) => {
 
     if(name.toUpperCase() === "TICKET") {
         return <TicketIcon height={width} width={height}/>
+    }
+
+    if(name.toUpperCase() === "RICO") {
+        return <RicoIcon height={width} width={height}/>
     }
 };

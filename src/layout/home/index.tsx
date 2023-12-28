@@ -21,6 +21,7 @@ import {ExpenseCreation} from "../../pages/expense/creation";
 import {MoneyCreation} from "../../pages/moneyRegister/creation";
 import {TicketsCreation} from "../../pages/tickets/creation";
 import {Transfer} from "../../pages/bank-movement/creation/transfer";
+import {Payment} from "../../pages/bank-movement/creation/payment";
 
 export const Home: FunctionComponent = () => {
 
@@ -79,6 +80,8 @@ export const Home: FunctionComponent = () => {
                        element={<ExpenseCreation/>} />
                 <Route path="/movimentacao-bancaria/transferir"
                        element={<Transfer/>} />
+                <Route path="/movimentacao-bancaria/pagar"
+                       element={<Payment/>} />
 
                 {/*<Route path="/grupos/pontos"
                       element={<ProgramaPontos loginInformation={props.loginInformation}/>}/>

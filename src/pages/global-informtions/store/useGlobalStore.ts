@@ -22,6 +22,7 @@ type State = {
     receiveForm: any[];
     money: any[];
     receiveTypes: any[];
+    paymentTypes: any [];
 };
 
 type Actions = {
@@ -123,6 +124,12 @@ const initialState: State = {
     receiveTypes: [
         {id: 1, description: "Transferência"},
         {id: 2, description: "Receita"},
+    ],
+
+    paymentTypes: [
+        {id: 1, description: "Despesa Fixa"},
+        {id: 2, description: "Despesa Parcelada"},
+        {id: 3, description: "Cartão de Credito"},
     ],
 };
 
