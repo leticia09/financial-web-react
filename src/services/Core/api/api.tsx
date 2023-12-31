@@ -7,11 +7,11 @@ export const instance = axios.create({
     "Authorization": '123',
     'locale': 'en',
   },
-  baseURL: 'http://192.168.43.146:8080/',
+  baseURL: 'http://192.168.1.25:8080/',
 })
 
 
 export const login = (payload: any) => {
-  const url = 'http://192.168.43.146:8080/';
+  const url = 'http://192.168.1.25:8080/';
   return instance.post(url, payload);
 };

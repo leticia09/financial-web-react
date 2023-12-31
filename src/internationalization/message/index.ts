@@ -150,7 +150,11 @@ const Messages = {
         expense_: "Despesa",
         datePayment: "Data Pagamento",
         partValue: "Valor Parcela",
-        amountValue: "Valor Fatura"
+        amountValue: "Valor Fatura",
+        paymentTotal: "Despesa Total",
+        paymentConfirm: "Despesa Confirmada",
+        paymentQuantityOk: "Despesa Aguardando",
+        paymentQuantityNotOk: "Despesa Pendente"
     },
     buttons: {},
     labels: {},

@@ -159,7 +159,6 @@ export const BankMovementData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log('aaaaaaaaa')
                 await getExpense();
                 await getEntrance();
                 await getData();
@@ -180,7 +179,7 @@ export const BankMovementData: FunctionComponent = () => {
             globalStore.bank.filter(ba => ba.id === data.bankId)[0] ? globalStore.bank.filter(ba => ba.id === data.bankId)[0].name : "--",
             data.dateMovement,
             data.entranceId &&  globalStore.entrance.filter(en => en.id === data.entranceId)[0] ? globalStore.entrance.filter(en => en.id === data.entranceId)[0].description : null,
-            data.expenseId ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,
+            data.expenseId  && globalStore.expense.filter(ex => ex.id === data.expenseId)[0] ? globalStore.expense.filter(ex => ex.id === data.expenseId)[0].local : null,
             data.obs,
             data.ownerId ? globalStore.members.filter(me => me.id === data.ownerId)[0].name : null,
             data.referencePeriod,

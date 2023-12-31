@@ -175,10 +175,20 @@ export const ExpenseData: FunctionComponent = () => {
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
-    const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()}]);
+    const [filterYear, setFilterYear] = useState([{id: 1, description: new Date().getFullYear() - 1}, {
+        id: 2,
+        description: new Date().getFullYear()
+    }, {id: 3, description: new Date().getFullYear() + 1}]);
     const [filterMonth, setFilterMonth] = useState(0);
+    const [year, setYear] = useState(2);
     const actions = (index) => (
-        <div style={{width: "100%", display: "flex", justifyContent:"space-between",alignItems: "center", textAlign:"center"}}>
+        <div style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            textAlign: "center"
+        }}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(index)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => console.log(index)}/>
         </div>
@@ -187,10 +197,9 @@ export const ExpenseData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await getData(new Date().getMonth() + 1, filterYear[0].description);
-                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id);
-                console.log('Entrei aqui')
-                await getGraphic(new Date().getMonth() + 1, filterYear[0].description);
+                await getData(new Date().getMonth() + 1, filterYear[1].description);
+                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth() + 1)[0].id);
+                await getGraphic(new Date().getMonth() + 1, filterYear[1].description);
 
             } catch (error) {
                 console.log('Error', error);
@@ -208,7 +217,7 @@ export const ExpenseData: FunctionComponent = () => {
             globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
             data.paymentForm,
             data.finalCard,
-            data.quantityPart,
+            data.partNumber ? data.partNumber + "/"+ data.quantityPart : data.quantityPart,
             data.hasFixed,
             data.dateBuy,
             data.obs,
@@ -233,22 +242,22 @@ export const ExpenseData: FunctionComponent = () => {
         );
 
         let card = {
-            label: Messages.titles.receivedYear,
+            label: Messages.titles.paymentTotal,
             value: "R$ " + data.data.data.total1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card1 = {
-            label: Messages.titles.receivedMonth,
+            label: Messages.titles.paymentConfirm,
             value: "R$ " + data.data.data.total2.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card2 = {
-            label: Messages.titles.quantityOk,
+            label: Messages.titles.paymentQuantityOk,
             value: "R$ " + data.data.data.total3.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
         let card3 = {
-            label: Messages.titles.quantityNotOk,
+            label: Messages.titles.paymentQuantityNotOk,
             value: "R$ " + data.data.data.total4.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
         }
 
@@ -262,9 +271,16 @@ export const ExpenseData: FunctionComponent = () => {
     }
 
     const handleGetWithFilter = (value) => {
+        const year1 = filterYear.filter(y => y.id === year)[0].description;
         setFilterMonth(value);
-        getData(value, filterYear[0].description);
-        getGraphic(value, filterYear[0].description);
+        getData(value, year1);
+        getGraphic(value, year1);
+    }
+    const handleYear = (value) => {
+        const year = filterYear.filter(y => y.id === value)[0];
+        setYear(value);
+        getData(filterMonth, year.description);
+        getGraphic(filterMonth, year.description);
     }
 
     return (
@@ -285,12 +301,12 @@ export const ExpenseData: FunctionComponent = () => {
                         <DropdownSingleSelect
                             label={Messages.titles.year}
                             data={filterYear}
-                            disabled={true}
+                            disabled={false}
                             width={"100px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
-                            getValue={(value) => console.log(value)}
-                            value={1}
+                            getValue={(value) => handleYear(value)}
+                            value={year}
                         />
                         <DropdownSingleSelect
                             label={Messages.titles.month}
