@@ -27,7 +27,6 @@ const columns: IColumns[] = [
         align: "right",
         format: (value) => value.toFixed(2),
     },
-
     {
         id: "macroGroup",
         label: "G. Macro",
@@ -64,6 +63,13 @@ const columns: IColumns[] = [
         format: (value) => value.toFixed(2),
     },
     {
+        id: "partValue",
+        label: "Valor Parcela",
+        minWidth: 70,
+        align: "right",
+        format: (value) => value.toFixed(2),
+    },
+    {
         id: "hasFixed",
         label: "Despesa Fixa",
         minWidth: 70,
@@ -79,7 +85,7 @@ const columns: IColumns[] = [
     },
     {
         id: "value",
-        label: "Valor",
+        label: "Valor Total",
         minWidth: 70,
         align: "right",
         format: (value) => value.toFixed(2),
@@ -117,7 +123,7 @@ type RowType = {
     index: number;
 };
 
-function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, currency, actions, index) {
+function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, currency,partValue, actions, index) {
     let color = "";
     let border = "";
     if (status === "Aguardando") {
@@ -162,6 +168,7 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
         obs: obs ? obs : "--",
         value: currency + " " + value,
         status: statusCard,
+        partValue: partValue ? currency + " " + partValue : "--",
         actions,
         index
     };
@@ -224,6 +231,7 @@ export const ExpenseData: FunctionComponent = () => {
             data.value,
             data.status,
             data.currency,
+            data.partValue,
             actions(index),
             index
         ));
