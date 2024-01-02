@@ -134,16 +134,16 @@ type RowType = {
     index: number;
 };
 
-function createData(source, type, ownerId, bankName, salary, valueReceived,frequency, initialDate, finalDate, monthReceive, dayReceive, status,financialCardName, moneyId, actions, index, currency) {
+function createData(source, type, ownerId, bankName, salary, valueReceived, frequency, initialDate, finalDate, monthReceive, dayReceive, status, financialCardName, moneyId, actions, index, currency) {
     let color = "";
-    let border= "";
-    if(status === "Aguardando") {
+    let border = "";
+    if (status === "Aguardando") {
         color = "#ead337";
         border = "0.5px solid #ead337"
-    } else if( status === "Confirmado") {
+    } else if (status === "Confirmado") {
         color = "#46ba52";
         border = "0.5px solid #46ba52"
-    } else if(status === "Pendente"){
+    } else if (status === "Pendente") {
         color = "red";
         border = "0.5px solid red"
     } else {
@@ -165,15 +165,15 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
             marginBottom="0px"
             fontWeight="200"
             action={value => value}
-            />
+        />
 
     return {
         source,
         type,
         ownerId,
-        bankName: bankName? bankName: "--",
-        salary: currency ? currency + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : moneyId + " "+ salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-        valueReceived: valueReceived?  currency + " "+ valueReceived.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : "--",
+        bankName: bankName ? bankName : "--",
+        salary: currency ? currency + " " + salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : moneyId + " " + salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        valueReceived: valueReceived ? currency + " " + valueReceived.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : "--",
         frequency,
         initialDate: format(parseISO(initialDate), 'dd/MM/yyyy'),
         finalDate: finalDate ? format(parseISO(finalDate), 'dd/MM/yyyy') : "--",
@@ -181,7 +181,7 @@ function createData(source, type, ownerId, bankName, salary, valueReceived,frequ
         dayReceive: dayReceive ? dayReceive.toString() : "--",
         status: statusCard,
         financialCardName: financialCardName ? financialCardName : "--",
-        moneyId: moneyId? "Sim" : "--",
+        moneyId: moneyId ? "Sim" : "--",
         actions,
         index
     };
@@ -195,17 +195,26 @@ export const EntranceData: FunctionComponent = () => {
     const [rows, setRows] = useState<RowType[]>([]);
     const [cards, setCards] = useState([]);
     const globalStore = useGlobalStore();
-    const [filterYear, setSetFilterYear] = useState([{id: 1, description: new Date().getFullYear()},{id: 3, description: new Date().getFullYear() + 1}]);
-
+    const [filterYear, setFilterYear] = useState([{id: 1, description: new Date().getFullYear() - 1}, {
+        id: 2,
+        description: new Date().getFullYear()
+    }, {id: 3, description: new Date().getFullYear() + 1}]);
     const [filterMonth, setFilterMonth] = useState(0);
     const [openToast, setOpenToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [severity, setSeverity] = useState<'success' | 'info' | 'warning' | 'error'>('success');
     const [openModalExclusion, setOpenModalExclusion] = useState(false);
     const [currentId, setCurrentId] = useState();
+    const [year, setYear] = useState(2);
 
     const actions = (id) => (
-        <div style={{width: "100%", display: "flex", justifyContent:"space-between",alignItems: "center", textAlign:"center"}}>
+        <div style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            textAlign: "center"
+        }}>
             <AiIcons.AiOutlineEdit className="icon_space" size={18} onClick={() => console.log(id)}/>
             <AiIcons.AiOutlineDelete className="icon_delete" size={18} onClick={() => handleOpenModalExclusion(id)}/>
         </div>
@@ -214,9 +223,10 @@ export const EntranceData: FunctionComponent = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                await getData(new Date().getMonth() + 1, filterYear[0].description);
-                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth()+1)[0].id)
-                await getGraphic(new Date().getMonth() + 1, filterYear[0].description);
+                const year1 = filterYear.filter(y => y.id === year)[0].description;
+                await getData(new Date().getMonth() + 1, year1);
+                setFilterMonth(globalStore.monthOfYear.filter(fi => fi.id === new Date().getMonth() + 1)[0].id)
+                await getGraphic(new Date().getMonth() + 1, year1);
 
             } catch (error) {
                 console.log('Error', error);
@@ -290,9 +300,10 @@ export const EntranceData: FunctionComponent = () => {
     }
 
     const handleGetWithFilter = (value) => {
+        const year1 = filterYear.filter(y => y.id === year)[0].description;
         setFilterMonth(value);
-        getData(value, filterYear[0].description);
-        getGraphic(value, filterYear[0].description);
+        getData(value, year1);
+        getGraphic(value, year1);
     }
 
     const handleOpenModalExclusion = (id) => {
@@ -329,6 +340,14 @@ export const EntranceData: FunctionComponent = () => {
         }
     };
 
+    const handleYear = (value) => {
+        const year = filterYear.filter(y => y.id === value)[0];
+        setYear(value);
+        getData(filterMonth, year.description);
+        getGraphic(filterMonth, year.description);
+    }
+
+
     return (
         <>
             <DashboardComponent
@@ -347,12 +366,12 @@ export const EntranceData: FunctionComponent = () => {
                         <DropdownSingleSelect
                             label={Messages.titles.year}
                             data={filterYear}
-                            disabled={true}
+                            disabled={false}
                             width={"100px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
-                            getValue={(value) => console.log(value)}
-                            value={1}
+                            getValue={(value) => handleYear(value)}
+                            value={year}
                         />
                         <DropdownSingleSelect
                             label={Messages.titles.month}
