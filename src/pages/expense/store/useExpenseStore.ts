@@ -368,7 +368,6 @@ const useExpenseStore = create<State & Actions>((set) => {
                     index: 0,
                     hasSplitExpense: false,
                     frequency: '',
-                    initialDate: null,
                     monthReceive: 0,
                     dayReceive: 0,
                     ticketId: null,

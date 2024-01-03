@@ -1,9 +1,10 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import {CSSProperties, FunctionComponent, useEffect, useState} from "react";
 import * as React from 'react';
 import "./input-data.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
 import {format, isAfter, isBefore} from "date-fns";
+
 interface IInputDataComponent {
     label: string;
     disabled?: boolean;
@@ -16,12 +17,24 @@ interface IInputDataComponent {
     before?: boolean
 }
 
-export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({label, disabled, width, getValue, inputValue = null, viewMode,disabledDates,after, before }: IInputDataComponent) => {
+
+export const InputDataComponent: FunctionComponent<IInputDataComponent> = ({
+                                                                               label,
+                                                                               disabled,
+                                                                               width,
+                                                                               getValue,
+                                                                               inputValue = null,
+                                                                               viewMode,
+                                                                               disabledDates,
+                                                                               after,
+                                                                               before
+                                                                           }: IInputDataComponent) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [isDateSelected, setIsDateSelected] = useState(false);
 
+
     useEffect(() => {
-        if(inputValue === null) {
+        if (inputValue === null) {
             setSelectedDate(null);
         }
 
@@ -36,7 +49,7 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
     };
 
     const isDateDisabled = (date) => {
-        if(disabledDates && after) {
+        if (disabledDates && after) {
             return disabledDates && disabledDates.some((disabledDate) => isAfter(date, disabledDate));
         } else if (disabledDates && before) {
             return disabledDates && disabledDates.some((disabledDate) => isBefore(date, disabledDate));
@@ -54,7 +67,7 @@ export const InputDataComponent: FunctionComponent <IInputDataComponent> = ({lab
                 placeholderText={label}
                 filterDate={isDateDisabled}
             />
-            { isDateSelected &&
+            {isDateSelected &&
                 <label className={`input-label ${isDateSelected ? "active" : ""}`} htmlFor={label}>
                     {label}
                 </label>

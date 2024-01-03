@@ -550,7 +550,7 @@ export const ExpenseForm: FunctionComponent = () => {
                         label={Messages.titles.money}
                         data={moneyData}
                         disabled={!formStore.form.ownerId}
-                        width={"200px"}
+                        width={"210px"}
                         idProperty={"id"}
                         descriptionProperty={"currency"}
                         getValue={(value) => formStore.setMoney(value)}
@@ -646,7 +646,6 @@ export const ExpenseForm: FunctionComponent = () => {
                     inputValue={value}
                 />
             </div>
-
             {((formStore.form.paymentForm.toString() === "1" && hasSplitExpense) ||
                     (formStore.form.paymentForm.toString() === "2" && hasSplitExpense) ||
                     (formStore.form.paymentForm.toString() === "4" && hasSplitExpense)) &&
@@ -655,7 +654,7 @@ export const ExpenseForm: FunctionComponent = () => {
                         label={Messages.titles.frequency}
                         data={globalStore.frequency.filter(f => f.id === 2 || f.id === 5)}
                         disabled={false}
-                        width={"200px"}
+                        width={"210px"}
                         idProperty={"id"}
                         descriptionProperty={"description"}
                         getValue={(value) => formStore.setFrequency(value)}
@@ -667,22 +666,11 @@ export const ExpenseForm: FunctionComponent = () => {
                             label={Messages.titles.dayPayment}
                             data={globalStore.days}
                             disabled={false}
-                            width={"200px"}
+                            width={"210px"}
                             idProperty={"id"}
                             descriptionProperty={"description"}
                             getValue={(value) => formStore.setDayReceive(value)}
                             value={formStore.form.dayPayment}
-                        />
-                    }
-                    {formStore.form.frequency.toString() === "1" &&
-                        <InputDataComponent
-                            label={Messages.titles.date}
-                            disabled={false}
-                            width="200px"
-                            getValue={(value) => formStore.setInitialDate(value)}
-                            viewMode={false}
-                            disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
-                            after={true}
                         />
                     }
 
@@ -692,7 +680,7 @@ export const ExpenseForm: FunctionComponent = () => {
                                 label={Messages.titles.dayPayment}
                                 data={globalStore.days}
                                 disabled={false}
-                                width={"200px"}
+                                width={"210px"}
                                 idProperty={"id"}
                                 descriptionProperty={"description"}
                                 getValue={(value) => formStore.setDayReceive(value)}
@@ -702,25 +690,11 @@ export const ExpenseForm: FunctionComponent = () => {
                                 label={Messages.titles.monthReceive}
                                 data={globalStore.monthOfYear}
                                 disabled={false}
-                                width={"200px"}
+                                width={"210px"}
                                 idProperty={"id"}
                                 descriptionProperty={"description"}
                                 getValue={(value) => formStore.setMonthReceive(value)}
                                 value={formStore.form.monthPayment}
-                            />
-                        </>
-                    }
-
-                    {(formStore.form.frequency.toString() !== "1") && formStore.form.frequency !== "" &&
-                        <>
-                            <InputDataComponent
-                                label={Messages.titles.initialDate}
-                                disabled={false}
-                                width="200px"
-                                getValue={(value) => formStore.setInitialDate(value)}
-                                viewMode={false}
-                                disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
-                                after={true}
                             />
                         </>
                     }
@@ -741,21 +715,35 @@ export const ExpenseForm: FunctionComponent = () => {
                             after={true}
                         />
 
-                        <DropdownSingleSelect
-                            label={Messages.titles.dayPayment}
-                            data={globalStore.days}
-                            disabled={false}
-                            width={"200px"}
-                            idProperty={"id"}
-                            descriptionProperty={"description"}
-                            getValue={(value) => formStore.setDayReceive(value)}
-                            value={formStore.form.dayPayment}
-                        />
+                        {formStore.form.paymentForm.toString() !== "3" &&
+                            <DropdownSingleSelect
+                                label={Messages.titles.dayPayment}
+                                data={globalStore.days}
+                                disabled={false}
+                                width={"210px"}
+                                idProperty={"id"}
+                                descriptionProperty={"description"}
+                                getValue={(value) => formStore.setDayReceive(value)}
+                                value={formStore.form.dayPayment}
+                            />
+                        }
 
                     </>
 
                 }
-                {!formStore.form.hasFixed &&
+
+                {formStore.form.frequency !== "" &&
+                    <InputDataComponent
+                        label={Messages.titles.initialDate}
+                        disabled={false}
+                        width="210px"
+                        getValue={(value) => formStore.setInitialDate(value)}
+                        viewMode={false}
+                        disabledDates={[new Date(new Date().getFullYear(), new Date().getMonth(), 0)]}
+                        after={true}
+                    />
+                }
+                {!formStore.form.hasFixed && formStore.form.frequency === "" &&
                     <InputDataComponent
                         label={Messages.titles.dateBuy}
                         disabled={false}
@@ -797,7 +785,7 @@ export const ExpenseForm: FunctionComponent = () => {
             <div className="add-button-member">
                 <ButtonComponent
                     label={Messages.titles.addExpense}
-                    disabled={!formStore.form.local || !formStore.form.macroGroup || !formStore.form.paymentForm || !formStore.form.value || (!formStore.form.dateBuy && !formStore.form.hasFixed) || (!formStore.form.initialDate && formStore.form.hasFixed) || !formStore.form.ownerId}
+                    disabled={!formStore.form.local || !formStore.form.macroGroup || !formStore.form.paymentForm || !formStore.form.value || (!formStore.form.initialDate && !formStore.form.dateBuy) || !formStore.form.ownerId}
                     width="160px"
                     height="30px"
                     cursor="pointer"
