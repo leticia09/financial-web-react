@@ -27,3 +27,13 @@ export interface IExpense {
     bankId?: number;
     accountId?: number;
 }
+
+export interface IPayment {
+    id?: number;
+    expenseId: number;
+    paymentDate: string;
+    referencePeriod: string;
+    value: string;
+    ownerId: number;
+    obs: string;
+}

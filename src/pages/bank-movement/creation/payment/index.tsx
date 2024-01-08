@@ -42,7 +42,7 @@ export const Payment: FunctionComponent = () => {
         setIsLoading(true);
 
         try {
-            const response = await service.receive(formStore.formList, loginStore.userId);
+            const response = await service.payment(formStore.formListPayment, loginStore.userId);
             setSeverity(response.data.severity);
             setToastMessage(ValidateError(response.data.message));
             setOpen(true);
@@ -72,7 +72,7 @@ export const Payment: FunctionComponent = () => {
             }
             titlesButton={Messages.titles.addPayment}
             save={save}
-            disabledSaveButton={formStore.formList.length === 0}
+            disabledSaveButton={formStore.formListPayment.length === 0}
             pathBack="/movimentacao-bancaria"
             toastMessage={toastMessage}
             severityType={severity}

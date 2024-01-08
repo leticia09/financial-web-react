@@ -22,7 +22,17 @@ export const ExpenseService = (axiosInstance: any = instance) => {
         return axiosInstance.get(url);
     }
 
+    const getFixed = (userId) => {
+        const url = '/expense/fixed/' + userId;
+        return axiosInstance.get(url);
+    }
+
+    const getSplit = (userId) => {
+        const url = '/expense/split/' + userId;
+        return axiosInstance.get(url);
+    }
+
     return {
-         create, list, getData, listWithFilters
+         create, list, getData, listWithFilters, getFixed, getSplit
     }
 }

@@ -16,86 +16,54 @@ const columns: IColumns[] = [
     {
         id: "ownerId",
         label: "Responsável",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
     },
     {
         id: "local",
         label: "Descrição",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "macroGroup",
         label: "G. Macro",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "specificGroup",
         label: "G. Específico",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "paymentForm",
         label: "Pagamento",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "finalCard",
         label: "Final Cartão",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "quantityPart",
         label: "Parcelas",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "partValue",
         label: "Valor Parcela",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "hasFixed",
         label: "Despesa Fixa",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "dateBuy",
         label: "Data Compra",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
+    },
+    {
+        id: "valuePaid",
+        label: "Valor Pago",
     },
     {
         id: "value",
         label: "Valor Total",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "status",
         label: "Pagamento",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "actions",
@@ -123,7 +91,7 @@ type RowType = {
     index: number;
 };
 
-function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, value, status, currency,partValue, actions, index) {
+function createData(local, macroGroup, specificGroup, ownerId, paymentForm, finalCard, quantityPart, hasFixed, dateBuy, obs, valuePaid, value, status, currency,partValue, actions, index) {
     let color = "";
     let border = "";
     if (status === "Aguardando") {
@@ -166,6 +134,7 @@ function createData(local, macroGroup, specificGroup, ownerId, paymentForm, fina
         hasFixed: hasFixed ? "Sim" : "Não",
         dateBuy: dateBuy ? format(parseISO(dateBuy), 'dd/MM/yyyy') : "--",
         obs: obs ? obs : "--",
+        valuePaid: valuePaid ? currency + " " + valuePaid : "--",
         value: currency + " " + value,
         status: statusCard,
         partValue: partValue ? currency + " " + partValue : "--",
@@ -228,6 +197,7 @@ export const ExpenseData: FunctionComponent = () => {
             data.hasFixed,
             data.dateBuy,
             data.obs,
+            data.valuePaid,
             data.value,
             data.status,
             data.currency,

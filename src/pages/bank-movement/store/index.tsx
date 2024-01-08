@@ -2,11 +2,15 @@ import {create} from "zustand";
 import {IGraphic} from "../../../interfaces/points-program";
 import {IReceive} from "../../../interfaces/entrance";
 import {ITransferBank} from "../../../interfaces/transferBank";
+import {IPayment} from "../../../interfaces/expense";
 
 type State = {
     graphicData: IGraphic;
     formList: IReceive[];
     form: IReceive;
+
+    formListPayment: IPayment[];
+    formPayment: IPayment;
 
     formListTransfer: ITransferBank[];
     formTransfer: ITransferBank;
@@ -41,6 +45,19 @@ type Actions = {
     deleteItemFormListTransfer: (obs: number) => any;
     resetFormStoreTransfer: () => void;
     setFormListTransfer: (formListTransfer: ITransferBank[]) => void;
+
+
+    resetFormStorePayment: () => void;
+    setFormListPayment: (formListPayment: IPayment[]) => void;
+    setExpenseId: (expenseId: number) => void;
+    setPaymentDate: (paymentDate: string) => void;
+    setReferencePeriodPayment: (referencePeriod: string) => void;
+    setValuePayment: (value: string) => void;
+    setOwnerIdPayment: (ownerId: number) => void;
+    setObsPayment: (obs: string) => void;
+    deleteItemFormListPayment: (i: number) => any;
+
+
 };
 
 const initialState: State = {
@@ -80,6 +97,16 @@ const initialState: State = {
         value: "",
         dateTransfer: null,
         obs: ""
+    },
+    formListPayment: [],
+    formPayment: {
+        id: null,
+        expenseId: 0,
+        paymentDate: "",
+        referencePeriod: "",
+        value: "",
+        ownerId: 0,
+        obs: "",
     }
 };
 
@@ -322,7 +349,83 @@ const movementBankStore = create<State & Actions>((set) => ({
                     obs: ""
                 },
             }));
-        }
+        },
+    resetFormStorePayment: () => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                id: null,
+                expenseId: 0,
+                paymentDate: null,
+                referencePeriod: "",
+                value: "",
+                ownerId: 0,
+                obs: "",
+            },
+        }));
+    },
+    setFormListPayment: (formListPayment: IPayment[]) => {
+        set({formListPayment: formListPayment});
+    },
+    setExpenseId: (expenseId: number) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                expenseId: expenseId,
+            },
+        }));
+    },
+    setPaymentDate: (paymentDate: string) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                paymentDate: paymentDate,
+            },
+        }));
+    },
+    setReferencePeriodPayment: (referencePeriod: string) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                referencePeriod: referencePeriod,
+            },
+        }));
+    },
+    setValuePayment: (value: string) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                value: value,
+            },
+        }));
+    },
+    setOwnerIdPayment: (ownerId: number) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                ownerId: ownerId,
+            },
+        }));
+    },
+    setObsPayment: (obs: string) => {
+        set((state) => ({
+            formPayment: {
+                ...state.formPayment,
+                obs: obs,
+            },
+        }));
+    },
+    deleteItemFormListPayment: (index: number) => {
+        let updatedFormList = [];
+        set((state) => {
+            updatedFormList = [...state.formListPayment];
+            if (index >= 0 && index < updatedFormList.length) {
+                updatedFormList.splice(index, 1);
+            }
+            return {formListPayment: updatedFormList};
+        });
+        return updatedFormList;
+    }
     }))
 ;
 

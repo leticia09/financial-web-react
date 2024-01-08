@@ -9,102 +9,65 @@ import {ButtonComponent} from "../../../../components/button";
 import {TableComponent} from "../../../../components/table";
 import {IColumns} from "../../../../interfaces/table";
 import * as AiIcons from "react-icons/ai";
-import {getMonth, getYear, isAfter} from "date-fns";
-import {EntranceService} from "../../../entrance/service";
+import {getMonth, getYear} from "date-fns";
 import movementBankStore from "../../store";
 import {GlobalService} from "../../../global-informtions/service";
 import {DropdownMultiSelect} from "../../../../components/dropdown/dropdownMultiselect";
 import {MovementBankService} from "../../service";
+import {ExpenseService} from "../../../expense/service";
 
 const columns: IColumns[] = [
     {
         id: "ownerId",
         label: "Titular",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
     },
     {
-        id: "entrance",
-        label: "Receita",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
+        id: "expenseId",
+        label: "Despesa",
     },
     {
         id: "bankId",
         label: "Banco",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toLocaleString("en-US"),
     },
     {
         id: "accountId",
         label: "Conta",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
-        id: "salary",
-        label: "Salário Líquido",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
+        id: "value",
+        label: "Valor",
     },
 
     {
-        id: "value",
-        label: "Valor Transferência",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: "receiveDate",
-        label: "Data Recebimento",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
+        id: "paymentDate",
+        label: "Data Pagamento",
     },
     {
         id: "referencePeriod",
         label: "Período Referência",
-        minWidth: 70,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "obs",
         label: "Observação",
-        minWidth: 100,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
     {
         id: "actions",
         label: "Ações",
-        minWidth: 70,
-        width: 30,
-        align: "right",
-        format: (value) => value.toFixed(2),
     },
 ];
 
-function createData(entrance, ownerId, salary, receiveDate, referencePeriod, obs, bankId, accountId, value, actions, index) {
-    return {entrance, ownerId, salary, receiveDate, referencePeriod, obs, bankId, accountId, value, actions, index};
+function createData(expenseId, paymentDate, referencePeriod, value, ownerId, obs, actions, index) {
+    return {expenseId, paymentDate, referencePeriod, value, ownerId, obs, actions, index};
 }
 
 type RowType = {
-    entrance: string;
-    salary: string;
-    ownerId: number;
-    receiveDate: string;
+    expenseId: number;
+    paymentDate: string;
     referencePeriod: string;
+    value: string;
+    ownerId: number;
     obs: string;
     actions: React.ReactNode[];
-    bankId: number;
-    accountId: number;
     index: number;
 };
 
@@ -114,13 +77,12 @@ export const PaymentForm: FunctionComponent = () => {
         const globalStore = useGlobalStore();
         const globalService = GlobalService();
         const movementService = MovementBankService();
-        const service = EntranceService();
+        const service = ExpenseService();
         const [rows, setRows] = useState<RowType[]>([]);
         const [paymentRefer, setPaymentRefer] = useState("");
         const [salary, setSalary] = useState("");
-        const [entranceData, setEntranceData] = useState([]);
+        const [expenseData, setExpenseData] = useState(globalStore.expense);
         const [currency, setCurrency] = useState([]);
-        const [entranceAllData, setEntranceAllData] = useState([]);
         const [type, setType] = useState(0);
         const [accountData, setAccountData] = useState([]);
         const [cardData, setCardData] = useState([]);
@@ -134,9 +96,9 @@ export const PaymentForm: FunctionComponent = () => {
 
         useEffect(() => {
             setPaymentRefer(getCurrentMonthYear());
-            formStore.setFormList([]);
-            formStore.resetFormStore();
-            formStore.setReferencePeriod(getCurrentMonthYear());
+            formStore.setFormListPayment([]);
+            formStore.resetFormStorePayment();
+            formStore.setReferencePeriodPayment(getCurrentMonthYear());
         }, []);
 
         const getCurrentMonthYear = () => {
@@ -147,95 +109,73 @@ export const PaymentForm: FunctionComponent = () => {
             return `${String(month).padStart(2, '0')}/${year}`;
         };
 
-        const getEntrance = async (ownerId) => {
-            let list = [];
-            const response = await service.list(loginStore.userId);
-            response.data.data.forEach(res => {
-
-                list.push({
-                    id: res.id,
-                    description: res.source + " - " + res.type,
-                    salary: res.currency + " " + res.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-                    ownerId: res.owner.id,
-                })
-
-
-            })
-            setEntranceAllData(list);
-            setEntranceData(list.filter(li => li.ownerId === ownerId));
-        }
         const handleAdd = () => {
-            const updateList = [...formStore.formList];
-            updateList.push(
-                {
-                    entrance: formStore.form.entrance,
-                    ownerId: formStore.form.ownerId,
-                    salary: formStore.form.salary,
-                    receiveDate: formStore.form.receiveDate,
-                    referencePeriod: formStore.form.referencePeriod,
-                    bankId: formStore.form.bankId,
-                    accountId: formStore.form.accountId,
-                    value: formStore.form.value,
-                    obs: formStore.form.obs
-                }
-            )
-            formStore.setFormList(updateList);
-            const transformedRows = updateList.map((data: any, index: number) => createData(
-                data.entrance ? entranceAllData.filter(en => en.id === data.entrance)[0].description : "--",
-                globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-                data.salary,
-                data.receiveDate,
-                data.referencePeriod ? data.referencePeriod : "--",
-                data.obs ? data.obs : "--",
-                data.bankId ? globalStore.bank.filter(b => b.id.toString() === data.bankId.toString())[0].name : "--",
-                data.accountId ? accountData.filter(ac => ac.id.toString() === data.accountId.toString())[0].accountNumber.toString() : "--",
-                data.value,
-                actions(index),
-                index
-            ));
-            setRows(transformedRows);
-            reset();
+            const updateList = [...formStore.formListPayment];
+            if (type === 1 || type === 2) {
+                updateList.push(
+                    {
+                        expenseId: formStore.formPayment.expenseId,
+                        paymentDate: formStore.formPayment.paymentDate,
+                        referencePeriod: formStore.formPayment.referencePeriod,
+                        value: formStore.formPayment.value,
+                        ownerId: formStore.formPayment.ownerId,
+                        obs: formStore.formPayment.obs,
+                    }
+                )
+                formStore.setFormListPayment(updateList);
+                const transformedRows = updateList.map((data: any, index: number) => createData(
+                    data.expenseId ? expenseData.filter(ex => ex.id === data.expenseId)[0].local : "--",
+                    data.paymentDate,
+                    data.referencePeriod ? data.referencePeriod : "--",
+                    expenseData.filter(ex => ex.id === data.expenseId)[0].currency + " " + data.value,
+                    globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
+                    data.obs ? data.obs : "--",
+                    actions(index),
+                    index
+                ));
+                setRows(transformedRows);
+                reset();
+            }
+
         }
 
         const deleteItemFormList = async (i) => {
-            let list = formStore.deleteItemFormList(i);
-
-            const transformedRows = list.map((data: any, index: number) => createData(
-                data.entrance ? entranceAllData.filter(en => en.id === data.entrance)[0].description : "--",
-                globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
-                type === 2 ? data.salary : data.value,
-                data.receiveDate,
-                data.referencePeriod ? data.referencePeriod : "--",
-                data.obs ? data.obs : "--",
-                data.bankId ? data.bankId : "--",
-                data.accountId ? data.accountId : "--",
-                actions(index),
-                data.value,
-                index
-            ));
-            setRows(transformedRows);
+            let list = formStore.deleteItemFormListPayment(i);
+            if (type === 1  || type === 2) {
+                const transformedRows = list.map((data: any, index: number) => createData(
+                    data.expenseId ? expenseData.filter(ex => ex.id === data.expenseId)[0].local : "--",
+                    data.paymentDate,
+                    data.referencePeriod ? data.referencePeriod : "--",
+                    expenseData.filter(ex => ex.id === data.expenseId)[0].currency + " " + data.value,
+                    globalStore.members.filter(mem => mem.id === data.ownerId)[0].name,
+                    data.obs ? data.obs : "--",
+                    actions(index),
+                    index
+                ));
+                setRows(transformedRows);
+            }
         }
 
         const reset = () => {
             setPaymentRefer(getCurrentMonthYear());
             setSalary("");
-            formStore.resetFormStore();
+            formStore.resetFormStorePayment();
         }
 
         const handlePaymentRefer = (value) => {
             setPaymentRefer(value);
-            formStore.setReferencePeriod(value);
+            formStore.setReferencePeriodPayment(value);
         }
 
         const handleSalary = (value) => {
             if (value.includes(currency + ' ')) {
                 setSalary(value);
-                formStore.setSalaryReceive(value);
+                formStore.setValuePayment(value);
             }
         }
 
         const handleOwner = (value) => {
-            formStore.setOwnerId(value);
+            formStore.setOwnerIdPayment(value);
         }
 
         const handleBank = (value) => {
@@ -244,7 +184,16 @@ export const PaymentForm: FunctionComponent = () => {
             setAccountData(accounts.filter(a => a.owner.toString() === formStore.form.ownerId.toString()));
         }
 
-        const handleType = (value) => {
+        const handleType = async (value) => {
+            if (value === 1) {
+                const res = await service.getFixed(loginStore.userId);
+                setExpenseData(res.data)
+            }
+            if (value === 2) {
+                const res = await service.getSplit(loginStore.userId);
+                setExpenseData(res.data)
+            }
+
             setType(value);
         }
 
@@ -259,17 +208,21 @@ export const PaymentForm: FunctionComponent = () => {
         }
 
         const handleCard = async (value) => {
-
             let cardList = [];
             value.forEach(v => {
                     cardList.push(cardData.filter(c => c.description === v)[0].id)
                 }
             )
-
             const response = await movementService.getValueAmount(loginStore.userId, formStore.form.bankId, formStore.form.accountId, cardList);
-            console.log(response.data.data);
         }
 
+        const handleExpense = (event) => {
+            formStore.setExpenseId(event);
+            const expenseValue = expenseData.filter(ex => ex.id === event)[0];
+            let value = 0;
+            expenseValue.hasSplitExpense ? value = expenseValue.value / expenseValue.quantityPart : value = expenseValue.value.toString().replace(".", ",");
+            formStore.setValuePayment(value.toString());
+        }
         return (
             <div>
                 <div>
@@ -296,25 +249,26 @@ export const PaymentForm: FunctionComponent = () => {
                                     idProperty={"id"}
                                     descriptionProperty={"name"}
                                     getValue={(value) => handleOwner(value)}
-                                    value={formStore.form.ownerId}
+                                    value={formStore.formPayment.ownerId}
                                 />
-                                <DropdownSingleSelect
-                                    label={Messages.titles.expense_}
-                                    data={globalStore.expense}
-                                    disabled={!formStore.form.ownerId}
-                                    width={"200px"}
-                                    idProperty={"id"}
-                                    descriptionProperty={"local"}
-                                    getValue={(value) => handleBank(value)}
-                                    value={formStore.form.entrance}
-                                />
+                                {expenseData && expenseData.length > 0 &&
+                                    <DropdownSingleSelect
+                                        label={Messages.titles.expense_}
+                                        data={expenseData}
+                                        disabled={!formStore.formPayment.ownerId}
+                                        width={"200px"}
+                                        idProperty={"id"}
+                                        descriptionProperty={"local"}
+                                        getValue={(value) => handleExpense(value)}
+                                        value={formStore.formPayment.expenseId}
+                                    />}
 
                                 <Input
                                     label={Messages.titles.currentValue}
-                                    disabled={false}
+                                    disabled={!formStore.formPayment.expenseId}
                                     width="200px"
-                                    getValue={(value) => formStore.setValueEntrance(value)}
-                                    inputValue={formStore.form.value}
+                                    getValue={(value) => formStore.setValuePayment(value)}
+                                    inputValue={formStore.formPayment.value}
                                     viewMode={false}
                                     price={true}
                                 />
@@ -322,9 +276,9 @@ export const PaymentForm: FunctionComponent = () => {
                                     label={Messages.titles.datePayment}
                                     disabled={false}
                                     width="200px"
-                                    getValue={(value) => formStore.setReceiveDate(value)}
+                                    getValue={(value) => formStore.setPaymentDate(value)}
                                     viewMode={false}
-                                    inputValue={formStore.form.receiveDate}
+                                    inputValue={formStore.formPayment.paymentDate}
                                     disabledDates={[new Date()]}
                                     before={true}
                                 />
@@ -344,8 +298,8 @@ export const PaymentForm: FunctionComponent = () => {
                                     label={Messages.titles.obs}
                                     disabled={false}
                                     width="418px"
-                                    getValue={(value) => formStore.setObs(value)}
-                                    inputValue={formStore.form.obs}
+                                    getValue={(value) => formStore.setObsPayment(value)}
+                                    inputValue={formStore.formPayment.obs}
                                     viewMode={false}
                                     maskDate={false}
                                     numericLimit={55}
@@ -355,7 +309,7 @@ export const PaymentForm: FunctionComponent = () => {
                                 <div className="add-button-member">
                                     <ButtonComponent
                                         label={"+ " + Messages.titles.transfer_}
-                                        disabled={!formStore.form.value || !formStore.form.accountId || !formStore.form.bankId || !formStore.form.receiveDate || !formStore.form.ownerId}
+                                        disabled={!formStore.formPayment.value || !formStore.formPayment.paymentDate || !formStore.formPayment.ownerId || !formStore.formPayment.expenseId}
                                         width="160px"
                                         height="30px"
                                         cursor="pointer"
@@ -383,25 +337,26 @@ export const PaymentForm: FunctionComponent = () => {
                                     idProperty={"id"}
                                     descriptionProperty={"name"}
                                     getValue={(value) => handleOwner(value)}
-                                    value={formStore.form.ownerId}
+                                    value={formStore.formPayment.ownerId}
                                 />
-                                <DropdownSingleSelect
-                                    label={Messages.titles.expense_}
-                                    data={globalStore.expense}
-                                    disabled={!formStore.form.ownerId}
-                                    width={"200px"}
-                                    idProperty={"id"}
-                                    descriptionProperty={"local"}
-                                    getValue={(value) => handleBank(value)}
-                                    value={formStore.form.entrance}
-                                />
+                                {expenseData && expenseData.length > 0 &&
+                                    <DropdownSingleSelect
+                                        label={Messages.titles.expense_}
+                                        data={expenseData}
+                                        disabled={!formStore.formPayment.ownerId}
+                                        width={"200px"}
+                                        idProperty={"id"}
+                                        descriptionProperty={"local"}
+                                        getValue={(value) => handleExpense(value)}
+                                        value={formStore.formPayment.expenseId}
+                                    />}
 
                                 <Input
                                     label={Messages.titles.partValue}
-                                    disabled={false}
+                                    disabled={!formStore.formPayment.expenseId}
                                     width="200px"
-                                    getValue={(value) => formStore.setValueEntrance(value)}
-                                    inputValue={formStore.form.value}
+                                    getValue={(value) => formStore.setValuePayment(value)}
+                                    inputValue={formStore.formPayment.value}
                                     viewMode={false}
                                     price={true}
                                 />
@@ -409,9 +364,9 @@ export const PaymentForm: FunctionComponent = () => {
                                     label={Messages.titles.datePayment}
                                     disabled={false}
                                     width="200px"
-                                    getValue={(value) => formStore.setReceiveDate(value)}
+                                    getValue={(value) => formStore.setPaymentDate(value)}
                                     viewMode={false}
-                                    inputValue={formStore.form.receiveDate}
+                                    inputValue={formStore.formPayment.paymentDate}
                                     disabledDates={[new Date()]}
                                     before={true}
                                 />
@@ -431,8 +386,8 @@ export const PaymentForm: FunctionComponent = () => {
                                     label={Messages.titles.obs}
                                     disabled={false}
                                     width="418px"
-                                    getValue={(value) => formStore.setObs(value)}
-                                    inputValue={formStore.form.obs}
+                                    getValue={(value) => formStore.setObsPayment(value)}
+                                    inputValue={formStore.formPayment.obs}
                                     viewMode={false}
                                     maskDate={false}
                                     numericLimit={55}
@@ -441,8 +396,8 @@ export const PaymentForm: FunctionComponent = () => {
                             <div className="register-member">
                                 <div className="add-button-member">
                                     <ButtonComponent
-                                        label={"+ " + Messages.titles.transfer_}
-                                        disabled={!formStore.form.value || !formStore.form.accountId || !formStore.form.bankId || !formStore.form.receiveDate || !formStore.form.ownerId}
+                                        label={"+ " + Messages.titles.addPayment}
+                                        disabled={!formStore.formPayment.value || !formStore.formPayment.paymentDate || !formStore.formPayment.ownerId || !formStore.formPayment.expenseId}
                                         width="160px"
                                         height="30px"
                                         cursor="pointer"
